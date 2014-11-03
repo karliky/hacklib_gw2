@@ -20,7 +20,7 @@ public:
     bool init() override;
     void shutdown() override;
 
-    Drawer *GetDrawer(bool bUsedToRender);
+    hl::Drawer *GetDrawer(bool bUsedToRender);
     const GameData::GameData *GetGameData() const;
 
     void SetRenderCallback(void (*cbRender)());
@@ -28,20 +28,20 @@ public:
     void RenderHook(LPDIRECT3DDEVICE9 pDevice);
     void GameHook();
 
-    const VTHook *m_hkDevice = nullptr;
-    const VTHook *m_hkAlertCtx = nullptr;
+    const hl::VTHook *m_hkDevice = nullptr;
+    const hl::VTHook *m_hkAlertCtx = nullptr;
 
     std::mutex m_gameThreadMutex;
     std::mutex m_renderThreadMutex;
     std::mutex m_gameDataMutex;
 
 private:
-    void RefreshDataAgent(GameData::AgentData *pAgentData, ForeignClass agent);
-    void RefreshDataCharacter(GameData::CharacterData *pCharData, ForeignClass character);
+    void RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent);
+    void RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character);
 
 private:
-    Hooker m_hooker;
-    Drawer m_drawer;
+    hl::Hooker m_hooker;
+    hl::Drawer m_drawer;
 
     GameData::GameData m_gameData;
 

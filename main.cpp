@@ -69,9 +69,9 @@ namespace GW2
 
 bool Gw2HackMain::init()
 {
-    uintptr_t MapIdSig = FindPattern("\00\x00\x08\x00\x89\x0d", "xxxxxx");
+    uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d", "xxxxxx");
 
-    PatternScanner scanner;
+    hl::PatternScanner scanner;
     auto results = scanner.find({
         "ViewAdvanceDevice",
         "ViewAdvanceAgentSelect",
@@ -83,13 +83,13 @@ bool Gw2HackMain::init()
     uintptr_t pAlertCtx = 0;
     if (![&](){
         __try {
-            m_mems.pAgentViewCtx = *(void**)(FollowRelativeAddress(results[2] + 0xa) + 0x1);
+            m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
 
-            pAlertCtx = **(uintptr_t**)(FollowRelativeAddress(results[0] + 0xa) + 0x1);
+            pAlertCtx = **(uintptr_t**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
 
-            m_mems.pAgentSelectionCtx = *(void**)(FollowRelativeAddress(results[1] + 0xa) + 0x1);
+            m_mems.pAgentSelectionCtx = *(void**)(hl::FollowRelativeAddress(results[1] + 0xa) + 0x1);
 
-            m_mems.ppWorldViewContext = *(void***)(FollowRelativeAddress(results[3] + 0xa) + 0x1);
+            m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
 
             m_mems.pMapId = *(int**)(MapIdSig + 0x6);
 
@@ -115,7 +115,7 @@ bool Gw2HackMain::init()
     HL_LOG("Compiled to NOT hook D3D!\n");
 #else
     // get d3d device
-    LPDIRECT3DDEVICE9 pDevice = D3DDeviceFetcher::GetDeviceStealth();
+    LPDIRECT3DDEVICE9 pDevice = hl::D3DDeviceFetcher::GetD3D9Device();
     if (!pDevice) {
         HL_LOG("[Core::Init] Device not found\n");
         return false;
@@ -164,7 +164,7 @@ void Gw2HackMain::shutdown()
     }
 }
 
-Drawer *Gw2HackMain::GetDrawer(bool bUsedToRender)
+hl::Drawer *Gw2HackMain::GetDrawer(bool bUsedToRender)
 {
     if (m_drawer.GetDevice() && (!bUsedToRender || m_bPublicDrawer))
         return &m_drawer;
@@ -222,7 +222,7 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
     }
 }
 
-void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, ForeignClass agent)
+void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent)
 {
     __try {
         pAgentData->pAgent = agent;
@@ -232,7 +232,7 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, ForeignClass
         pAgentData->agentId = agent.call<int>(m_pubmems.agentVtGetId);
 
         agent.call<void>(m_pubmems.agentVtGetPos, &pAgentData->pos);
-        ForeignClass transform = agent.get<void*>(m_pubmems.agentTransform);
+        hl::ForeignClass transform = agent.get<void*>(m_pubmems.agentTransform);
         if (transform)
         {
             pAgentData->rot = atan2(transform.get<float>(m_pubmems.agtransRY), transform.get<float>(m_pubmems.agtransRX));
@@ -242,7 +242,7 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, ForeignClass
         HL_LOG("[RefreshDataAgent] access violation\n");
     }
 }
-void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, ForeignClass character)
+void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character)
 {
     __try {
         pCharData->pCharacter = character;
@@ -257,33 +257,33 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, Forei
 
         pCharData->attitude = character.get<GW2::Attitude>(m_pubmems.charAttitude);
 
-        ForeignClass health = character.get<void*>(m_pubmems.charHealth);
+        hl::ForeignClass health = character.get<void*>(m_pubmems.charHealth);
         if (health) {
             pCharData->currentHealth = health.get<float>(m_pubmems.healthCurrent);
             pCharData->maxHealth = health.get<float>(m_pubmems.healthMax);
         }
 
-        ForeignClass endurance = character.get<void*>(m_pubmems.charEndurance);
+        hl::ForeignClass endurance = character.get<void*>(m_pubmems.charEndurance);
         if (endurance) {
             pCharData->currentEndurance = static_cast<float>(endurance.get<int>(m_pubmems.endCurrent));
             pCharData->maxEndurance = static_cast<float>(endurance.get<int>(m_pubmems.endMax));
         }
 
-        ForeignClass corestats = character.get<void*>(m_pubmems.charCoreStats);
+        hl::ForeignClass corestats = character.get<void*>(m_pubmems.charCoreStats);
         if (corestats) {
             pCharData->profession = corestats.get<GW2::Profession>(m_pubmems.statsProfession);
             pCharData->level = corestats.get<int>(m_pubmems.statsLevel);
             pCharData->scaledLevel = corestats.get<int>(m_pubmems.statsScaledLevel);
         }
 
-        ForeignClass inventory = character.get<void*>(m_pubmems.charInventory);
+        hl::ForeignClass inventory = character.get<void*>(m_pubmems.charInventory);
         if (inventory) {
             pCharData->wvwsupply = inventory.get<int>(m_pubmems.invSupply);
         }
 
         if (pCharData->isPlayer)
         {
-            ForeignClass player = character.call<void*>(m_pubmems.charVtGetPlayer);
+            hl::ForeignClass player = character.call<void*>(m_pubmems.charVtGetPlayer);
             if (player)
             {
                 char *name = player.get<char*>(m_pubmems.playerName);
@@ -314,7 +314,7 @@ void Gw2HackMain::GameHook()
     m_gameData.camData.valid = false;
     if (m_mems.ppWorldViewContext)
     {
-        ForeignClass wvctx = *m_mems.ppWorldViewContext;
+        hl::ForeignClass wvctx = *m_mems.ppWorldViewContext;
         if (wvctx && wvctx.get<int>(m_pubmems.wvctxStatus) == 1)
         {
             D3DXVECTOR3 lookAt, upVec;
@@ -330,15 +330,15 @@ void Gw2HackMain::GameHook()
     bool bHoverSelectionFound = false;
     bool bLockedSelectionFound = false;
 
-    ForeignClass avctx = m_mems.pAgentViewCtx;
-    ForeignClass asctx = m_mems.pAgentSelectionCtx;
+    hl::ForeignClass avctx = m_mems.pAgentViewCtx;
+    hl::ForeignClass asctx = m_mems.pAgentSelectionCtx;
 
     if (m_gameData.camData.valid && m_mems.pCtx)
     {
-        ForeignClass ctx = m_mems.pCtx;
+        hl::ForeignClass ctx = m_mems.pCtx;
         if (ctx)
         {
-            ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
+            hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
             if (charctx && avctx && asctx)
             {
                 auto charArray = charctx.get<GW2::ANet::Array<void*>>(m_pubmems.charctxCharArray);
@@ -353,10 +353,10 @@ void Gw2HackMain::GameHook()
                     }
                     for (size_t i = 0; i < sizeAgentArray; i++)
                     {
-                        ForeignClass avAgent = agentArray[i];
+                        hl::ForeignClass avAgent = agentArray[i];
 
                         if (avAgent) {
-                            ForeignClass pAgent = avAgent.call<void*>(m_pubmems.avagVtGetAgent);
+                            hl::ForeignClass pAgent = avAgent.call<void*>(m_pubmems.avagVtGetAgent);
 
                             if (pAgent) {
                                 // check if agent is already in our array
@@ -413,7 +413,7 @@ void Gw2HackMain::GameHook()
 
                         // check if agent in our array is in game data
                         bool bFound = false;
-                        ForeignClass avAgent = agentArray[i];
+                        hl::ForeignClass avAgent = agentArray[i];
 
                         if (i < sizeAgentArray && avAgent) {
                             if (avAgent.call<void*>(m_pubmems.avagVtGetAgent) == m_gameData.objData.agentDataList[i]->pAgent) {
@@ -433,7 +433,7 @@ void Gw2HackMain::GameHook()
                     int sizeCharArray = charArray.Count();
                     for (int i = 0; i < sizeCharArray; i++)
                     {
-                        ForeignClass pCharacter = charArray[i];
+                        hl::ForeignClass pCharacter = charArray[i];
 
                         if (pCharacter) {
                             int agentId = pCharacter.call<int>(m_pubmems.charVtGetAgentId);

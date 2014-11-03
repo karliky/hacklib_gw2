@@ -64,56 +64,56 @@ void cbESP()
                     font.Draw(x, y-60, fontColor, tokseq.str());
                 }
             }
-        }
 
-        float circleSize = 10.0f;
-        DWORD color = 0x66ffffff;
+            float circleSize = 10.0f;
+            DWORD color = 0x66ffffff;
 
-        if (chr.IsValid())
-        {
-            font.Draw(x, y-60, fontColor, chr.GetName());
-            font.Draw(x, y-75, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
-            font.Draw(x, y-90, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
-            font.Draw(x, y-105, fontColor, "wvw supply: %i", chr.GetWvwSupply());
+            if (chr.IsValid())
+            {
+                font.Draw(x, y-60, fontColor, chr.GetName());
+                font.Draw(x, y-75, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
+                font.Draw(x, y-90, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
+                font.Draw(x, y-105, fontColor, "wvw supply: %i", chr.GetWvwSupply());
 
-            color = 0xcc000000;
+                color = 0xcc000000;
 
-            // lower opacity for non players
-            if (!chr.IsPlayer())
-                color -= 0x66000000;
+                // lower opacity for non players
+                if (!chr.IsPlayer())
+                    color -= 0x66000000;
 
-            // assign colors
-            if (chr == GetOwnCharacter()) {
-                color |= 0x000000ff;
-            } else {
-                switch (chr.GetAttitude()) {
-                case GW2::ATTITUDE_FRIENDLY:
-                    color |= 0x0033ff00;
-                    break;
-                case GW2::ATTITUDE_HOSTILE:
-                    color |= 0x00ff3300;
-                    break;
-                case GW2::ATTITUDE_INDIFFERENT:
-                    color |= 0x00dddd00;
-                    break;
-                case GW2::ATTITUDE_NEUTRAL:
-                    color |= 0x00dddddd;
-                    break;
+                // assign colors
+                if (chr == GetOwnCharacter()) {
+                    color |= 0x000000ff;
+                } else {
+                    switch (chr.GetAttitude()) {
+                    case GW2::ATTITUDE_FRIENDLY:
+                        color |= 0x0033ff00;
+                        break;
+                    case GW2::ATTITUDE_HOSTILE:
+                        color |= 0x00ff3300;
+                        break;
+                    case GW2::ATTITUDE_INDIFFERENT:
+                        color |= 0x00dddd00;
+                        break;
+                    case GW2::ATTITUDE_NEUTRAL:
+                        color |= 0x00dddddd;
+                        break;
+                    }
                 }
+
+                circleSize = 20;
             }
 
-            circleSize = 20;
+            Vector3 rotArrow = {
+                pos.x + cos(ag.GetRot()) * 50.0f,
+                pos.y + sin(ag.GetRot()) * 50.0f,
+                pos.z
+            };
+
+            DrawCircleProjected(pos, circleSize, color);
+            DrawCircleFilledProjected(pos, circleSize, color);
+            DrawLineProjected(pos, rotArrow, color);
         }
-
-        Vector3 rotArrow = {
-            pos.x + cos(ag.GetRot()) * 50.0f,
-            pos.y + sin(ag.GetRot()) * 50.0f,
-            pos.z
-        };
-
-        DrawCircleProjected(pos, circleSize, color);
-        DrawCircleFilledProjected(pos, circleSize, color);
-        DrawLineProjected(pos, rotArrow, color);;
     }
 
     DrawCircle(100, 100, 65, 0x77cc5599);
@@ -124,7 +124,7 @@ void cbESP()
 void GW2LIB::gw2lib_main()
 {
     EnableEsp(cbESP);
-    if (!font.Init(12, "Consolas"))
+    if (!font.Init(12, "Arial"))
     {
         //DbgOut("could not create font");
         return;

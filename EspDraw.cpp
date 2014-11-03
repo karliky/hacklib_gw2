@@ -3,7 +3,7 @@
 
 
 static const int CIRCLE_RES = 64;
-static const VertexBuffer *vbCircle;
+static const hl::VertexBuffer *vbCircle;
 
 
 bool InitEsp()
@@ -19,7 +19,7 @@ bool InitEsp()
         pDrawer = GetMain()->GetDrawer(false);
     }
 
-    std::vector<VERTEX_3D_COL> verts;
+    std::vector<hl::VERTEX_3D_COL> verts;
     verts.resize(CIRCLE_RES+1);
     for (size_t i = 0; i < verts.size(); i++) {
         verts[i].x = cos(D3DX_PI*((CIRCLE_RES-i)/(CIRCLE_RES/2.0f)));
@@ -179,7 +179,7 @@ void GW2LIB::Texture::Draw(float x, float y, float w, float h) const
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer && m_ptr)
-        pDrawer->DrawTexture(reinterpret_cast<const ::Texture*>(m_ptr), x, y, w, h);
+        pDrawer->DrawTexture(reinterpret_cast<const hl::Texture*>(m_ptr), x, y, w, h);
 }
 
 
@@ -206,15 +206,15 @@ void GW2LIB::Font::Draw(float x, float y, DWORD color, std::string format, ...) 
 
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer && m_ptr)
-        pDrawer->DrawFont(reinterpret_cast<const ::Font*>(m_ptr), x, y, color, format, vl);
+        pDrawer->DrawFont(reinterpret_cast<const hl::Font*>(m_ptr), x, y, color, format, vl);
 
     va_end(vl);
 }
 
 
 struct PrimitiveDiffuseMesh {
-    const VertexBuffer *vertBuffer;
-    const IndexBuffer *indBuffer;
+    const hl::VertexBuffer *vertBuffer;
+    const hl::IndexBuffer *indBuffer;
     D3DPRIMITIVETYPE type;
     std::vector<D3DXMATRIX> transforms;
 };
@@ -236,7 +236,7 @@ bool GW2LIB::PrimitiveDiffuse::Init(std::vector<std::pair<Vector3,DWORD>> vertic
     if (pDrawer) {
         m_ptr = new PrimitiveDiffuseMesh;
 
-        std::vector<VERTEX_3D_DIF> verts;
+        std::vector<hl::VERTEX_3D_DIF> verts;
         verts.resize(vertices.size());
         for (size_t i = 0; i < vertices.size(); i++) {
             verts[i].x = vertices[i].first.x;

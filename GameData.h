@@ -17,7 +17,7 @@ namespace GameData
 
     struct AgentData
     {
-        ForeignClass pAgent = nullptr;
+        hl::ForeignClass pAgent = nullptr;
         CharacterData *pCharData = nullptr;
         GW2::AgentCategory category = GW2::AgentCategory::AGENT_CATEGORY_CHAR;
         GW2::AgentType type = GW2::AgentType::AGENT_TYPE_CHAR;
@@ -28,7 +28,7 @@ namespace GameData
 
     struct CharacterData
     {
-        ForeignClass pCharacter = nullptr;
+        hl::ForeignClass pCharacter = nullptr;
         AgentData *pAgentData = nullptr;
         bool isAlive = false;
         bool isDowned = false;
@@ -74,7 +74,7 @@ namespace GameData
         int mapId = 0;
     };
 
-    CharacterData *GetCharData(ForeignClass pChar);
+    CharacterData *GetCharData(hl::ForeignClass pChar);
 }
 
 #endif
