@@ -1,5 +1,7 @@
 # Gw2lib #
 
+**Built with [hacklib](https://bitbucket.org/rafzi/hacklib).**
+
 Gw2lib is a C++ library that is used to build DLLs for Gw2.
 
 It's not designed for botting or sending actions to the game. The purpose is to gather and display data. With the included D3D hook and drawing functions you can build your own full featured ESP!
