@@ -53,25 +53,7 @@ namespace GW2 {
 
 namespace GW2LIB
 {
-    // derive from this and override as needed
-    class Main
-    {
-    public:
-        Main();
-
-        HINSTANCE getModuleHandle() const;
-
-        // callback that will recieve console input
-        virtual void cbConIn(const std::string& input) { }
-
-        // is called on initialization. if returning false, the dll will detach
-        virtual bool init() { return true; }
-        // is called continuously sequenially while running. if returning false, the dll will detach
-        virtual bool step() { Sleep(25); return true; }
-        // is called after internal cleanup is done. the ESP callback is guaranteed to not run anymore during this
-        virtual void cleanup() { }
-    };
-
+    // This function is not defined. Define it yourself to provide an entry point for Gw2lib.
     void gw2lib_main();
 
     class Agent;
@@ -88,18 +70,10 @@ namespace GW2LIB
     //////////////////////////////////////////////////////////////////////////
     // # general functions
     //////////////////////////////////////////////////////////////////////////
-    // lets you create a new thread. its save using all functions
-    // usage: "void myThread() {}" "NewThread(myThread);"
-    void NewThread(void (*)());
-
-    // prints debug string to console. usage: like printf
-    void DbgOut(std::string, ...);
 
     // registers a callback to be used for a custom esp
     // use draw functions inside the callback function
     void EnableEsp(void (*)());
-
-    void ResetConsole(int cellsX = 80, int cellsY = 20);
 
 
     //////////////////////////////////////////////////////////////////////////
