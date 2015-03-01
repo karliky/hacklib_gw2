@@ -120,13 +120,13 @@ bool Gw2HackMain::init()
         HL_LOG("[Core::Init] Device not found\n");
         return false;
     }
-    m_hkDevice = m_hooker.hookVT((uintptr_t)pDevice, 17, (uintptr_t)hkPresent);
-    if (!m_hkDevice) {
+    m_hkPresent = m_hooker.hookVT((uintptr_t)pDevice, 17, (uintptr_t)hkPresent);
+    if (!m_hkPresent) {
         HL_LOG("[Core::Init] Hooking render thread failed\n");
         return false;
     }
-    m_hkDevice = m_hooker.hookVT((uintptr_t)pDevice, 16, (uintptr_t)hkReset);
-    if (!m_hkDevice) {
+    m_hkReset = m_hooker.hookVT((uintptr_t)pDevice, 16, (uintptr_t)hkReset);
+    if (!m_hkReset) {
         HL_LOG("[Core::Init] Hooking device reset failed\n");
         return false;
     }
@@ -151,18 +151,6 @@ bool Gw2HackMain::init()
     return false;
 }
 
-void Gw2HackMain::shutdown()
-{
-    if (m_hkDevice) {
-        std::lock_guard<std::mutex> renderLock(m_renderThreadMutex);
-        m_hooker.unhookVT(m_hkDevice);
-    }
-
-    if (m_hkAlertCtx) {
-        std::lock_guard<std::mutex> gameLock(m_gameThreadMutex);
-        m_hooker.unhookVT(m_hkAlertCtx);
-    }
-}
 
 hl::Drawer *Gw2HackMain::GetDrawer(bool bUsedToRender)
 {
@@ -489,7 +477,6 @@ void Gw2HackMain::GameHook()
 void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
 {
     auto pCore = g_initObj.getMain();
-    std::lock_guard<std::mutex> gameLock(pCore->m_gameThreadMutex);
 
     {
         std::lock_guard<std::mutex> lock(pCore->m_gameDataMutex);
@@ -503,13 +490,12 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
         }();
     }
 
-    uintptr_t orgFunc = pCore->m_hkAlertCtx->getOrgFunc(0);
+    uintptr_t orgFunc = pCore->m_hkAlertCtx->getLocation();
     ((void(__thiscall*)(uintptr_t, int))(orgFunc))(pInst, arg);
 }
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* pDestRect, HWND hDestWindowOverride, RGNDATA* pDirtyRegion)
 {
     auto pCore = g_initObj.getMain();
-    std::lock_guard<std::mutex> renderLock(pCore->m_renderThreadMutex);
 
     {
         std::lock_guard<std::mutex> lock(pCore->m_gameDataMutex);
@@ -523,7 +509,7 @@ HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* 
         }();
     }
 
-    uintptr_t orgFunc = pCore->m_hkDevice->getOrgFunc(17);
+    uintptr_t orgFunc = pCore->m_hkPresent->getLocation();
     HRESULT hr = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, RECT*, RECT*, HWND, RGNDATA*))(orgFunc))(pDevice, pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 
     return hr;
@@ -538,7 +524,7 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
         HL_LOG("[hkReset] Exeption in pre device reset hook\n");
     }
 
-    uintptr_t orgFunc = pCore->m_hkDevice->getOrgFunc(16);
+    uintptr_t orgFunc = pCore->m_hkReset->getLocation();
     HRESULT hr = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, D3DPRESENT_PARAMETERS*))(orgFunc))(pDevice, pDevice, pPresentationParameters);
 
     __try {

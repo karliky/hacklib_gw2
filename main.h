@@ -18,7 +18,6 @@ class Gw2HackMain : public hl::Main
 {
 public:
     bool init() override;
-    void shutdown() override;
 
     hl::Drawer *GetDrawer(bool bUsedToRender);
     const GameData::GameData *GetGameData() const;
@@ -28,11 +27,10 @@ public:
     void RenderHook(LPDIRECT3DDEVICE9 pDevice);
     void GameHook();
 
-    const hl::VTHook *m_hkDevice = nullptr;
-    const hl::VTHook *m_hkAlertCtx = nullptr;
+    const hl::IHook *m_hkPresent = nullptr;
+    const hl::IHook *m_hkReset = nullptr;
+    const hl::IHook *m_hkAlertCtx = nullptr;
 
-    std::mutex m_gameThreadMutex;
-    std::mutex m_renderThreadMutex;
     std::mutex m_gameDataMutex;
 
 private:
