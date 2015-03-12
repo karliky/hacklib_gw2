@@ -478,6 +478,9 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
 {
     auto pCore = g_initObj.getMain();
 
+    static auto orgFunc = ((void(__thiscall*)(uintptr_t, int))pCore->m_hkAlertCtx->getLocation());
+
+    if (pCore)
     {
         std::lock_guard<std::mutex> lock(pCore->m_gameDataMutex);
 
@@ -490,13 +493,15 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
         }();
     }
 
-    uintptr_t orgFunc = pCore->m_hkAlertCtx->getLocation();
-    ((void(__thiscall*)(uintptr_t, int))(orgFunc))(pInst, arg);
+    orgFunc(pInst, arg);
 }
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* pDestRect, HWND hDestWindowOverride, RGNDATA* pDirtyRegion)
 {
     auto pCore = g_initObj.getMain();
 
+    static auto orgFunc = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, RECT*, RECT*, HWND, RGNDATA*))pCore->m_hkPresent->getLocation());
+
+    if (pCore)
     {
         std::lock_guard<std::mutex> lock(pCore->m_gameDataMutex);
 
@@ -509,28 +514,36 @@ HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* 
         }();
     }
 
-    uintptr_t orgFunc = pCore->m_hkPresent->getLocation();
-    HRESULT hr = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, RECT*, RECT*, HWND, RGNDATA*))(orgFunc))(pDevice, pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
-
-    return hr;
+    return orgFunc(pDevice, pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }
 HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPresentationParameters)
 {
     auto pCore = g_initObj.getMain();
 
-    __try {
-        pCore->GetDrawer(false)->OnLostDevice();
-    } __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG("[hkReset] Exeption in pre device reset hook\n");
+    static auto orgFunc = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, D3DPRESENT_PARAMETERS*))pCore->m_hkReset->getLocation());
+
+    if (pCore)
+    {
+        [&]{
+            __try {
+                pCore->GetDrawer(false)->OnLostDevice();
+            } __except (EXCEPTION_EXECUTE_HANDLER) {
+                HL_LOG("[hkReset] Exeption in pre device reset hook\n");
+            }
+        }();
     }
 
-    uintptr_t orgFunc = pCore->m_hkReset->getLocation();
-    HRESULT hr = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, D3DPRESENT_PARAMETERS*))(orgFunc))(pDevice, pDevice, pPresentationParameters);
+    HRESULT hr = orgFunc(pDevice, pDevice, pPresentationParameters);
 
-    __try {
-        pCore->GetDrawer(false)->OnResetDevice();
-    } __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG("[hkReset] Exception in post device reset hook\n");
+    if (pCore)
+    {
+        [&]{
+            __try {
+                pCore->GetDrawer(false)->OnResetDevice();
+            } __except (EXCEPTION_EXECUTE_HANDLER) {
+                HL_LOG("[hkReset] Exception in post device reset hook\n");
+            }
+        }();
     }
 
     return hr;
