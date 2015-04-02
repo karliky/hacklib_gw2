@@ -235,17 +235,65 @@ namespace GW2LIB
 
     struct Mems
     {
+        /*
+        If you update gw2lib and the patterns are still working if can be useful to know
+        the current game object pointers for debugging. The following example shows how to
+        get them. If the patterns break, see Gw2HackMain::init the strings are unlikly to
+        change but maybe the offsets if code generation is changed.
+
+        #include "main.h"
+
+        void dummy()
+        {
+            auto ptrs = GetMain()->GetGamePointers();
+            void *pCtx = ptrs->pCtx;
+        }
+
+        It may also be helpful if you attach a debugger and break on thrown Win32 exeptions, so
+        you know the member or function offset that causes the access violation.
+        */
+
         // CContext
         // CharClient::CContext* m_charContext;
-        uintptr_t contextChar = 0x40;
+        uintptr_t contextChar = 0x48;
+        /*
+        This is the main game state object from which you can get to almost anything else. It can
+        only be safely accessed from within the game thread.
+        A pointer to this object can be found in the thread-local storage of the game thread. Windows
+        stores these in FS:[0x2c].
+        The current location is: (unlikely to change)
+        CContext ***localStorage = FS:[0x2c];
+        CContext *ctx = localStorage[0][1];
+
+        It consists of only pointers to other sub contexts and nulled out space.
+
+        The char context offset can be found by looking at the objects before and after the offset
+        where it was before and compare to the CharClient::CContext description.
+        */
 
         // AgentView::CContext
         // ANet::Array<Agent::CAvAgent*> m_agentArray;
         uintptr_t avctxAgentArray = 0x30;
+        /*
+        This is the context that deals with agents, the base of all entities in the game. It is optimized
+        out of the main context, but there are static references to it.
+
+        The agent array offset is found by looking for arrays in this object.
+
+        An array has a base pointer that points to the raw data array and two following integers that
+        describe the capacity and current size of the array. This layout is really easy to recognize.
+        */
 
         // AgentView::CAvAgent
         // Agent::CAgentBase* GetAgent();
         uintptr_t avagVtGetAgent = 0x30;
+        /*
+        We are not interested in this object, but it is used to get from CAvAgent to CAgentBase which
+        holds useful information.
+
+        The offset of the virtual function can be found with the following assert string:
+        "wmAgent->GetAgent() != agent"
+        */
 
         // Agent::CAgentBase
         // AgentCategory GetCategory();
@@ -258,6 +306,18 @@ namespace GW2LIB
         uintptr_t agentVtGetPos = 0xb4;
         // Agent::CAgentTransform* m_transform;
         uintptr_t agentTransform = 0x1c;
+        /*
+        Contains agent data that is important to this lib.
+
+        Assert strings for virtual functions in order:
+        "agent->GetCategory() == AGENT_CATEGORY_CHAR"
+        "targetAgent && targetAgent->GetAgentId()"
+        "m_outOfRangeActivationTargetAgent->GetType() == AGENT_TYPE_GADGET_ATTACK_TARGET"
+        GetPos I don't remember, but should be easy to trial and error.
+
+        The agentTransform member is very easy to recognize, because many numbers in it
+        move then your character moves (when looking at own agent data). See CAgentTransform.
+        */
 
         // Agent::CAgentTransform
         // float x;
@@ -270,6 +330,12 @@ namespace GW2LIB
         uintptr_t agtransRX = 0x100;
         // float ry;
         uintptr_t agtransRY = 0x104;
+        /*
+        Holds metric information about an agent.
+
+        The offsets are easy to figure out if you look at data of your own agent and
+        move or rotate.
+        */
 
         // CharClient::CContext
         // ANet::Array<CharClient::CCharacter*> m_charArray;
@@ -278,6 +344,11 @@ namespace GW2LIB
         uintptr_t charctxPlayerArray = 0x34;
         // CharClient::CCharacter* m_controlledCharacter;
         uintptr_t charctxControlled = 0x44;
+        /*
+        Context that contains data about CCharacters.
+
+        Easy to recognize by the arrays. The order of them is unlikely to change.
+        */
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
@@ -293,7 +364,7 @@ namespace GW2LIB
         // bool IsDowned();
         uintptr_t charVtDowned = 0x13c;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x15c;
+        uintptr_t charVtInWater = 0x160;
         // bool IsMonster();
         uintptr_t charVtMonster = 0x16c;
         // bool IsMonsterPlayerClone();
@@ -303,25 +374,57 @@ namespace GW2LIB
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x150;
+        uintptr_t charCoreStats = 0x13c;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x170;
+        uintptr_t charEndurance = 0x15c;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x174;
+        uintptr_t charHealth = 0x160;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x178;
+        uintptr_t charInventory = 0x164;
+        /*
+        Represents a character in the game. Generally stuff that can move around like
+        players, npcs or monsters.
+
+        Almost everything in here can be found through assert strings. In order:
+        GetAgent should be one slot before GetAgentId
+        "m_agent && (m_agent->GetAgentId() == character->GetAgentId() || m_masterCharacter == character)"
+        "m_ownerCharacter->GetPlayer() == CharClientContext()->GetControlledPlayer()"
+        Three at once! "character->IsAlive() || (character->IsDowned() && character->IsInWater())"
+        "IsControlled()"
+        "character->IsAlive() || (character->IsDowned() && character->IsInWater())"
+        "character->IsAlive() || (character->IsDowned() && character->IsInWater())"
+        Two at once! "IsPlayer() || IsMonster()"
+        Two at once! "character->IsPlayer() || character->IsMonsterPlayerClone()"
+        "character->IsPlayer() || character->IsMonsterPlayerClone()"
+
+        "m_attitudeTowardControlled < Content::AFFINITY_ATTITUDES"
+        "m_coreStats"
+        "!m_endurance"
+        "!m_health"
+        "m_inventory"
+        */
 
         // CharClient::CPlayer
         // char* m_name
-        uintptr_t playerName = 0x30;
+        uintptr_t playerName = 0x40;
+        /*
+        Represents a player.
+
+        The name is very easy to find by just comparing to your name.
+        */
 
         // CharClient::CCoreStats
         // int m_level;
-        uintptr_t statsLevel = 0x184;
+        uintptr_t statsLevel = 0x1b4;
         // int m_scaledLevel;
-        uintptr_t statsScaledLevel = 0x1ac;
+        uintptr_t statsScaledLevel = 0x1e4;
         // Profession m_profession;
-        uintptr_t statsProfession = 0x1ec;
+        uintptr_t statsProfession = 0x22c;
+        /*
+        Some general stat information about a character.
+
+        Offsets are found by looking at the data. Also see profession enum.
+        */
 
         // CharClient::CEndurance
         // int m_currentValue;
@@ -341,19 +444,35 @@ namespace GW2LIB
 
         // AgentSelection::CContext
         // Agent::CAgentBase* m_autoSelection;
-        uintptr_t asctxAuto = 0x24;
+        uintptr_t asctxAuto = 0x28;
         // Agent::CAgentBase* m_hoverSelection;
-        uintptr_t asctxHover = 0x70;
+        uintptr_t asctxHover = 0x74;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0xe0;
+        uintptr_t asctxLocked = 0x100;
         // D3DXVECTOR3 m_screenToWorld;
-        uintptr_t asctxStoW = 0x134;
+        uintptr_t asctxStoW = 0x138;
+        /*
+        The offsets can be found in a function containing lots of asserts for them. Strings in order:
+        "!m_autoSelection"
+        "!m_hoverSelection"
+        "!m_lockedSelection"
+        screenToWorld is easy to find by just moving the cursor around.
+        */
 
         // WorldView::CContext
         // void GetMetrics(int one, D3DXVECTOR3* camPos, D3DXVECTOR3* lookAt, D3DXVECTOR3* upVec float* fov);
         uintptr_t wvctxVtGetMetrics = 0x34;
         // int m_camStatus;
         uintptr_t wvctxStatus = 0x40;
+        /*
+        Context for camera information.
+
+        The GetMetrics function contains the strings "eye", "center", "up", "fov". There are two. Currently
+        it is the first one. Set a breakpoint and go up the call stack until you see a virtual call
+        that contains the offset.
+
+        camStatus is a bit that flips in loading screens and can be found by inspection.
+        */
 
     };
 }

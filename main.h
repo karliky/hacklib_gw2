@@ -14,10 +14,22 @@
 class Gw2HackMain *GetMain();
 
 
+struct GamePointers
+{
+    int *pMapId = nullptr;
+    void *pCtx = nullptr;
+    void *pAgentViewCtx = nullptr;
+    void **ppWorldViewContext = nullptr;
+    void *pAgentSelectionCtx = nullptr;
+};
+
+
 class Gw2HackMain : public hl::Main
 {
 public:
     bool init() override;
+
+    const GamePointers *GetGamePointers() const { return &m_mems; }
 
     hl::Drawer *GetDrawer(bool bUsedToRender);
     const GameData::GameData *GetGameData() const;
@@ -46,15 +58,7 @@ private:
     bool m_bPublicDrawer = false;
     void(*m_cbRender)() = nullptr;
 
-    struct Mems
-    {
-        int *pMapId = nullptr;
-        void *pCtx = nullptr;
-        void *pAgentViewCtx = nullptr;
-        void **ppWorldViewContext = nullptr;
-        void *pAgentSelectionCtx = nullptr;
-    } m_mems;
-
+    GamePointers m_mems;
     GW2LIB::Mems m_pubmems;
 
 };

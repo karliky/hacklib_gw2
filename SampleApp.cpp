@@ -59,6 +59,7 @@ void cbESP()
                     unsigned long agmetrics = *(unsigned long*)(*(unsigned long*)ag.m_ptr + 0x1c);
                     unsigned long long tok = *(unsigned long long*)(agmetrics + 0x98);
                     unsigned long long seq = *(unsigned long long*)(agmetrics + 0xa0);
+
                     std::stringstream tokseq;
                     tokseq << "token: " << tok << " sequence: " << seq;
                     font.Draw(x, y-60, fontColor, tokseq.str());
@@ -115,10 +116,7 @@ void cbESP()
             DrawLineProjected(pos, rotArrow, color);
         }
     }
-
-    DrawCircle(100, 100, 65, 0x77cc5599);
 }
-
 
 
 void GW2LIB::gw2lib_main()
