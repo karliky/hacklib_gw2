@@ -20,36 +20,6 @@ namespace GameData {
     struct CharacterData;
     struct AgentData;
 }
-namespace GW2 {
-    enum Profession {
-        PROFESSION_GUARDIAN = 1,
-        PROFESSION_WARRIOR,
-        PROFESSION_ENGINEER,
-        PROFESSION_RANGER,
-        PROFESSION_THIEF,
-        PROFESSION_ELEMENTALIST,
-        PROFESSION_MESMER,
-        PROFESSION_NECROMANCER,
-        PROFESSION_NONE
-    };
-    enum Attitude {
-        ATTITUDE_FRIENDLY = 0,
-        ATTITUDE_HOSTILE,
-        ATTITUDE_INDIFFERENT,
-        ATTITUDE_NEUTRAL
-    };
-    enum AgentCategory {
-        AGENT_CATEGORY_CHAR = 0,
-        AGENT_CATEGORY_DYNAMIC,
-        AGENT_CATEGORY_KEYFRAMED
-    };
-    enum AgentType {
-        AGENT_TYPE_CHAR = 0,
-        AGENT_TYPE_GADGET = 9,
-        AGENT_TYPE_GADGET_ATTACK_TARGET = 10,
-        AGENT_TYPE_ITEM = 14
-    };
-}
 
 namespace GW2LIB
 {
@@ -66,6 +36,38 @@ namespace GW2LIB
     struct Matrix4x4 {
         float m[4][4];
     };
+
+    namespace GW2
+    {
+        enum Profession {
+            PROFESSION_GUARDIAN = 1,
+            PROFESSION_WARRIOR,
+            PROFESSION_ENGINEER,
+            PROFESSION_RANGER,
+            PROFESSION_THIEF,
+            PROFESSION_ELEMENTALIST,
+            PROFESSION_MESMER,
+            PROFESSION_NECROMANCER,
+            PROFESSION_NONE
+        };
+        enum Attitude {
+            ATTITUDE_FRIENDLY = 0,
+            ATTITUDE_HOSTILE,
+            ATTITUDE_INDIFFERENT,
+            ATTITUDE_NEUTRAL
+        };
+        enum AgentCategory {
+            AGENT_CATEGORY_CHAR = 0,
+            AGENT_CATEGORY_DYNAMIC,
+            AGENT_CATEGORY_KEYFRAMED
+        };
+        enum AgentType {
+            AGENT_TYPE_CHAR = 0,
+            AGENT_TYPE_GADGET = 9,
+            AGENT_TYPE_GADGET_ATTACK_TARGET = 10,
+            AGENT_TYPE_ITEM = 14
+        };
+    }
 
     //////////////////////////////////////////////////////////////////////////
     // # general functions

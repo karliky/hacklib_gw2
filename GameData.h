@@ -19,8 +19,8 @@ namespace GameData
     {
         hl::ForeignClass pAgent = nullptr;
         CharacterData *pCharData = nullptr;
-        GW2::AgentCategory category = GW2::AgentCategory::AGENT_CATEGORY_CHAR;
-        GW2::AgentType type = GW2::AgentType::AGENT_TYPE_CHAR;
+        GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AgentCategory::AGENT_CATEGORY_CHAR;
+        GW2LIB::GW2::AgentType type = GW2LIB::GW2::AgentType::AGENT_TYPE_CHAR;
         int agentId = 0;
         D3DXVECTOR3 pos = D3DXVECTOR3(0, 0, 0);
         float rot = 0;
@@ -44,8 +44,8 @@ namespace GameData
         float maxHealth = 0;
         float currentEndurance = 0;
         float maxEndurance = 0;
-        GW2::Profession profession = GW2::Profession::PROFESSION_NONE;
-        GW2::Attitude attitude = GW2::Attitude::ATTITUDE_FRIENDLY;
+        GW2LIB::GW2::Profession profession = GW2LIB::GW2::Profession::PROFESSION_NONE;
+        GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::Attitude::ATTITUDE_FRIENDLY;
         std::string name;
     };
 

@@ -1,5 +1,7 @@
 #include "gw2lib.h"
 #include <sstream>
+#include <thread>
+#include <chrono>
 
 
 GW2LIB::Font font;
@@ -129,5 +131,5 @@ void GW2LIB::gw2lib_main()
     }
 
     while (GetAsyncKeyState(VK_HOME) >= 0)
-        ;
+        std::this_thread::sleep_for(std::chrono::milliseconds(25));
 }

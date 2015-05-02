@@ -69,7 +69,7 @@ namespace GW2
 
 bool Gw2HackMain::init()
 {
-    uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d", "xxxxxx");
+    uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
 
     hl::PatternScanner scanner;
     auto results = scanner.find({
@@ -215,8 +215,8 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
     __try {
         pAgentData->pAgent = agent;
 
-        pAgentData->category = agent.call<GW2::AgentCategory>(m_pubmems.agentVtGetCategory);
-        pAgentData->type = agent.call<GW2::AgentType>(m_pubmems.agentVtGetType);
+        pAgentData->category = agent.call<GW2LIB::GW2::AgentCategory>(m_pubmems.agentVtGetCategory);
+        pAgentData->type = agent.call<GW2LIB::GW2::AgentType>(m_pubmems.agentVtGetType);
         pAgentData->agentId = agent.call<int>(m_pubmems.agentVtGetId);
 
         agent.call<void>(m_pubmems.agentVtGetPos, &pAgentData->pos);
@@ -243,7 +243,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
         pCharData->isMonster = character.call<bool>(m_pubmems.charVtMonster);
         pCharData->isMonsterPlayerClone = character.call<bool>(m_pubmems.charVtClone);
 
-        pCharData->attitude = character.get<GW2::Attitude>(m_pubmems.charAttitude);
+        pCharData->attitude = character.get<GW2LIB::GW2::Attitude>(m_pubmems.charAttitude);
 
         hl::ForeignClass health = character.get<void*>(m_pubmems.charHealth);
         if (health) {
@@ -259,7 +259,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 
         hl::ForeignClass corestats = character.get<void*>(m_pubmems.charCoreStats);
         if (corestats) {
-            pCharData->profession = corestats.get<GW2::Profession>(m_pubmems.statsProfession);
+            pCharData->profession = corestats.get<GW2LIB::GW2::Profession>(m_pubmems.statsProfession);
             pCharData->level = corestats.get<int>(m_pubmems.statsLevel);
             pCharData->scaledLevel = corestats.get<int>(m_pubmems.statsScaledLevel);
         }
