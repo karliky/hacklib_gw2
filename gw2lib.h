@@ -354,35 +354,35 @@ namespace GW2LIB
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
-        uintptr_t charVtGetAgent = 0xa4;
+        uintptr_t charVtGetAgent = 0xa8;
         // int GetAgentId();
-        uintptr_t charVtGetAgentId = 0xa8;
+        uintptr_t charVtGetAgentId = 0xac;
         // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0xf0;
+        uintptr_t charVtGetPlayer = 0xf4;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x12c;
+        uintptr_t charVtAlive = 0x134;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x130;
+        uintptr_t charVtControlled = 0x138;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x13c;
+        uintptr_t charVtDowned = 0x144;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x160;
+        uintptr_t charVtInWater = 0x170;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x16c;
+        uintptr_t charVtMonster = 0x17c;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x17c;
+        uintptr_t charVtClone = 0x18c;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x198;
+        uintptr_t charVtPlayer = 0x1a8;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x13c;
+        uintptr_t charCoreStats = 0x14c;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x15c;
+        uintptr_t charEndurance = 0x16c;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x160;
+        uintptr_t charHealth = 0x170;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x164;
+        uintptr_t charInventory = 0x174;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
@@ -450,9 +450,9 @@ namespace GW2LIB
         // Agent::CAgentBase* m_hoverSelection;
         uintptr_t asctxHover = 0x74;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0x100;
+        uintptr_t asctxLocked = 0x104;
         // D3DXVECTOR3 m_screenToWorld;
-        uintptr_t asctxStoW = 0x138;
+        uintptr_t asctxStoW = 0x140;
         /*
         The offsets can be found in a function containing lots of asserts for them. Strings in order:
         "!m_autoSelection"
@@ -465,7 +465,7 @@ namespace GW2LIB
         // void GetMetrics(int one, D3DXVECTOR3* camPos, D3DXVECTOR3* lookAt, D3DXVECTOR3* upVec float* fov);
         uintptr_t wvctxVtGetMetrics = 0x34;
         // int m_camStatus;
-        uintptr_t wvctxStatus = 0x40;
+        uintptr_t wvctxStatus = 0x4c;
         /*
         Context for camera information.
 
