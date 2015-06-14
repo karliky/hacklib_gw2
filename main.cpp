@@ -76,8 +76,7 @@ bool Gw2HackMain::init()
         "ViewAdvanceDevice",
         "ViewAdvanceAgentSelect",
         "ViewAdvanceAgentView",
-        "ViewAdvanceWorldView",
-        "character->IsAlive() || (character->IsDowned() && character->IsInWater())"
+        "ViewAdvanceWorldView"
     });
 
     uintptr_t pAlertCtx = 0;
