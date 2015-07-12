@@ -48,6 +48,7 @@ namespace GW2LIB
             PROFESSION_ELEMENTALIST,
             PROFESSION_MESMER,
             PROFESSION_NECROMANCER,
+            PROFESSION_REVENANT,
             PROFESSION_NONE
         };
         enum Attitude {

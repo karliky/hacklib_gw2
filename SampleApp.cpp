@@ -7,7 +7,7 @@
 GW2LIB::Font font;
 static const DWORD fontColor = 0xffffffff;
 
-std::string strProf[] = { "Error", "Guardian", "Warrior", "Engineer", "Ranger", "Thief", "Elementalist", "Mesmer", "Necromancer", "None" };
+std::string strProf[] = { "Error", "Guardian", "Warrior", "Engineer", "Ranger", "Thief", "Elementalist", "Mesmer", "Necromancer", "Revenant", "None" };
 
 
 float dist(GW2LIB::Vector3 p1, GW2LIB::Vector3 p2)
