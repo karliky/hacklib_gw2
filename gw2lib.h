@@ -464,7 +464,7 @@ namespace GW2LIB
 
         // WorldView::CContext
         // void GetMetrics(int one, D3DXVECTOR3* camPos, D3DXVECTOR3* lookAt, D3DXVECTOR3* upVec float* fov);
-        uintptr_t wvctxVtGetMetrics = 0x40;
+        uintptr_t wvctxVtGetMetrics = 0x3c;
         // int m_camStatus;
         uintptr_t wvctxStatus = 0x4c;
         /*
