@@ -239,7 +239,7 @@ namespace GW2LIB
     struct Mems
     {
         /*
-        If you update gw2lib and the patterns are still working if can be useful to know
+        If you update gw2lib and the patterns are still working it can be useful to know
         the current game object pointers for debugging. The following example shows how to
         get them. If the patterns break, see Gw2HackMain::init the strings are unlikly to
         change but maybe the offsets if code generation is changed.
@@ -319,7 +319,7 @@ namespace GW2LIB
         GetPos I don't remember, but should be easy to trial and error.
 
         The agentTransform member is very easy to recognize, because many numbers in it
-        move then your character moves (when looking at own agent data). See CAgentTransform.
+        move when your character moves (when looking at own agent data). See CAgentTransform.
         */
 
         // Agent::CAgentTransform
@@ -377,13 +377,13 @@ namespace GW2LIB
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x14c;
+        uintptr_t charCoreStats = 0x154;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x16c;
+        uintptr_t charEndurance = 0x174;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x170;
+        uintptr_t charHealth = 0x178;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x174;
+        uintptr_t charInventory = 0x17c;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
@@ -409,7 +409,7 @@ namespace GW2LIB
 
         // CharClient::CPlayer
         // char* m_name
-        uintptr_t playerName = 0x40;
+        uintptr_t playerName = 0x44;
         /*
         Represents a player.
 
@@ -431,9 +431,9 @@ namespace GW2LIB
 
         // CharClient::CEndurance
         // int m_currentValue;
-        uintptr_t endCurrent = 0x8;
+        uintptr_t endCurrent = 0x4;
         // int m_maxValue;
-        uintptr_t endMax = 0xc;
+        uintptr_t endMax = 0x8;
 
         // CharClient::CHealth
         // int m_currentValue;
@@ -449,9 +449,9 @@ namespace GW2LIB
         // Agent::CAgentBase* m_autoSelection;
         uintptr_t asctxAuto = 0x28;
         // Agent::CAgentBase* m_hoverSelection;
-        uintptr_t asctxHover = 0x74;
+        uintptr_t asctxHover = 0x80;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0x104;
+        uintptr_t asctxLocked = 0x11c;
         // D3DXVECTOR3 m_screenToWorld;
         uintptr_t asctxStoW = 0x140;
         /*
@@ -464,7 +464,7 @@ namespace GW2LIB
 
         // WorldView::CContext
         // void GetMetrics(int one, D3DXVECTOR3* camPos, D3DXVECTOR3* lookAt, D3DXVECTOR3* upVec float* fov);
-        uintptr_t wvctxVtGetMetrics = 0x34;
+        uintptr_t wvctxVtGetMetrics = 0x40;
         // int m_camStatus;
         uintptr_t wvctxStatus = 0x4c;
         /*
