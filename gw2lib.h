@@ -302,9 +302,9 @@ namespace GW2LIB
         // AgentCategory GetCategory();
         uintptr_t agentVtGetCategory = 0x10;
         // int GetAgentId();
-        uintptr_t agentVtGetId = 0x5c;
+        uintptr_t agentVtGetId = 0x60;
         // AgentType GetType();
-        uintptr_t agentVtGetType = 0x9c;
+        uintptr_t agentVtGetType = 0xa0;
         // void GetPos(D3DXVECTOR3* pPos);
         uintptr_t agentVtGetPos = 0xb4;
         // Agent::CAgentTransform* m_transform;
@@ -355,25 +355,25 @@ namespace GW2LIB
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
-        uintptr_t charVtGetAgent = 0xa8;
+        uintptr_t charVtGetAgent = 0xac;
         // int GetAgentId();
-        uintptr_t charVtGetAgentId = 0xac;
+        uintptr_t charVtGetAgentId = 0xb0;
         // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0xf4;
+        uintptr_t charVtGetPlayer = 0xf8;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x134;
+        uintptr_t charVtAlive = 0x138;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x138;
+        uintptr_t charVtControlled = 0x13c;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x144;
+        uintptr_t charVtDowned = 0x148;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x170;
+        uintptr_t charVtInWater = 0x174;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x17c;
+        uintptr_t charVtMonster = 0x180;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x18c;
+        uintptr_t charVtClone = 0x190;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1a8;
+        uintptr_t charVtPlayer = 0x1ac;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
