@@ -64,9 +64,9 @@ namespace GW2LIB
         };
         enum AgentType {
             AGENT_TYPE_CHAR = 0,
-            AGENT_TYPE_GADGET = 9,
-            AGENT_TYPE_GADGET_ATTACK_TARGET = 10,
-            AGENT_TYPE_ITEM = 14
+            AGENT_TYPE_GADGET = 10,
+            AGENT_TYPE_GADGET_ATTACK_TARGET = 11,
+            AGENT_TYPE_ITEM = 15
         };
     }
 
@@ -377,13 +377,13 @@ namespace GW2LIB
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x154;
+        uintptr_t charCoreStats = 0x164;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x174;
+        uintptr_t charEndurance = 0x184;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x178;
+        uintptr_t charHealth = 0x188;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x17c;
+        uintptr_t charInventory = 0x18c;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
