@@ -359,37 +359,37 @@ namespace GW2LIB
         // int GetAgentId();
         uintptr_t charVtGetAgentId = 0xb0;
         // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0xf8;
+        uintptr_t charVtGetPlayer = 0x104;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x138;
+        uintptr_t charVtAlive = 0x144;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x13c;
+		uintptr_t charVtControlled = 0x148;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x148;
+		uintptr_t charVtDowned = 0x154;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x174;
+		uintptr_t charVtInWater = 0x180;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x180;
+        uintptr_t charVtMonster = 0x18c;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x190;
+        uintptr_t charVtClone = 0x19c;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1ac;
+        uintptr_t charVtPlayer = 0x1b8;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x164;
+        uintptr_t charCoreStats = 0x174;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x184;
+        uintptr_t charEndurance = 0x194;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x188;
+        uintptr_t charHealth = 0x198;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x18c;
+        uintptr_t charInventory = 0x19c;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
 
         Almost everything in here can be found through assert strings. In order:
-        GetAgent should be one slot before GetAgentId
+        "character->GetAgent() == m_agent"
         "m_agent && (m_agent->GetAgentId() == character->GetAgentId() || m_masterCharacter == character)"
         "m_ownerCharacter->GetPlayer() == CharClientContext()->GetControlledPlayer()"
         Three at once! "character->IsAlive() || (character->IsDowned() && character->IsInWater())"
@@ -414,6 +414,7 @@ namespace GW2LIB
         Represents a player.
 
         The name is very easy to find by just comparing to your name.
+		"TextValidateLiteral(m_name.Ptr())"
         */
 
         // CharClient::CCoreStats
