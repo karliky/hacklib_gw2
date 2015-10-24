@@ -174,6 +174,13 @@ float Character::GetMaxEndurance() const
     return 0;
 }
 
+float Character::GetGliderPercent() const
+{
+	if (m_ptr)
+		return m_ptr->gliderPercent;
+	return 0;
+}
+
 
 GW2::Profession Character::GetProfession() const
 {
