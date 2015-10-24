@@ -138,6 +138,7 @@ namespace GW2LIB
         float GetMaxHealth() const;
         float GetCurrentEndurance() const;
         float GetMaxEndurance() const;
+        float GetGliderPercent() const;
 
         GW2::Profession GetProfession() const;
         GW2::Attitude GetAttitude() const;
@@ -416,6 +417,14 @@ namespace GW2LIB
         The name is very easy to find by just comparing to your name.
 		"TextValidateLiteral(m_name.Ptr())"
         */
+        
+		uintptr_t charGliderPercent = 0xb8;
+		/*
+		Glider percentage level as a float.
+
+		Found by looking for float value between 0.0 - 1.0 in your own character data while gliding.
+		always show 1.0 for other players.
+		*/
 
         // CharClient::CCoreStats
         // int m_level;
