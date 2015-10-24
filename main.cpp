@@ -243,6 +243,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
         pCharData->isMonsterPlayerClone = character.call<bool>(m_pubmems.charVtClone);
 
         pCharData->attitude = character.get<GW2LIB::GW2::Attitude>(m_pubmems.charAttitude);
+        pCharData->gliderPercent = character.get<float>(m_pubmems.charGliderPercent);
 
         hl::ForeignClass health = character.get<void*>(m_pubmems.charHealth);
         if (health) {
