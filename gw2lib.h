@@ -276,7 +276,7 @@ namespace GW2LIB
 
         // AgentView::CContext
         // ANet::Array<Agent::CAvAgent*> m_agentArray;
-        uintptr_t avctxAgentArray = 0x30;
+        uintptr_t avctxAgentArray = 0x34;
         /*
         This is the context that deals with agents, the base of all entities in the game. It is optimized
         out of the main context, but there are static references to it.
@@ -342,11 +342,11 @@ namespace GW2LIB
 
         // CharClient::CContext
         // ANet::Array<CharClient::CCharacter*> m_charArray;
-        uintptr_t charctxCharArray = 0x24;
+        uintptr_t charctxCharArray = 0x2c;
         // ANet::Array<CharClient::CPlayer*> m_playerArray;
-        uintptr_t charctxPlayerArray = 0x34;
+        uintptr_t charctxPlayerArray = 0x40;
         // CharClient::CCharacter* m_controlledCharacter;
-        uintptr_t charctxControlled = 0x44;
+        uintptr_t charctxControlled = 0x50;
         /*
         Context that contains data about CCharacters.
 
@@ -375,15 +375,15 @@ namespace GW2LIB
         // bool IsPlayer();
         uintptr_t charVtPlayer = 0x1b8;
         // Attitude m_attitudeTowardControlled;
-        uintptr_t charAttitude = 0x58;
+        uintptr_t charAttitude = 0x60;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x174;
+        uintptr_t charCoreStats = 0x194;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x194;
+        uintptr_t charEndurance = 0x1b8;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x198;
+        uintptr_t charHealth = 0x1bc;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x19c;
+        uintptr_t charInventory = 0x1c0;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
@@ -403,13 +403,13 @@ namespace GW2LIB
         "m_attitudeTowardControlled < Content::AFFINITY_ATTITUDES"
         "m_coreStats"
         "!m_endurance"
-        "!m_health"
+        "m_health"
         "m_inventory"
         */
 
         // CharClient::CPlayer
         // char* m_name
-        uintptr_t playerName = 0x44;
+        uintptr_t playerName = 0x48;
         /*
         Represents a player.
 
@@ -419,11 +419,11 @@ namespace GW2LIB
 
         // CharClient::CCoreStats
         // int m_level;
-        uintptr_t statsLevel = 0x1b4;
+        uintptr_t statsLevel = 0x1b8;
         // int m_scaledLevel;
-        uintptr_t statsScaledLevel = 0x1e4;
+        uintptr_t statsScaledLevel = 0x1e8;
         // Profession m_profession;
-        uintptr_t statsProfession = 0x22c;
+        uintptr_t statsProfession = 0x230;
         /*
         Some general stat information about a character.
 
@@ -444,15 +444,15 @@ namespace GW2LIB
 
         // CharClient::CInventory
         // int m_supply
-        uintptr_t invSupply = 0x1d8;
+        uintptr_t invSupply = 0x208;
 
         // AgentSelection::CContext
         // Agent::CAgentBase* m_autoSelection;
         uintptr_t asctxAuto = 0x28;
         // Agent::CAgentBase* m_hoverSelection;
-        uintptr_t asctxHover = 0x80;
+        uintptr_t asctxHover = 0x84;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0x11c;
+        uintptr_t asctxLocked = 0x120;
         // D3DXVECTOR3 m_screenToWorld;
         uintptr_t asctxStoW = 0x140;
         /*
