@@ -45,6 +45,7 @@ namespace GameData
         float currentEndurance = 0;
         float maxEndurance = 0;
         float gliderPercent = 0;
+        float breakbarPercent = 0;
         GW2LIB::GW2::Profession profession = GW2LIB::GW2::Profession::PROFESSION_NONE;
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::Attitude::ATTITUDE_FRIENDLY;
         std::string name;
