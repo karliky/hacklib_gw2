@@ -139,6 +139,7 @@ namespace GW2LIB
         float GetCurrentEndurance() const;
         float GetMaxEndurance() const;
         float GetGliderPercent() const;
+        float GetBreakbarPercent() const;
 
         GW2::Profession GetProfession() const;
         GW2::Attitude GetAttitude() const;
@@ -353,6 +354,10 @@ namespace GW2LIB
 
         Easy to recognize by the arrays. The order of them is unlikely to change.
         */
+        
+		// m_breakBar
+		uintptr_t charBreakbar = 0x64;
+		uintptr_t breakbarPercent = 0x24;
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
