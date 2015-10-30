@@ -181,6 +181,13 @@ float Character::GetGliderPercent() const
 	return 0;
 }
 
+float Character::GetBreakbarPercent() const
+{
+	if (m_ptr)
+		return m_ptr->breakbarPercent;
+	return 0;
+}
+
 
 GW2::Profession Character::GetProfession() const
 {
