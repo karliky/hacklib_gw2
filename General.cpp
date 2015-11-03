@@ -74,3 +74,11 @@ float GW2LIB::GetFieldOfViewY()
 {
     return GetMain()->GetGameData()->camData.fovy;
 }
+
+int GW2LIB::GetPing() {
+	return GetMain()->GetGameData()->ping;
+}
+
+int GW2LIB::GetFPS() {
+	return GetMain()->GetGameData()->fps;
+}
