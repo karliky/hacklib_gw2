@@ -17,6 +17,8 @@ class Gw2HackMain *GetMain();
 struct GamePointers
 {
     int *pMapId = nullptr;
+    int *pPing = nullptr;
+    int *pFps = nullptr;
     void *pCtx = nullptr;
     void *pAgentViewCtx = nullptr;
     void **ppWorldViewContext = nullptr;
