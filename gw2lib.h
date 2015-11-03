@@ -163,6 +163,8 @@ namespace GW2LIB
     Vector3 GetCameraPosition();
     Vector3 GetViewVector();
     float GetFieldOfViewY();
+    int GetPing();
+    int GetFPS();
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -186,9 +188,6 @@ namespace GW2LIB
 
     float GetWindowWidth();
     float GetWindowHeight();
-
-    int GetPing();
-    int GetFPS();
 
     //////////////////////////////////////////////////////////////////////////
     // # complex drawing classes
@@ -357,10 +356,10 @@ namespace GW2LIB
 
         Easy to recognize by the arrays. The order of them is unlikely to change.
         */
-        
-		// m_breakBar
-		uintptr_t charBreakbar = 0x64;
-		uintptr_t breakbarPercent = 0x24;
+
+        // "m_breakBar"
+        uintptr_t charBreakbar = 0x64;
+        uintptr_t breakbarPercent = 0x24;
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
@@ -372,11 +371,11 @@ namespace GW2LIB
         // bool IsAlive();
         uintptr_t charVtAlive = 0x144;
         // bool IsControlled();
-		uintptr_t charVtControlled = 0x148;
+        uintptr_t charVtControlled = 0x148;
         // bool IsDowned();
-		uintptr_t charVtDowned = 0x154;
+        uintptr_t charVtDowned = 0x154;
         // bool IsInWater();
-		uintptr_t charVtInWater = 0x180;
+        uintptr_t charVtInWater = 0x180;
         // bool IsMonster();
         uintptr_t charVtMonster = 0x18c;
         // bool IsMonsterPlayerClone();
@@ -423,16 +422,16 @@ namespace GW2LIB
         Represents a player.
 
         The name is very easy to find by just comparing to your name.
-		"TextValidateLiteral(m_name.Ptr())"
+        "TextValidateLiteral(m_name.Ptr())"
         */
-        
-		uintptr_t charGliderPercent = 0xb8;
-		/*
-		Glider percentage level as a float.
 
-		Found by looking for float value between 0.0 - 1.0 in your own character data while gliding.
-		always show 1.0 for other players.
-		*/
+        uintptr_t charGliderPercent = 0xb8;
+        /*
+        Glider percentage level as a float.
+
+        Found by looking for float value between 0.0 - 1.0 in your own character data while gliding.
+        always show 1.0 for other players.
+        */
 
         // CharClient::CCoreStats
         // int m_level;
