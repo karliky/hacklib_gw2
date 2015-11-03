@@ -70,6 +70,8 @@ namespace GW2
 bool Gw2HackMain::init()
 {
     uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
+    uintptr_t ping = hl::FindPattern("\x88\x13\x00\x00\x77\x17\x6A\x24\xBA\x00\x00\x00\x00\xB9", "xxxxxxxxx????x");
+    uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
 
     hl::PatternScanner scanner;
     auto results = scanner.find({
@@ -91,6 +93,9 @@ bool Gw2HackMain::init()
             m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
 
             m_mems.pMapId = *(int**)(MapIdSig + 0x6);
+
+            m_mems.pPing = *(int**)(ping + 0x9);
+            m_mems.pFps = *(int**)(fps + 0xa);
 
         } __except (EXCEPTION_EXECUTE_HANDLER) {
             return false;
@@ -476,6 +481,8 @@ void Gw2HackMain::GameHook()
     m_gameData.mouseInWorld = asctx.get<D3DXVECTOR3>(m_pubmems.asctxStoW);
 
     m_gameData.mapId = *m_mems.pMapId;
+    m_gameData.ping = *m_mems.pPing;
+    m_gameData.fps = *m_mems.pFps;
 }
 
 
