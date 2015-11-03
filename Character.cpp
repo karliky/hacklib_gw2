@@ -176,16 +176,16 @@ float Character::GetMaxEndurance() const
 
 float Character::GetGliderPercent() const
 {
-	if (m_ptr)
-		return m_ptr->gliderPercent;
-	return 0;
+    if (m_ptr)
+        return m_ptr->gliderPercent;
+    return 0;
 }
 
 float Character::GetBreakbarPercent() const
 {
-	if (m_ptr)
-		return m_ptr->breakbarPercent;
-	return 0;
+    if (m_ptr)
+        return m_ptr->breakbarPercent;
+    return 0;
 }
 
 

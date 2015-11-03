@@ -274,10 +274,10 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->wvwsupply = inventory.get<int>(m_pubmems.invSupply);
         }
 
-		hl::ForeignClass breakbar = character.get<void*>(m_pubmems.charBreakbar);
-		if (breakbar) {
-			pCharData->breakbarPercent = breakbar.get<float>(m_pubmems.breakbarPercent);
-		}
+        hl::ForeignClass breakbar = character.get<void*>(m_pubmems.charBreakbar);
+        if (breakbar) {
+            pCharData->breakbarPercent = breakbar.get<float>(m_pubmems.breakbarPercent);
+        }
 
         if (pCharData->isPlayer)
         {
