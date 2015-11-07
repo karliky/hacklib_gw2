@@ -74,6 +74,8 @@ namespace GameData
 
         D3DXVECTOR3 mouseInWorld = D3DXVECTOR3(0, 0, 0);
         int mapId = 0;
+        int ping = 0;
+        int fps = 0;
     };
 
     CharacterData *GetCharData(hl::ForeignClass pChar);
