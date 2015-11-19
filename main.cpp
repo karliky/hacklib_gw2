@@ -5,15 +5,13 @@
 #include "hacklib/ImplementMember.h"
 #include "hacklib/Drawer.h"
 #include "hacklib/ForeignClass.h"
+#include "hacklib/Logging.h"
 
 #include "main.h"
 
 #include <mutex>
 #include <thread>
 #include <chrono>
-
-
-#define HL_LOG(format, ...) ;
 
 
 void __fastcall hkGameThread(uintptr_t, int, int);
@@ -69,6 +67,14 @@ namespace GW2
 
 bool Gw2HackMain::init()
 {
+    m_con.create("Gw2lib Console");
+
+    hl::LogConfig logConfig;
+    logConfig.logFunc = [this](const std::string& str){
+        m_con.printf(str.c_str());
+    };
+    hl::ConfigLog(logConfig);
+
     uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
     uintptr_t ping = hl::FindPattern("\x88\x13\x00\x00\x77\x17\x6A\x24\xBA\x00\x00\x00\x00\xB9", "xxxxxxxxx????x");
     uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
@@ -104,15 +110,15 @@ bool Gw2HackMain::init()
         return true;
     }())
     {
-        HL_LOG("[Core::Init] One or more patterns are invalid\n");
+        HL_LOG_ERR("[Core::Init] One or more patterns are invalid\n");
         return false;
     }
 
-    HL_LOG("aa:     %08X\n", m_mems.pAgentViewCtx);
-    HL_LOG("actx:   %08X\n", pAlertCtx);
-    HL_LOG("asctx:  %08X\n", m_mems.pAgentSelectionCtx);
-    HL_LOG("wv:     %08X\n", m_mems.ppWorldViewContext);
-    HL_LOG("mpid:   %08X\n", m_mems.pMapId);
+    HL_LOG_DBG("aa:     %08X\n", m_mems.pAgentViewCtx);
+    HL_LOG_DBG("actx:   %08X\n", pAlertCtx);
+    HL_LOG_DBG("asctx:  %08X\n", m_mems.pAgentSelectionCtx);
+    HL_LOG_DBG("wv:     %08X\n", m_mems.ppWorldViewContext);
+    HL_LOG_DBG("mpid:   %08X\n", m_mems.pMapId);
 
     // hook functions
 #ifdef NOD3DHOOK
@@ -121,27 +127,27 @@ bool Gw2HackMain::init()
     // get d3d device
     LPDIRECT3DDEVICE9 pDevice = hl::D3DDeviceFetcher::GetD3D9Device();
     if (!pDevice) {
-        HL_LOG("[Core::Init] Device not found\n");
+        HL_LOG_ERR("[Core::Init] Device not found\n");
         return false;
     }
     m_hkPresent = m_hooker.hookVT((uintptr_t)pDevice, 17, (uintptr_t)hkPresent);
     if (!m_hkPresent) {
-        HL_LOG("[Core::Init] Hooking render thread failed\n");
+        HL_LOG_ERR("[Core::Init] Hooking render thread failed\n");
         return false;
     }
     m_hkReset = m_hooker.hookVT((uintptr_t)pDevice, 16, (uintptr_t)hkReset);
     if (!m_hkReset) {
-        HL_LOG("[Core::Init] Hooking device reset failed\n");
+        HL_LOG_ERR("[Core::Init] Hooking device reset failed\n");
         return false;
     }
 #endif
     m_hkAlertCtx = m_hooker.hookVT(pAlertCtx, 0, (uintptr_t)hkGameThread);
     if (!m_hkAlertCtx) {
-        HL_LOG("[Core::Init] Hooking game thread failed\n");
+        HL_LOG_ERR("[Core::Init] Hooking game thread failed\n");
         return false;
     }
 
-    HL_LOG("Init ESP data\n");
+    HL_LOG_DBG("Init ESP data\n");
 
     extern bool InitEsp();
     bool result = InitEsp();
@@ -205,7 +211,7 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
                 __try {
                     m_cbRender();
                 } __except (EXCEPTION_EXECUTE_HANDLER) {
-                    HL_LOG("[ESP callback] Exception in ESP code\n");
+                    HL_LOG_ERR("[ESP callback] Exception in ESP code\n");
                 }
             }();
 
@@ -231,7 +237,7 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         }
 
     } __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG("[RefreshDataAgent] access violation\n");
+        HL_LOG_ERR("[RefreshDataAgent] access violation\n");
     }
 }
 void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character)
@@ -295,7 +301,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
         }
 
     } __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG("[RefreshDataCharacter] access violation\n");
+        HL_LOG_ERR("[RefreshDataCharacter] access violation\n");
     }
 }
 
@@ -500,7 +506,7 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
             __try {
                 pCore->GameHook();
             } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG("[hkGameThread] Exception in game thread\n");
+                HL_LOG_ERR("[hkGameThread] Exception in game thread\n");
             }
         }();
     }
@@ -521,7 +527,7 @@ HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* 
             __try {
                 pCore->RenderHook(pDevice);
             } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG("[hkPresent] Exception in render thread\n");
+                HL_LOG_ERR("[hkPresent] Exception in render thread\n");
             }
         }();
     }
@@ -540,7 +546,7 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
             __try {
                 pCore->GetDrawer(false)->OnLostDevice();
             } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG("[hkReset] Exeption in pre device reset hook\n");
+                HL_LOG_ERR("[hkReset] Exeption in pre device reset hook\n");
             }
         }();
     }
@@ -553,7 +559,7 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
             __try {
                 pCore->GetDrawer(false)->OnResetDevice();
             } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG("[hkReset] Exception in post device reset hook\n");
+                HL_LOG_ERR("[hkReset] Exception in post device reset hook\n");
             }
         }();
     }
