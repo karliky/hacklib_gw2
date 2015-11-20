@@ -280,7 +280,7 @@ namespace GW2LIB
 
         // AgentView::CContext
         // ANet::Array<Agent::CAvAgent*> m_agentArray;
-        uintptr_t avctxAgentArray = 0x34;
+        uintptr_t avctxAgentArray = 0x30;
         /*
         This is the context that deals with agents, the base of all entities in the game. It is optimized
         out of the main context, but there are static references to it.
@@ -346,11 +346,11 @@ namespace GW2LIB
 
         // CharClient::CContext
         // ANet::Array<CharClient::CCharacter*> m_charArray;
-        uintptr_t charctxCharArray = 0x2c;
+        uintptr_t charctxCharArray = 0x24;
         // ANet::Array<CharClient::CPlayer*> m_playerArray;
-        uintptr_t charctxPlayerArray = 0x40;
+        uintptr_t charctxPlayerArray = 0x34;
         // CharClient::CCharacter* m_controlledCharacter;
-        uintptr_t charctxControlled = 0x50;
+        uintptr_t charctxControlled = 0x44;
         /*
         Context that contains data about CCharacters.
 
@@ -383,15 +383,15 @@ namespace GW2LIB
         // bool IsPlayer();
         uintptr_t charVtPlayer = 0x1b8;
         // Attitude m_attitudeTowardControlled;
-        uintptr_t charAttitude = 0x60;
+        uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x194;
+        uintptr_t charCoreStats = 0x174;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x1b8;
+        uintptr_t charEndurance = 0x194;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x1bc;
+        uintptr_t charHealth = 0x198;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x1c0;
+        uintptr_t charInventory = 0x19c;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
@@ -417,7 +417,7 @@ namespace GW2LIB
 
         // CharClient::CPlayer
         // char* m_name
-        uintptr_t playerName = 0x48;
+        uintptr_t playerName = 0x44;
         /*
         Represents a player.
 
@@ -435,11 +435,11 @@ namespace GW2LIB
 
         // CharClient::CCoreStats
         // int m_level;
-        uintptr_t statsLevel = 0x1b8;
+        uintptr_t statsLevel = 0x1b4;
         // int m_scaledLevel;
-        uintptr_t statsScaledLevel = 0x1e8;
+        uintptr_t statsScaledLevel = 0x1e4;
         // Profession m_profession;
-        uintptr_t statsProfession = 0x230;
+        uintptr_t statsProfession = 0x22c;
         /*
         Some general stat information about a character.
 
