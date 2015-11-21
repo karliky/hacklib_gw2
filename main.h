@@ -5,6 +5,7 @@
 #include "GameData.h"
 
 #include "hacklib/Main.h"
+#include "hacklib/ConsoleEx.h"
 #include "hacklib/Hooker.h"
 #include "hacklib/Drawer.h"
 
@@ -52,6 +53,7 @@ private:
     void RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character);
 
 private:
+    hl::ConsoleEx m_con;
     hl::Hooker m_hooker;
     hl::Drawer m_drawer;
 
