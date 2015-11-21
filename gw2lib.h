@@ -68,6 +68,11 @@ namespace GW2LIB
             AGENT_TYPE_GADGET_ATTACK_TARGET = 11,
             AGENT_TYPE_ITEM = 15
         };
+        enum BreakbarState {
+            BREAKBAR_STATE_READY = 0,
+            BREAKBAR_STATE_RECOVER,
+            BREAKBAR_STATE_IMMUNE
+        };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -141,6 +146,7 @@ namespace GW2LIB
         float GetGliderPercent() const;
         float GetBreakbarPercent() const;
 
+        GW2::BreakbarState GetBreakbarState() const;
         GW2::Profession GetProfession() const;
         GW2::Attitude GetAttitude() const;
 
@@ -357,9 +363,15 @@ namespace GW2LIB
         Easy to recognize by the arrays. The order of them is unlikely to change.
         */
 
-        // "m_breakBar"
-        uintptr_t charBreakbar = 0x64;
-        uintptr_t breakbarPercent = 0x24;
+        // CharClient::CBreakBar* m_breakBar;
+        uintptr_t charBreakbar = 0x5c;
+        // BreakbarState
+        uintptr_t breakbarState = 0x1c;
+        // float
+        uintptr_t breakbarPercent = 0x20;
+        /*
+        "m_breakBar"
+        */
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
@@ -425,7 +437,7 @@ namespace GW2LIB
         "TextValidateLiteral(m_name.Ptr())"
         */
 
-        uintptr_t charGliderPercent = 0xb8;
+        uintptr_t charGliderPercent = 0xa0;
         /*
         Glider percentage level as a float.
 
@@ -460,17 +472,17 @@ namespace GW2LIB
 
         // CharClient::CInventory
         // int m_supply
-        uintptr_t invSupply = 0x208;
+        uintptr_t invSupply = 0x1e8;
 
         // AgentSelection::CContext
         // Agent::CAgentBase* m_autoSelection;
         uintptr_t asctxAuto = 0x28;
         // Agent::CAgentBase* m_hoverSelection;
-        uintptr_t asctxHover = 0x84;
+        uintptr_t asctxHover = 0x80;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0x120;
+        uintptr_t asctxLocked = 0x11c;
         // D3DXVECTOR3 m_screenToWorld;
-        uintptr_t asctxStoW = 0x140;
+        uintptr_t asctxStoW = 0x13c;
         /*
         The offsets can be found in a function containing lots of asserts for them. Strings in order:
         "!m_autoSelection"

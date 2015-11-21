@@ -189,6 +189,13 @@ float Character::GetBreakbarPercent() const
 }
 
 
+GW2::BreakbarState Character::GetBreakbarState() const
+{
+    if (m_ptr)
+        return m_ptr->breakbarState;
+    return GW2::BREAKBAR_STATE_READY;
+}
+
 GW2::Profession Character::GetProfession() const
 {
     if (m_ptr)

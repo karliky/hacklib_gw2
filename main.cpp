@@ -282,6 +282,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 
         hl::ForeignClass breakbar = character.get<void*>(m_pubmems.charBreakbar);
         if (breakbar) {
+            pCharData->breakbarState = breakbar.get<GW2LIB::GW2::BreakbarState>(m_pubmems.breakbarState);
             pCharData->breakbarPercent = breakbar.get<float>(m_pubmems.breakbarPercent);
         }
 
