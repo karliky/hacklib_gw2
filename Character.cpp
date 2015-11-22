@@ -193,7 +193,7 @@ GW2::BreakbarState Character::GetBreakbarState() const
 {
     if (m_ptr)
         return m_ptr->breakbarState;
-    return GW2::BREAKBAR_STATE_READY;
+    return GW2::BREAKBAR_STATE_NONE;
 }
 
 GW2::Profession Character::GetProfession() const
