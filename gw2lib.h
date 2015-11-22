@@ -69,7 +69,8 @@ namespace GW2LIB
             AGENT_TYPE_ITEM = 15
         };
         enum BreakbarState {
-            BREAKBAR_STATE_READY = 0,
+            BREAKBAR_STATE_NONE = -1,
+            BREAKBAR_STATE_READY,
             BREAKBAR_STATE_RECOVER,
             BREAKBAR_STATE_IMMUNE
         };
