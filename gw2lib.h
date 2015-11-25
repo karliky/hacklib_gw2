@@ -249,6 +249,60 @@ namespace GW2LIB
 
     struct Mems
     {
+#ifdef ARCH_64BIT
+        uintptr_t contextChar = 0x90;
+        uintptr_t avctxAgentArray = 0x68;
+        uintptr_t avagVtGetAgent = 0x60;
+        uintptr_t agentVtGetCategory = 0x20;
+        uintptr_t agentVtGetId = 0xc0;
+        uintptr_t agentVtGetType = 0x140;
+        uintptr_t agentVtGetPos = 0x168;
+        uintptr_t agentTransform = 0x28;
+        uintptr_t agtransX = 0x30;
+        uintptr_t agtransY = 0x34;
+        uintptr_t agtransZ = 0x38;
+        uintptr_t agtransRX = 0x120;
+        uintptr_t agtransRY = 0x124;
+        uintptr_t charctxCharArray = 0x50;
+        uintptr_t charctxPlayerArray = 0x70;
+        uintptr_t charctxControlled = 0x88;
+        uintptr_t charBreakbar = 0xa8;
+        uintptr_t breakbarState = 0x40;
+        uintptr_t breakbarPercent = 0x44;
+
+        uintptr_t charVtGetAgent = 0x158;
+        uintptr_t charVtGetAgentId = 0x160;
+        uintptr_t charVtGetPlayer = 0x208;
+        uintptr_t charVtAlive = 0x288;
+        uintptr_t charVtControlled = 0x290;
+        uintptr_t charVtDowned = 0x2a8;
+        uintptr_t charVtInWater = 0x300;
+        uintptr_t charVtMonster = 0x318;
+        uintptr_t charVtClone = 0x338;
+        uintptr_t charVtPlayer = 0x370;
+        uintptr_t charAttitude = 0xa0;
+        uintptr_t charCoreStats = 0x280;
+        uintptr_t charEndurance = 0x2c8;
+        uintptr_t charHealth = 0x2d0;
+        uintptr_t charInventory = 0x2d8;
+
+        uintptr_t playerName = 0x68;
+        uintptr_t charGliderPercent = 0x130;
+        uintptr_t statsLevel = 0x1ec;
+        uintptr_t statsScaledLevel = 0x21c;
+        uintptr_t statsProfession = 0x264;
+        uintptr_t endCurrent = 0x8;
+        uintptr_t endMax = 0xc;
+        uintptr_t healthCurrent = 0xc;
+        uintptr_t healthMax = 0x10;
+        uintptr_t invSupply = 0x3a4;
+        uintptr_t asctxAuto = 0x50;
+        uintptr_t asctxHover = 0xf8;
+        uintptr_t asctxLocked = 0x230;
+        uintptr_t asctxStoW = 0x26c;
+        uintptr_t wvctxVtGetMetrics = 0x78;
+        uintptr_t wvctxStatus = 0x58;
+#else
         /*
         If you update gw2lib and the patterns are still working it can be useful to know
         the current game object pointers for debugging. The following example shows how to
@@ -506,7 +560,7 @@ namespace GW2LIB
 
         camStatus is a bit that flips in loading screens and can be found by inspection.
         */
-
+#endif
     };
 }
 
