@@ -43,7 +43,7 @@ namespace GW2
                 }
                 return *this;
             }
-            T &operator[] (int index) {
+            T &operator[] (uint32_t index) {
                 if (index < Count()) {
                     return m_basePtr[index];
                 }
@@ -53,13 +53,13 @@ namespace GW2
                 if (m_basePtr) return true;
                 return false;
             }
-            int Count() {
+            uint32_t Count() {
                 return m_count;
             }
         private:
             T *m_basePtr;
-            int m_capacity;
-            int m_count;
+            uint32_t m_capacity;
+            uint32_t m_count;
         };
     }
 }
@@ -87,21 +87,12 @@ bool Gw2HackMain::init()
 
     hl::PatternScanner scanner;
 
-#ifdef ARCH_64BIT
-    auto results = scanner.find({
-        "ViewAdvanceDevice",
-        "ViewAdvanceAgentSelect",
-        "ViewAdvanceAgentView",
-        "ViewAdvanceWorldView"
-    }, nullptr, true);
-#else
     auto results = scanner.find({
         "ViewAdvanceDevice",
         "ViewAdvanceAgentSelect",
         "ViewAdvanceAgentView",
         "ViewAdvanceWorldView"
     });
-#endif
 
     uintptr_t pAlertCtx = 0;
     if (![&](){
@@ -383,11 +374,11 @@ void Gw2HackMain::GameHook()
                 if (charArray.IsValid() && agentArray.IsValid())
                 {
                     // add agents from game array to own array and update data
-                    size_t sizeAgentArray = agentArray.Count();
+                    uint32_t sizeAgentArray = agentArray.Count();
                     if (sizeAgentArray != m_gameData.objData.agentDataList.size()) {
                         m_gameData.objData.agentDataList.resize(sizeAgentArray);
                     }
-                    for (size_t i = 0; i < sizeAgentArray; i++)
+                    for (uint32_t i = 0; i < sizeAgentArray; i++)
                     {
                         hl::ForeignClass avAgent = agentArray[i];
 
@@ -449,7 +440,7 @@ void Gw2HackMain::GameHook()
 
                         // check if agent in our array is in game data
                         bool bFound = false;
-                        hl::ForeignClass avAgent = agentArray[i];
+                        hl::ForeignClass avAgent = agentArray[(uint32_t)i];
 
                         if (i < sizeAgentArray && avAgent) {
                             if (avAgent.call<void*>(m_pubmems.avagVtGetAgent) == m_gameData.objData.agentDataList[i]->pAgent) {
@@ -466,8 +457,8 @@ void Gw2HackMain::GameHook()
 
                     // add characters from game array to own array and update data
                     m_gameData.objData.charDataList.clear();
-                    int sizeCharArray = charArray.Count();
-                    for (int i = 0; i < sizeCharArray; i++)
+                    uint32_t sizeCharArray = charArray.Count();
+                    for (uint32_t i = 0; i < sizeCharArray; i++)
                     {
                         hl::ForeignClass pCharacter = charArray[i];
 
@@ -549,7 +540,7 @@ HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* 
 {
     auto pCore = g_initObj.getMain();
 
-    static auto orgFunc = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, RECT*, RECT*, HWND, RGNDATA*))pCore->m_hkPresent->getLocation());
+    static auto orgFunc = decltype(&hkPresent)(pCore->m_hkPresent->getLocation());
 
     if (pCore)
     {
@@ -564,13 +555,13 @@ HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* 
         }();
     }
 
-    return orgFunc(pDevice, pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
+    return orgFunc(pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }
 HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPresentationParameters)
 {
     auto pCore = g_initObj.getMain();
 
-    static auto orgFunc = ((HRESULT(__thiscall*)(IDirect3DDevice9*, IDirect3DDevice9*, D3DPRESENT_PARAMETERS*))pCore->m_hkReset->getLocation());
+    static auto orgFunc = decltype(&hkReset)(pCore->m_hkReset->getLocation());
 
     if (pCore)
     {
@@ -583,7 +574,7 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
         }();
     }
 
-    HRESULT hr = orgFunc(pDevice, pDevice, pPresentationParameters);
+    HRESULT hr = orgFunc(pDevice, pPresentationParameters);
 
     if (pCore)
     {

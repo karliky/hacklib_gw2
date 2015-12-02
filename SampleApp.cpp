@@ -58,13 +58,13 @@ void cbESP()
                 font.Draw(x, y-30, fontColor, "agentptr: %p", *(void**)ag.m_ptr);
 
                 if (ag.GetCategory() == GW2::AGENT_CATEGORY_KEYFRAMED) {
-                    unsigned long agmetrics = *(unsigned long*)(*(unsigned long*)ag.m_ptr + 0x1c);
+                    /*unsigned long agmetrics = *(unsigned long*)(*(unsigned long*)ag.m_ptr + 0x1c);
                     unsigned long long tok = *(unsigned long long*)(agmetrics + 0x98);
                     unsigned long long seq = *(unsigned long long*)(agmetrics + 0xa0);
 
                     std::stringstream tokseq;
                     tokseq << "token: " << tok << " sequence: " << seq;
-                    font.Draw(x, y-60, fontColor, tokseq.str());
+                    font.Draw(x, y-60, fontColor, tokseq.str());*/
                 }
             }
 
