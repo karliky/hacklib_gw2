@@ -261,11 +261,11 @@ namespace GW2LIB
         uintptr_t agtransX = 0x30;
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
-        uintptr_t agtransRX = 0x120;
-        uintptr_t agtransRY = 0x124;
-        uintptr_t charctxCharArray = 0x50;
-        uintptr_t charctxPlayerArray = 0x70;
-        uintptr_t charctxControlled = 0x88;
+        uintptr_t agtransRX = 0x140;
+        uintptr_t agtransRY = 0x144;
+        uintptr_t charctxCharArray = 0x58;
+        uintptr_t charctxPlayerArray = 0x78;
+        uintptr_t charctxControlled = 0x90;
         uintptr_t charBreakbar = 0xa8;
         uintptr_t breakbarState = 0x40;
         uintptr_t breakbarPercent = 0x44;
@@ -295,7 +295,7 @@ namespace GW2LIB
         uintptr_t endMax = 0xc;
         uintptr_t healthCurrent = 0xc;
         uintptr_t healthMax = 0x10;
-        uintptr_t invSupply = 0x3a4;
+        uintptr_t invSupply = 0x3c4;
         uintptr_t asctxAuto = 0x50;
         uintptr_t asctxHover = 0xf8;
         uintptr_t asctxLocked = 0x230;
@@ -407,11 +407,11 @@ namespace GW2LIB
 
         // CharClient::CContext
         // ANet::Array<CharClient::CCharacter*> m_charArray;
-        uintptr_t charctxCharArray = 0x24;
+        uintptr_t charctxCharArray = 0x28;
         // ANet::Array<CharClient::CPlayer*> m_playerArray;
-        uintptr_t charctxPlayerArray = 0x34;
+        uintptr_t charctxPlayerArray = 0x38;
         // CharClient::CCharacter* m_controlledCharacter;
-        uintptr_t charctxControlled = 0x44;
+        uintptr_t charctxControlled = 0x48;
         /*
         Context that contains data about CCharacters.
 
@@ -527,7 +527,7 @@ namespace GW2LIB
 
         // CharClient::CInventory
         // int m_supply
-        uintptr_t invSupply = 0x1e8;
+        uintptr_t invSupply = 0x1f8;
 
         // AgentSelection::CContext
         // Agent::CAgentBase* m_autoSelection;
