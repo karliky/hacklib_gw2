@@ -210,17 +210,6 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
         D3DXMatrixPerspectiveFovLH(&projMat, m_gameData.camData.fovy, static_cast<float>(viewport.Width)/viewport.Height, 0.01f, 100000.0f);
         m_drawer.Update(viewMat, projMat);
 
-        if (GetAsyncKeyState(VK_NUMPAD1) < 0) {
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-        }
-        pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-        pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-
-        // draw rect to display active rendering
-        m_drawer.DrawRectFilled(0, 0, 3, 3, 0x77ffff00);
-
         if (m_cbRender) {
             m_bPublicDrawer = true;
 
