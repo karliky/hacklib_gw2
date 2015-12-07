@@ -222,13 +222,13 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
         // save old render state first
         for (it = state.begin(); it < state.end(); it++) {
             DWORD oldVal;
-            pDevice->GetRenderState((*it).first, &oldVal);
-            oldState.push_back({ (*it).first, oldVal });
+            pDevice->GetRenderState(it->first, &oldVal);
+            oldState.push_back({ it->first, oldVal });
         }
 
         // set our custom state
         for (it = state.begin(); it < state.end(); it++) {
-            pDevice->SetRenderState((*it).first, (*it).second);
+            pDevice->SetRenderState(it->first, it->second);
         }
 
         if (m_cbRender) {
@@ -248,7 +248,7 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
 
         // restore old render state
         for (it = oldState.begin(); it < oldState.end(); it++) {
-            pDevice->SetRenderState((*it).first, (*it).second);
+            pDevice->SetRenderState(it->first, it->second);
         }
     }
 }
