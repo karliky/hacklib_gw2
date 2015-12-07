@@ -244,11 +244,11 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
             }();
 
             m_bPublicDrawer = false;
+        }
 
-            // restore old render state
-            for (it = oldState.begin(); it < oldState.end(); it++) {
-                pDevice->SetRenderState((*it).first, (*it).second);
-            }
+        // restore old render state
+        for (it = oldState.begin(); it < oldState.end(); it++) {
+            pDevice->SetRenderState((*it).first, (*it).second);
         }
     }
 }
