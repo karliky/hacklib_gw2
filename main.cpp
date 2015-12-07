@@ -210,6 +210,27 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
         D3DXMatrixPerspectiveFovLH(&projMat, m_gameData.camData.fovy, static_cast<float>(viewport.Width)/viewport.Height, 0.01f, 100000.0f);
         m_drawer.Update(viewMat, projMat);
 
+        std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>>::iterator it;
+        std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>> oldState;
+        std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>> state = {
+            { D3DRS_ALPHABLENDENABLE, TRUE },
+            { D3DRS_SRCBLEND, D3DBLEND_SRCALPHA },
+            { D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA },
+            { D3DRS_LIGHTING, FALSE }
+        };
+
+        // save old render state first
+        for (it = state.begin(); it < state.end(); it++) {
+            DWORD oldVal;
+            pDevice->GetRenderState(it->first, &oldVal);
+            oldState.push_back({ it->first, oldVal });
+        }
+
+        // set our custom state
+        for (it = state.begin(); it < state.end(); it++) {
+            pDevice->SetRenderState(it->first, it->second);
+        }
+
         if (m_cbRender) {
             m_bPublicDrawer = true;
 
@@ -223,6 +244,11 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
             }();
 
             m_bPublicDrawer = false;
+        }
+
+        // restore old render state
+        for (it = oldState.begin(); it < oldState.end(); it++) {
+            pDevice->SetRenderState(it->first, it->second);
         }
     }
 }
