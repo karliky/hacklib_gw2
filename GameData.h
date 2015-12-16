@@ -37,6 +37,7 @@ namespace GameData
         bool isInWater = false;
         bool isMonster = false;
         bool isMonsterPlayerClone = false;
+        bool isRangerPet = false;
         int level = 0;
         int scaledLevel = 0;
         int wvwsupply = 0;

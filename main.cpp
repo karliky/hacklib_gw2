@@ -285,6 +285,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
         pCharData->isInWater = character.call<bool>(m_pubmems.charVtInWater);
         pCharData->isMonster = character.call<bool>(m_pubmems.charVtMonster);
         pCharData->isMonsterPlayerClone = character.call<bool>(m_pubmems.charVtClone);
+        pCharData->isRangerPet = character.call<bool>(m_pubmems.charVtRangerPet);
 
         pCharData->attitude = character.get<GW2LIB::GW2::Attitude>(m_pubmems.charAttitude);
         pCharData->gliderPercent = character.get<float>(m_pubmems.charGliderPercent);

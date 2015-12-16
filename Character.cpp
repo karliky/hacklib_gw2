@@ -123,6 +123,13 @@ bool Character::IsMonsterPlayerClone() const
     return false;
 }
 
+bool Character::IsRangerPet() const
+{
+    if (m_ptr)
+        return m_ptr->isRangerPet;
+    return false;
+}
+
 
 int Character::GetLevel() const
 {
