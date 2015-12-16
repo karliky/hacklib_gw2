@@ -135,6 +135,7 @@ namespace GW2LIB
         bool IsInWater() const;
         bool IsMonster() const;
         bool IsMonsterPlayerClone() const;
+        bool IsRangerPet() const;
 
         int GetLevel() const;
         int GetScaledLevel() const;
@@ -276,10 +277,11 @@ namespace GW2LIB
         uintptr_t charVtAlive = 0x288;
         uintptr_t charVtControlled = 0x290;
         uintptr_t charVtDowned = 0x2a8;
-        uintptr_t charVtInWater = 0x300;
-        uintptr_t charVtMonster = 0x318;
-        uintptr_t charVtClone = 0x338;
-        uintptr_t charVtPlayer = 0x370;
+        uintptr_t charVtInWater = 0x308;
+        uintptr_t charVtMonster = 0x320;
+        uintptr_t charVtClone = 0x340;
+        uintptr_t charVtPlayer = 0x378;
+        uintptr_t charVtRangerPet = 0x370;
         uintptr_t charAttitude = 0xa0;
         uintptr_t charCoreStats = 0x280;
         uintptr_t charEndurance = 0x2c8;
@@ -442,13 +444,15 @@ namespace GW2LIB
         // bool IsDowned();
         uintptr_t charVtDowned = 0x154;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x180;
+        uintptr_t charVtInWater = 0x184;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x18c;
+        uintptr_t charVtMonster = 0x190;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x19c;
+        uintptr_t charVtClone = 0x1a0;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1b8;
+        uintptr_t charVtPlayer = 0x1bc;
+        // bool IsRangerPet();
+        uintptr_t charVtRangerPet = 0x1b8;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x58;
         // CharClient::CCoreStats* m_coreStats;
@@ -474,6 +478,7 @@ namespace GW2LIB
         Two at once! "IsPlayer() || IsMonster()"
         Two at once! "character->IsPlayer() || character->IsMonsterPlayerClone()"
         "character->IsPlayer() || character->IsMonsterPlayerClone()"
+        3rd vt call from bottom of "speciesDef" (search for -> "m_kennel")
 
         "m_attitudeTowardControlled < Content::AFFINITY_ATTITUDES"
         "m_coreStats"
