@@ -307,6 +307,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->profession = corestats.get<GW2LIB::GW2::Profession>(m_pubmems.statsProfession);
             pCharData->level = corestats.get<int>(m_pubmems.statsLevel);
             pCharData->scaledLevel = corestats.get<int>(m_pubmems.statsScaledLevel);
+            pCharData->stats = corestats.get<GW2LIB::GW2::CharacterStats>(m_pubmems.statsStats);
         }
 
         hl::ForeignClass inventory = character.get<void*>(m_pubmems.charInventory);

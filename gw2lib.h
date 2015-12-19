@@ -39,6 +39,16 @@ namespace GW2LIB
 
     namespace GW2
     {
+        struct CharacterStats {
+            int power = 0;
+            int precision = 0;
+            int toughness = 0;
+            int vitality = 0;
+            int ferocity = 0;
+            int healing = 0;
+            int condition = 0;
+        };
+
         enum Profession {
             PROFESSION_GUARDIAN = 1,
             PROFESSION_WARRIOR,
@@ -139,6 +149,7 @@ namespace GW2LIB
 
         int GetLevel() const;
         int GetScaledLevel() const;
+        GW2::CharacterStats GetStats() const;
         int GetWvwSupply() const;
 
         float GetCurrentHealth() const;
@@ -290,6 +301,7 @@ namespace GW2LIB
 
         uintptr_t playerName = 0x68;
         uintptr_t charGliderPercent = 0x130;
+        uintptr_t statsStats = 0xac;
         uintptr_t statsLevel = 0x1ec;
         uintptr_t statsScaledLevel = 0x21c;
         uintptr_t statsProfession = 0x264;
@@ -506,6 +518,8 @@ namespace GW2LIB
         */
 
         // CharClient::CCoreStats
+        // CharacterStats stats;
+        uintptr_t statsStats = 0xa0;
         // int m_level;
         uintptr_t statsLevel = 0x1b4;
         // int m_scaledLevel;

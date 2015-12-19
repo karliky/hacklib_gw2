@@ -145,6 +145,14 @@ int Character::GetScaledLevel() const
     return 0;
 }
 
+GW2::CharacterStats Character::GetStats() const
+{
+    if (m_ptr)
+        return m_ptr->stats;
+    GW2::CharacterStats dummy;
+    return dummy;
+}
+
 int Character::GetWvwSupply() const
 {
     if (m_ptr)
