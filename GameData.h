@@ -50,6 +50,7 @@ namespace GameData
         GW2LIB::GW2::BreakbarState breakbarState = GW2LIB::GW2::BREAKBAR_STATE_NONE;
         GW2LIB::GW2::Profession profession = GW2LIB::GW2::Profession::PROFESSION_NONE;
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::Attitude::ATTITUDE_FRIENDLY;
+        GW2LIB::GW2::CharacterStats stats;
         std::string name;
     };
 
