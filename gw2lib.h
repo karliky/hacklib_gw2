@@ -284,15 +284,15 @@ namespace GW2LIB
 
         uintptr_t charVtGetAgent = 0x158;
         uintptr_t charVtGetAgentId = 0x160;
-        uintptr_t charVtGetPlayer = 0x208;
-        uintptr_t charVtAlive = 0x288;
-        uintptr_t charVtControlled = 0x290;
-        uintptr_t charVtDowned = 0x2a8;
-        uintptr_t charVtInWater = 0x308;
-        uintptr_t charVtMonster = 0x320;
-        uintptr_t charVtClone = 0x340;
-        uintptr_t charVtPlayer = 0x378;
-        uintptr_t charVtRangerPet = 0x370;
+        uintptr_t charVtGetPlayer = 0x210;
+        uintptr_t charVtAlive = 0x290;
+        uintptr_t charVtControlled = 0x298;
+        uintptr_t charVtDowned = 0x2b0;
+        uintptr_t charVtInWater = 0x310;
+        uintptr_t charVtMonster = 0x328;
+        uintptr_t charVtClone = 0x348;
+        uintptr_t charVtPlayer = 0x380;
+        uintptr_t charVtRangerPet = 0x378;
         uintptr_t charAttitude = 0xa0;
         uintptr_t charCoreStats = 0x280;
         uintptr_t charEndurance = 0x2c8;
@@ -355,7 +355,7 @@ namespace GW2LIB
 
         // AgentView::CContext
         // ANet::Array<Agent::CAvAgent*> m_agentArray;
-        uintptr_t avctxAgentArray = 0x30;
+        uintptr_t avctxAgentArray = 0x34;
         /*
         This is the context that deals with agents, the base of all entities in the game. It is optimized
         out of the main context, but there are static references to it.
@@ -421,11 +421,11 @@ namespace GW2LIB
 
         // CharClient::CContext
         // ANet::Array<CharClient::CCharacter*> m_charArray;
-        uintptr_t charctxCharArray = 0x28;
+        uintptr_t charctxCharArray = 0x30;
         // ANet::Array<CharClient::CPlayer*> m_playerArray;
-        uintptr_t charctxPlayerArray = 0x38;
+        uintptr_t charctxPlayerArray = 0x44;
         // CharClient::CCharacter* m_controlledCharacter;
-        uintptr_t charctxControlled = 0x48;
+        uintptr_t charctxControlled = 0x54;
         /*
         Context that contains data about CCharacters.
 
@@ -433,11 +433,11 @@ namespace GW2LIB
         */
 
         // CharClient::CBreakBar* m_breakBar;
-        uintptr_t charBreakbar = 0x5c;
+        uintptr_t charBreakbar = 0x64;
         // BreakbarState
-        uintptr_t breakbarState = 0x1c;
+        uintptr_t breakbarState = 0x20;
         // float
-        uintptr_t breakbarPercent = 0x20;
+        uintptr_t breakbarPercent = 0x24;
         /*
         "m_breakBar"
         */
@@ -448,33 +448,33 @@ namespace GW2LIB
         // int GetAgentId();
         uintptr_t charVtGetAgentId = 0xb0;
         // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0x104;
+        uintptr_t charVtGetPlayer = 0x108;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x144;
+        uintptr_t charVtAlive = 0x148;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x148;
+        uintptr_t charVtControlled = 0x14c;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x154;
+        uintptr_t charVtDowned = 0x158;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x184;
+        uintptr_t charVtInWater = 0x188;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x190;
+        uintptr_t charVtMonster = 0x194;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1a0;
+        uintptr_t charVtClone = 0x1a4;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1bc;
+        uintptr_t charVtPlayer = 0x1c0;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1b8;
+        uintptr_t charVtRangerPet = 0x1bc;
         // Attitude m_attitudeTowardControlled;
-        uintptr_t charAttitude = 0x58;
+        uintptr_t charAttitude = 0x60;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x174;
+        uintptr_t charCoreStats = 0x194;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x194;
+        uintptr_t charEndurance = 0x1b8;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x198;
+        uintptr_t charHealth = 0x1bc;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x19c;
+        uintptr_t charInventory = 0x1c0;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
@@ -501,7 +501,7 @@ namespace GW2LIB
 
         // CharClient::CPlayer
         // char* m_name
-        uintptr_t playerName = 0x44;
+        uintptr_t playerName = 0x48;
         /*
         Represents a player.
 
@@ -509,7 +509,7 @@ namespace GW2LIB
         "TextValidateLiteral(m_name.Ptr())"
         */
 
-        uintptr_t charGliderPercent = 0xa0;
+        uintptr_t charGliderPercent = 0xb8;
         /*
         Glider percentage level as a float.
 
@@ -521,11 +521,11 @@ namespace GW2LIB
         // CharacterStats stats;
         uintptr_t statsStats = 0xa0;
         // int m_level;
-        uintptr_t statsLevel = 0x1b4;
+        uintptr_t statsLevel = 0x1b8;
         // int m_scaledLevel;
-        uintptr_t statsScaledLevel = 0x1e4;
+        uintptr_t statsScaledLevel = 0x1e8;
         // Profession m_profession;
-        uintptr_t statsProfession = 0x22c;
+        uintptr_t statsProfession = 0x230;
         /*
         Some general stat information about a character.
 
@@ -546,15 +546,15 @@ namespace GW2LIB
 
         // CharClient::CInventory
         // int m_supply
-        uintptr_t invSupply = 0x1f8;
+        uintptr_t invSupply = 0x21c;
 
         // AgentSelection::CContext
         // Agent::CAgentBase* m_autoSelection;
         uintptr_t asctxAuto = 0x28;
         // Agent::CAgentBase* m_hoverSelection;
-        uintptr_t asctxHover = 0x80;
+        uintptr_t asctxHover = 0x84;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0x11c;
+        uintptr_t asctxLocked = 0x120;
         // D3DXVECTOR3 m_screenToWorld;
         uintptr_t asctxStoW = 0x13c;
         /*
