@@ -31,6 +31,7 @@ class Gw2HackMain : public hl::Main
 {
 public:
     bool init() override;
+    void shutdown() override;
 
     const GamePointers *GetGamePointers() const { return &m_mems; }
 

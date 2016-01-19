@@ -179,6 +179,15 @@ bool Gw2HackMain::init()
     return false;
 }
 
+void Gw2HackMain::shutdown()
+{
+    m_hooker.unhook(m_hkPresent);
+    m_hooker.unhook(m_hkReset);
+    m_hooker.unhook(m_hkAlertCtx);
+
+    std::lock_guard<std::mutex> lock(m_gameDataMutex);
+}
+
 
 hl::Drawer *Gw2HackMain::GetDrawer(bool bUsedToRender)
 {
