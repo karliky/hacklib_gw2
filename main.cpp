@@ -196,6 +196,7 @@ void Gw2HackMain::shutdown()
     m_hooker.unhook(m_hkPresent);
     m_hooker.unhook(m_hkReset);
     m_hooker.unhook(m_hkAlertCtx);
+    m_hooker.unhook(m_hkProcessText);
 
     std::lock_guard<std::mutex> lock(m_gameDataMutex);
 }
