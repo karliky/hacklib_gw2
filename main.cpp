@@ -159,7 +159,10 @@ bool Gw2HackMain::init()
 #else
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 6, (hl::Hooker::HookCallback_t)hkProcessText);
 #endif
-
+    if (!m_hkProcessText) {
+        HL_LOG_ERR("[Core::Init] Hooking chat log failed\n");
+        return false;
+    }
     m_hkPresent = m_hooker.hookVT((uintptr_t)pDevice, 17, (uintptr_t)hkPresent);
     if (!m_hkPresent) {
         HL_LOG_ERR("[Core::Init] Hooking render thread failed\n");
