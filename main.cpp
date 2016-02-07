@@ -15,6 +15,7 @@
 
 
 void __fastcall hkGameThread(uintptr_t, int, int);
+void hkProcessText(hl::CpuContext*);
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT*, RECT*, HWND, RGNDATA*);
 HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS*);
 
@@ -91,10 +92,12 @@ bool Gw2HackMain::init()
         "ViewAdvanceDevice",
         "ViewAdvanceAgentSelect",
         "ViewAdvanceAgentView",
-        "ViewAdvanceWorldView"
+        "ViewAdvanceWorldView",
+        "codedProcessedText"
     });
 
     uintptr_t pAlertCtx = 0;
+    uintptr_t pProcessText = 0;
     if (![&](){
         __try {
 #ifdef ARCH_64BIT
@@ -105,6 +108,7 @@ bool Gw2HackMain::init()
             m_mems.pMapId = (int*)hl::FollowRelativeAddress(MapIdSig + 0x6);
             m_mems.pPing = (int*)hl::FollowRelativeAddress(ping + 0x9);
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
+            pProcessText = (results[4] - 0x49);
 #else
             m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
 
@@ -118,6 +122,7 @@ bool Gw2HackMain::init()
 
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
+            pProcessText = (results[4] - 0x2d);
 #endif
         } __except (EXCEPTION_EXECUTE_HANDLER) {
             return false;
@@ -148,6 +153,13 @@ bool Gw2HackMain::init()
         HL_LOG_ERR("[Core::Init] Device not found\n");
         return false;
     }
+
+#ifdef ARCH_64BIT
+    m_hkProcessText = m_hooker.hookDetour(pProcessText, 17, (hl::Hooker::HookCallback_t)hkProcessText);
+#else
+    m_hkProcessText = m_hooker.hookDetour(pProcessText, 6, (hl::Hooker::HookCallback_t)hkProcessText);
+#endif
+
     m_hkPresent = m_hooker.hookVT((uintptr_t)pDevice, 17, (uintptr_t)hkPresent);
     if (!m_hkPresent) {
         HL_LOG_ERR("[Core::Init] Hooking render thread failed\n");
@@ -561,6 +573,23 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
     }
 
     orgFunc(pInst, arg);
+}
+void hkProcessText(hl::CpuContext *ctx)
+{
+#ifdef ARCH_64BIT
+    wchar_t *wtxt = *(wchar_t**)(ctx->RDX + 0x08);
+#else
+    wchar_t *wtxt = (wchar_t*)ctx->ECX;
+#endif
+    size_t len = wcslen(wtxt) + 1;
+
+    char *txt = new char[len];
+    memset(txt, 0, len);
+    wcstombs(txt, wtxt, len);
+
+    HL_LOG_DBG("%s\n", txt);
+
+    delete txt;
 }
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* pDestRect, HWND hDestWindowOverride, RGNDATA* pDirtyRegion)
 {

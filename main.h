@@ -46,6 +46,7 @@ public:
     const hl::IHook *m_hkPresent = nullptr;
     const hl::IHook *m_hkReset = nullptr;
     const hl::IHook *m_hkAlertCtx = nullptr;
+    const hl::IHook *m_hkProcessText = nullptr;
 
     std::mutex m_gameDataMutex;
 
