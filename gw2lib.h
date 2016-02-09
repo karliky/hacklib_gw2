@@ -442,39 +442,39 @@ namespace GW2LIB
         "m_breakBar"
         */
 
-        // CharClient::CCharacter
-        // Agent::CAgentBase* GetAgent();
-        uintptr_t charVtGetAgent = 0xb0;
-        // int GetAgentId();
-        uintptr_t charVtGetAgentId = 0xb4;
-        // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0x10c;
-        // bool IsAlive();
-        uintptr_t charVtAlive = 0x14c;
-        // bool IsControlled();
-        uintptr_t charVtControlled = 0x150;
-        // bool IsDowned();
-        uintptr_t charVtDowned = 0x15c;
-        // bool IsInWater();
-        uintptr_t charVtInWater = 0x18c;
-        // bool IsMonster();
-        uintptr_t charVtMonster = 0x198;
-        // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1a8;
-        // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1c4;
-        // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1c0;
-        // Attitude m_attitudeTowardControlled;
-        uintptr_t charAttitude = 0x60;
-        // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x194;
-        // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x1b8;
-        // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x1bc;
-        // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x1c0;
+		// CharClient::CCharacter
+		// Agent::CAgentBase* GetAgent();
+		uintptr_t charVtGetAgent = 0xb8;
+		// int GetAgentId();
+		uintptr_t charVtGetAgentId = 0xbc;
+		// CharClient::CPlayer* GetPlayer();
+		uintptr_t charVtGetPlayer = 0x114;
+		// bool IsAlive();
+		uintptr_t charVtAlive = 0x154;
+		// bool IsControlled();
+		uintptr_t charVtControlled = 0x158;
+		// bool IsDowned();
+		uintptr_t charVtDowned = 0x164;
+		// bool IsInWater();
+		uintptr_t charVtInWater = 0x194;
+		// bool IsMonster();
+		uintptr_t charVtMonster = 0x1a0;
+		// bool IsMonsterPlayerClone();
+		uintptr_t charVtClone = 0x1b0;
+		// bool IsPlayer();
+		uintptr_t charVtPlayer = 0x1cc;
+		// bool IsRangerPet();
+		uintptr_t charVtRangerPet = 0x1c4;
+		// Attitude m_attitudeTowardControlled;
+		uintptr_t charAttitude = 0x60;
+		// CharClient::CCoreStats* m_coreStats;
+		uintptr_t charCoreStats = 0x194;
+		// CharClient::CEndurance* m_endurance;
+		uintptr_t charEndurance = 0x1b8;
+		// CharClient::CHealth* m_health;
+		uintptr_t charHealth = 0x1bc;
+		// CharClient::CInventory* m_inventory;
+		uintptr_t charInventory = 0x1c0;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
