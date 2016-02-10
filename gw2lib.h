@@ -15,6 +15,13 @@ http://www.gamerevision.com/showthread.php?3691-Gw2lib&p=45709
 #include <utility>
 #include <cstdint>
 
+
+struct HookInterface {
+    void(*ChatHook)(wchar_t*) = nullptr;
+};
+
+HookInterface* get_callback_list();
+
 struct PrimitiveDiffuseMesh;
 namespace GameData {
     struct CharacterData;
@@ -93,6 +100,22 @@ namespace GW2LIB
     // registers a callback to be used for a custom esp
     // use draw functions inside the callback function
     void EnableEsp(void (*)());
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // # callback framework
+    //////////////////////////////////////////////////////////////////////////
+    enum Gw2Callback {
+        ChatHook
+    };
+
+    template<typename T>
+    void SetGameHook(Gw2Callback type, T hook) {
+        HookInterface *list = get_callback_list();
+        switch (type) {
+        case ChatHook: list->ChatHook = hook; break;
+        }
+    }
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -282,17 +305,17 @@ namespace GW2LIB
         uintptr_t breakbarState = 0x40;
         uintptr_t breakbarPercent = 0x44;
 
-        uintptr_t charVtGetAgent = 0x160;
-        uintptr_t charVtGetAgentId = 0x168;
-        uintptr_t charVtGetPlayer = 0x218;
-        uintptr_t charVtAlive = 0x298;
-        uintptr_t charVtControlled = 0x2a0;
-        uintptr_t charVtDowned = 0x2b8;
-        uintptr_t charVtInWater = 0x318;
-        uintptr_t charVtMonster = 0x330;
-        uintptr_t charVtClone = 0x350;
-        uintptr_t charVtPlayer = 0x388;
-        uintptr_t charVtRangerPet = 0x380;
+        uintptr_t charVtGetAgent = 0x170;
+        uintptr_t charVtGetAgentId = 0x178;
+        uintptr_t charVtGetPlayer = 0x228;
+        uintptr_t charVtAlive = 0x2a8;
+        uintptr_t charVtControlled = 0x2b0;
+        uintptr_t charVtDowned = 0x2c8;
+        uintptr_t charVtInWater = 0x328;
+        uintptr_t charVtMonster = 0x340;
+        uintptr_t charVtClone = 0x360;
+        uintptr_t charVtPlayer = 0x398;
+        uintptr_t charVtRangerPet = 0x390;
         uintptr_t charAttitude = 0xa0;
         uintptr_t charCoreStats = 0x280;
         uintptr_t charEndurance = 0x2c8;
@@ -351,6 +374,7 @@ namespace GW2LIB
 
         The char context offset can be found by looking at the objects before and after the offset
         where it was before and compare to the CharClient::CContext description.
+        "!IsPlayer() || GetPlayer()" + 0x14
         */
 
         // AgentView::CContext
@@ -444,27 +468,27 @@ namespace GW2LIB
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
-        uintptr_t charVtGetAgent = 0xb0;
+        uintptr_t charVtGetAgent = 0xb8;
         // int GetAgentId();
-        uintptr_t charVtGetAgentId = 0xb4;
+        uintptr_t charVtGetAgentId = 0xbc;
         // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0x10c;
+        uintptr_t charVtGetPlayer = 0x114;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x14c;
+        uintptr_t charVtAlive = 0x154;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x150;
+        uintptr_t charVtControlled = 0x158;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x15c;
+        uintptr_t charVtDowned = 0x164;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x18c;
+        uintptr_t charVtInWater = 0x194;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x198;
+        uintptr_t charVtMonster = 0x1a0;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1a8;
+        uintptr_t charVtClone = 0x1b0;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1c4;
+        uintptr_t charVtPlayer = 0x1cc;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1c0;
+        uintptr_t charVtRangerPet = 0x1c8;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x60;
         // CharClient::CCoreStats* m_coreStats;
@@ -490,7 +514,7 @@ namespace GW2LIB
         Two at once! "IsPlayer() || IsMonster()"
         Two at once! "character->IsPlayer() || character->IsMonsterPlayerClone()"
         "character->IsPlayer() || character->IsMonsterPlayerClone()"
-        3rd vt call from bottom of "speciesDef" (search for -> "m_kennel")
+        "m_kennel" then search up for "speciesDef", 3rd vt call counting up
 
         "m_attitudeTowardControlled < Content::AFFINITY_ATTITUDES"
         "m_coreStats"
