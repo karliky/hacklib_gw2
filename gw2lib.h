@@ -121,10 +121,15 @@ namespace GW2LIB
 
         switch (type) {
         case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;
-        case MouseMoveHook: list->MouseMoveHook = decltype(list->MouseMoveHook)((uintptr_t)hook); break;
-        case MouseButtonHook: list->MouseButtonHook = decltype(list->MouseButtonHook)((uintptr_t)hook); break;
-        case MouseWheelHook: list->MouseWheelHook = decltype(list->MouseWheelHook)((uintptr_t)hook); break;
-        case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;
+        case MouseMoveHook: 
+            list->MouseMoveHook = decltype(list->MouseMoveHook)((uintptr_t)hook);
+            break;
+        case MouseButtonHook: 
+            list->MouseButtonHook = decltype(list->MouseButtonHook)((uintptr_t)hook); 
+            break;
+        case MouseWheelHook: 
+            list->MouseWheelHook = decltype(list->MouseWheelHook)((uintptr_t)hook); 
+            break;
         }
     }
 

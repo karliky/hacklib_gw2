@@ -191,6 +191,10 @@ bool Gw2HackMain::init()
             HL_LOG_ERR("[Core::Init] Hooking GetMessage failed (%d)\n", GetLastError());
         }
     }
+    else
+    {
+        HL_LOG_ERR("[Core::Init] Hooking GetMessage failed (%d)\n", GetLastError());
+    }
 
     HL_LOG_DBG("Init ESP data\n");
 
@@ -611,18 +615,47 @@ LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)
 {
     auto pCore = g_initObj.getMain();
     MSG* msg = (MSG*)lParam;
-    HookInterface* list = get_callback_list();
+    HookInterface* list = get_hook_list();
+    bool pass_msg = true;
 
     switch (msg->message)
     {
     case WM_MOUSEMOVE:
-        if (list->MouseMoveHook) list->MouseMoveHook(msg->pt.x, msg->pt.y, msg->wParam);
+        if (list->MouseMoveHook) pass_msg = list->MouseMoveHook(LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
+        break;
+    case WM_MOUSEWHEEL:
+        if (list->MouseWheelHook) pass_msg = list->MouseWheelHook(GET_WHEEL_DELTA_WPARAM(msg->wParam), LOWORD(msg->lParam), HIWORD(msg->lParam), GET_KEYSTATE_WPARAM(msg->wParam));
+        break;
+    case WM_LBUTTONDOWN:
+        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(true, MK_LBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
+        break;
+    case WM_LBUTTONUP:
+        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(false, MK_LBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
+        break;
+    case WM_RBUTTONDOWN:
+        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(true, MK_RBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
+        break;
+    case WM_RBUTTONUP:
+        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(false, MK_RBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
+        break;
+    case WM_MBUTTONDOWN:
+        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(true, MK_MBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
+        break;
+    case WM_MBUTTONUP:
+        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(false, MK_MBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
         break;
     }
 
-    // If code < 0, must return the value from CallNextHookEx
-    // If code >= 0, recommended to return the value from CallNextHookEx, or if we don't then return 0 
+    // If code < 0, the value from CallNextHookEx must be return
+    // If code >= 0, recommended to return the value from CallNextHookEx, or if we don't then return 0
+    if (code >= 0 && !pass_msg)
+    {
+        msg->message = WM_NULL;
+        return 0;
+    }
+
     return CallNextHookEx(pCore->m_hhkGetMessage, code, wParam, lParam);
+
 }
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* pDestRect, HWND hDestWindowOverride, RGNDATA* pDirtyRegion)
 {
