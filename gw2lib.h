@@ -464,7 +464,7 @@ namespace GW2LIB
 		// bool IsPlayer();
 		uintptr_t charVtPlayer = 0x1cc;
 		// bool IsRangerPet();
-		uintptr_t charVtRangerPet = 0x1c4;
+		uintptr_t charVtRangerPet = 0x1c8;
 		// Attitude m_attitudeTowardControlled;
 		uintptr_t charAttitude = 0x60;
 		// CharClient::CCoreStats* m_coreStats;
