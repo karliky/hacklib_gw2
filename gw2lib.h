@@ -444,27 +444,27 @@ namespace GW2LIB
 
         // CharClient::CCharacter
         // Agent::CAgentBase* GetAgent();
-        uintptr_t charVtGetAgent = 0xb0;
+        uintptr_t charVtGetAgent = 0xb8;
         // int GetAgentId();
-        uintptr_t charVtGetAgentId = 0xb4;
+        uintptr_t charVtGetAgentId = 0xbc;
         // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0x10c;
+        uintptr_t charVtGetPlayer = 0x114;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x14c;
+        uintptr_t charVtAlive = 0x154;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x150;
+        uintptr_t charVtControlled = 0x158;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x15c;
+        uintptr_t charVtDowned = 0x164;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x18c;
+        uintptr_t charVtInWater = 0x194;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x198;
+        uintptr_t charVtMonster = 0x1a0;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1a8;
+        uintptr_t charVtClone = 0x1b0;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1c4;
+        uintptr_t charVtPlayer = 0x1cc;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1c0;
+        uintptr_t charVtRangerPet = 0x1c8;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x60;
         // CharClient::CCoreStats* m_coreStats;
