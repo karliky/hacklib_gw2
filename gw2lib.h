@@ -112,8 +112,9 @@ namespace GW2LIB
     template<typename T>
     void SetGameHook(Gw2Callback type, T hook) {
         HookInterface *list = get_callback_list();
+
         switch (type) {
-        case ChatHook: list->ChatHook = hook; break;
+        case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;
         }
     }
 
