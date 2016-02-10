@@ -49,6 +49,8 @@ public:
     const hl::IHook *m_hkAlertCtx = nullptr;
     const hl::IHook *m_hkProcessText = nullptr;
 
+    HHOOK m_hhkGetMessage = NULL;
+
     std::mutex m_gameDataMutex;
     HookInterface *m_callbackList;
 

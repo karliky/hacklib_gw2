@@ -18,6 +18,9 @@ http://www.gamerevision.com/showthread.php?3691-Gw2lib&p=45709
 
 struct HookInterface {
     void(*ChatHook)(wchar_t*) = nullptr;
+    bool(*MouseMoveHook)(int x, int y, int modkeys) = nullptr;
+    bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
+    bool(*MouseWheelHook)(int delta, int x, int y, int modkeys) = nullptr;
 };
 
 HookInterface* get_callback_list();
@@ -106,14 +109,20 @@ namespace GW2LIB
     // # callback framework
     //////////////////////////////////////////////////////////////////////////
     enum Gw2Callback {
-        ChatHook
+        ChatHook,
+        MouseMoveHook,
+        MouseButtonHook,
+        MouseWheelHook
     };
 
     template<typename T>
     void SetGameHook(Gw2Callback type, T hook) {
         HookInterface *list = get_callback_list();
         switch (type) {
-        case ChatHook: list->ChatHook = hook; break;
+        case ChatHook: list->ChatHook = (void(__cdecl*)(wchar_t*))hook; break;
+        case MouseMoveHook: list->MouseMoveHook = decltype(list->MouseMoveHook)((uintptr_t)hook); break;
+        case MouseButtonHook: list->MouseButtonHook = decltype(list->MouseButtonHook)((uintptr_t)hook); break;
+        case MouseWheelHook: list->MouseWheelHook = decltype(list->MouseWheelHook)((uintptr_t)hook); break;
         }
     }
 
