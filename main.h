@@ -37,7 +37,6 @@ public:
 
     hl::Drawer *GetDrawer(bool bUsedToRender);
     const GameData::GameData *GetGameData() const;
-    HookInterface* GetCallbackList();
 
     void SetRenderCallback(void (*cbRender)());
 
@@ -52,7 +51,7 @@ public:
     HHOOK m_hhkGetMessage = NULL;
 
     std::mutex m_gameDataMutex;
-    HookInterface *m_callbackList;
+    HookInterface *m_hookList;
 
 private:
     void RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent);

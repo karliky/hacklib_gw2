@@ -23,7 +23,7 @@ struct HookInterface {
     bool(*MouseWheelHook)(int delta, int x, int y, int modkeys) = nullptr;
 };
 
-HookInterface* get_callback_list();
+HookInterface* get_hook_list();
 
 struct PrimitiveDiffuseMesh;
 namespace GameData {
@@ -117,12 +117,14 @@ namespace GW2LIB
 
     template<typename T>
     void SetGameHook(Gw2Callback type, T hook) {
-        HookInterface *list = get_callback_list();
+        HookInterface *list = get_hook_list();
+
         switch (type) {
-        case ChatHook: list->ChatHook = (void(__cdecl*)(wchar_t*))hook; break;
+        case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;
         case MouseMoveHook: list->MouseMoveHook = decltype(list->MouseMoveHook)((uintptr_t)hook); break;
         case MouseButtonHook: list->MouseButtonHook = decltype(list->MouseButtonHook)((uintptr_t)hook); break;
         case MouseWheelHook: list->MouseWheelHook = decltype(list->MouseWheelHook)((uintptr_t)hook); break;
+        case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;
         }
     }
 
