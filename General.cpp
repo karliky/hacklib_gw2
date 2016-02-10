@@ -83,6 +83,6 @@ int GW2LIB::GetFPS() {
     return GetMain()->GetGameData()->fps;
 }
 
-HookInterface* get_callback_list() {
-    return GetMain()->GetCallbackList();
+HookInterface* get_hook_list() {
+    return GetMain()->m_hookList;
 }

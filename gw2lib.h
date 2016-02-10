@@ -20,7 +20,7 @@ struct HookInterface {
     void(*ChatHook)(wchar_t*) = nullptr;
 };
 
-HookInterface* get_callback_list();
+HookInterface* get_hook_list();
 
 struct PrimitiveDiffuseMesh;
 namespace GameData {
@@ -111,7 +111,7 @@ namespace GW2LIB
 
     template<typename T>
     void SetGameHook(Gw2Callback type, T hook) {
-        HookInterface *list = get_callback_list();
+        HookInterface *list = get_hook_list();
 
         switch (type) {
         case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;

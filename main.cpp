@@ -76,7 +76,7 @@ bool Gw2HackMain::init()
     };
     hl::ConfigLog(logConfig);
 
-    m_callbackList = new HookInterface;
+    m_hookList = new HookInterface;
 
 #ifdef ARCH_64BIT
     uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
@@ -204,11 +204,7 @@ void Gw2HackMain::shutdown()
     m_hooker.unhook(m_hkProcessText);
 
     std::lock_guard<std::mutex> lock(m_gameDataMutex);
-    delete m_callbackList;
-}
-
-HookInterface* Gw2HackMain::GetCallbackList() {
-    return m_callbackList;
+    delete m_hookList;
 }
 
 
@@ -593,7 +589,7 @@ void hkProcessText(hl::CpuContext *ctx)
     wchar_t *wtxt = (wchar_t*)ctx->ECX;
 #endif
 
-    HookInterface* list = get_callback_list();
+    HookInterface* list = get_hook_list();
     if (list->ChatHook) list->ChatHook(wtxt);
 }
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* pDestRect, HWND hDestWindowOverride, RGNDATA* pDirtyRegion)
