@@ -114,7 +114,10 @@ namespace GW2LIB
         HookInterface *list = get_hook_list();
 
         switch (type) {
-        case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;
+        case ChatHook:
+            if (typeid(list->ChatHook) == typeid(hook))
+                list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook);
+            break;
         }
     }
 
