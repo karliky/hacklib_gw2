@@ -20,7 +20,7 @@ struct HookInterface {
     void(*ChatHook)(wchar_t*) = nullptr;
     bool(*MouseMoveHook)(int x, int y, int modkeys) = nullptr;
     bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
-    bool(*MouseWheelHook)(int delta, int x, int y, int modkeys) = nullptr;
+    bool(*MouseWheelHook)(int delta, int modkeys) = nullptr;
 };
 
 HookInterface* get_hook_list();

@@ -624,7 +624,7 @@ LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)
         if (list->MouseMoveHook) pass_msg = list->MouseMoveHook(LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
         break;
     case WM_MOUSEWHEEL:
-        if (list->MouseWheelHook) pass_msg = list->MouseWheelHook(GET_WHEEL_DELTA_WPARAM(msg->wParam), LOWORD(msg->lParam), HIWORD(msg->lParam), GET_KEYSTATE_WPARAM(msg->wParam));
+        if (list->MouseWheelHook) pass_msg = list->MouseWheelHook(GET_WHEEL_DELTA_WPARAM(msg->wParam), GET_KEYSTATE_WPARAM(msg->wParam));
         break;
     case WM_LBUTTONDOWN:
         if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(true, MK_LBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), msg->wParam);
