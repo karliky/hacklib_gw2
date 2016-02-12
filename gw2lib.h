@@ -108,7 +108,7 @@ namespace GW2LIB
     //////////////////////////////////////////////////////////////////////////
     // # callback framework
     //////////////////////////////////////////////////////////////////////////
-    enum Gw2Callback {
+    enum Gw2Hook {
         ChatHook,
         MouseMoveHook,
         MouseButtonHook,
@@ -116,7 +116,7 @@ namespace GW2LIB
     };
 
     template<typename T>
-    void SetGameHook(Gw2Callback type, T hook) {
+    void SetGameHook(Gw2Hook type, T hook) {
         HookInterface *list = get_hook_list();
 
         switch (type) {
