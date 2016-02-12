@@ -18,6 +18,9 @@ http://www.gamerevision.com/showthread.php?3691-Gw2lib&p=45709
 
 struct HookInterface {
     void(*ChatHook)(wchar_t*) = nullptr;
+    bool(*MouseMoveHook)(int x, int y, int modkeys) = nullptr;
+    bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
+    bool(*MouseWheelHook)(int delta, int x, int y, int modkeys) = nullptr;
 };
 
 HookInterface* get_hook_list();
@@ -106,7 +109,10 @@ namespace GW2LIB
     // # callback framework
     //////////////////////////////////////////////////////////////////////////
     enum Gw2Callback {
-        ChatHook
+        ChatHook,
+        MouseMoveHook,
+        MouseButtonHook,
+        MouseWheelHook
     };
 
     template<typename T>
@@ -114,7 +120,22 @@ namespace GW2LIB
         HookInterface *list = get_hook_list();
 
         switch (type) {
-        case ChatHook: list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook); break;
+        case ChatHook:
+            if (typeid(list->ChatHook) == typeid(hook))
+                list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook);
+            break;
+        case MouseMoveHook:
+            if (typeid(list->MouseMoveHook) == typeid(hook))
+                list->MouseMoveHook = decltype(list->MouseMoveHook)((uintptr_t)hook);
+            break;
+        case MouseButtonHook:
+            if (typeid(list->MouseButtonHook) == typeid(hook))
+                list->MouseButtonHook = decltype(list->MouseButtonHook)((uintptr_t)hook);
+            break;
+        case MouseWheelHook:
+            if (typeid(list->MouseWheelHook) == typeid(hook))
+                list->MouseWheelHook = decltype(list->MouseWheelHook)((uintptr_t)hook);
+            break;
         }
     }
 
