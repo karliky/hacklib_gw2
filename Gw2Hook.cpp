@@ -19,8 +19,9 @@ bool Gw2GameHook::init_hooks() {
 
 #ifdef ARCH_64BIT
     pProcessText = (results[0] - 0x49);
+    pCombatLog = (results[1] - 0x2a);
 
-    m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 17, hkCombatLog);
+    m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 15, hkCombatLog);
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 17, hkProcessText);
 #else
     pProcessText = (results[0] - 0x2d);
@@ -85,8 +86,8 @@ void hkProcessText(hl::CpuContext *ctx)
 void hkCombatLog(hl::CpuContext *ctx)
 {
 #ifdef ARCH_64BIT
-    int hit = *(int*)(ctx->RBP + 0x10);
-    uintptr_t *ag = *(uintptr_t**)(ctx->RBP + 0xC);
+    int hit = (int)ctx->R9;
+    uintptr_t *ag = (uintptr_t*)(ctx->R8);
 #else
     int hit = *(int*)(ctx->EBP + 0x10);
     uintptr_t *ag = *(uintptr_t**)(ctx->EBP + 0xC);

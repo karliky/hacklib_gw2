@@ -34,7 +34,7 @@ Gw2Hooks* get_hook_list();
 namespace GW2LIB {
 
     enum Gw2Hook {
-        ChatHook, // void(*)(wchar*)
+        ChatHook,
         MouseMoveHook,
         MouseButtonHook,
         MouseWheelHook,
