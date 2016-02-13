@@ -46,12 +46,9 @@ public:
     const hl::IHook *m_hkPresent = nullptr;
     const hl::IHook *m_hkReset = nullptr;
     const hl::IHook *m_hkAlertCtx = nullptr;
-    const hl::IHook *m_hkProcessText = nullptr;
-
-    HHOOK m_hhkGetMessage = NULL;
 
     std::mutex m_gameDataMutex;
-    HookInterface *m_hookList;
+    Gw2GameHook m_gw2Hook;
 
 private:
     void RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent);

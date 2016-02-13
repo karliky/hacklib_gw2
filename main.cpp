@@ -15,8 +15,6 @@
 
 
 void __fastcall hkGameThread(uintptr_t, int, int);
-void hkProcessText(hl::CpuContext*);
-LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam);
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT*, RECT*, HWND, RGNDATA*);
 HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS*);
 
@@ -77,8 +75,6 @@ bool Gw2HackMain::init()
     };
     hl::ConfigLog(logConfig);
 
-    m_hookList = new HookInterface;
-
 #ifdef ARCH_64BIT
     uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
     uintptr_t ping = hl::FindPattern("\xCC\x4C\x8B\xDA\x33\xC0\x4C\x8D\x0D\x00\x00\x00\x00\x48\x8B\xD1", "xxxxxxxxx????xxx");
@@ -95,12 +91,10 @@ bool Gw2HackMain::init()
         "ViewAdvanceDevice",
         "ViewAdvanceAgentSelect",
         "ViewAdvanceAgentView",
-        "ViewAdvanceWorldView",
-        "codedProcessedText"
+        "ViewAdvanceWorldView"
     });
 
     uintptr_t pAlertCtx = 0;
-    uintptr_t pProcessText = 0;
     if (![&](){
         __try {
 #ifdef ARCH_64BIT
@@ -111,7 +105,6 @@ bool Gw2HackMain::init()
             m_mems.pMapId = (int*)hl::FollowRelativeAddress(MapIdSig + 0x6);
             m_mems.pPing = (int*)hl::FollowRelativeAddress(ping + 0x9);
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
-            pProcessText = (results[4] - 0x49);
 #else
             m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
 
@@ -125,7 +118,6 @@ bool Gw2HackMain::init()
 
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
-            pProcessText = (results[4] - 0x2d);
 #endif
         } __except (EXCEPTION_EXECUTE_HANDLER) {
             return false;
@@ -156,16 +148,6 @@ bool Gw2HackMain::init()
         HL_LOG_ERR("[Core::Init] Device not found\n");
         return false;
     }
-
-#ifdef ARCH_64BIT
-    m_hkProcessText = m_hooker.hookDetour(pProcessText, 17, (hl::Hooker::HookCallback_t)hkProcessText);
-#else
-    m_hkProcessText = m_hooker.hookDetour(pProcessText, 6, (hl::Hooker::HookCallback_t)hkProcessText);
-#endif
-    if (!m_hkProcessText) {
-        HL_LOG_ERR("[Core::Init] Hooking chat log failed\n");
-        return false;
-    }
     m_hkPresent = m_hooker.hookVT((uintptr_t)pDevice, 17, (uintptr_t)hkPresent);
     if (!m_hkPresent) {
         HL_LOG_ERR("[Core::Init] Hooking render thread failed\n");
@@ -183,18 +165,7 @@ bool Gw2HackMain::init()
         return false;
     }
 
-    HWND hwnd = NULL;
-    if ((hwnd = FindWindow("ArenaNet_Dx_Window_Class", NULL)) != NULL)
-    {
-        if ((m_hhkGetMessage = SetWindowsHookEx(WH_GETMESSAGE, hkGetMessage, NULL, GetWindowThreadProcessId(hwnd, NULL))) == NULL)
-        {
-            HL_LOG_ERR("[Core::Init] Hooking GetMessage failed (%d)\n", GetLastError());
-        }
-    }
-    else
-    {
-        HL_LOG_ERR("[Core::Init] Hooking GetMessage failed (%d)\n", GetLastError());
-    }
+    m_gw2Hook.init_hooks();
 
     HL_LOG_DBG("Init ESP data\n");
 
@@ -215,15 +186,9 @@ void Gw2HackMain::shutdown()
     m_hooker.unhook(m_hkPresent);
     m_hooker.unhook(m_hkReset);
     m_hooker.unhook(m_hkAlertCtx);
-    m_hooker.unhook(m_hkProcessText);
-
-    if (m_hhkGetMessage != NULL)
-    {
-        UnhookWindowsHookEx(m_hhkGetMessage);
-    }
+    m_gw2Hook.cleanup();
 
     std::lock_guard<std::mutex> lock(m_gameDataMutex);
-    delete m_hookList;
 }
 
 
@@ -599,63 +564,6 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
     }
 
     orgFunc(pInst, arg);
-}
-void hkProcessText(hl::CpuContext *ctx)
-{
-#ifdef ARCH_64BIT
-    wchar_t *wtxt = *(wchar_t**)(ctx->RDX + 0x08);
-#else
-    wchar_t *wtxt = (wchar_t*)ctx->ECX;
-#endif
-
-    HookInterface* list = get_hook_list();
-    if (list->ChatHook) list->ChatHook(wtxt);
-}
-LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)
-{
-    auto pCore = g_initObj.getMain();
-    MSG* msg = (MSG*)lParam;
-    HookInterface* list = get_hook_list();
-    bool pass_msg = true;
-
-    switch (msg->message)
-    {
-    case WM_MOUSEMOVE:
-        if (list->MouseMoveHook) pass_msg = list->MouseMoveHook(LOWORD(msg->lParam), HIWORD(msg->lParam), (int)msg->wParam);
-        break;
-    case WM_MOUSEWHEEL:
-        if (list->MouseWheelHook) pass_msg = list->MouseWheelHook(GET_WHEEL_DELTA_WPARAM((int)msg->wParam), GET_KEYSTATE_WPARAM((int)msg->wParam));
-        break;
-    case WM_LBUTTONDOWN:
-        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(true, MK_LBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), (int)msg->wParam);
-        break;
-    case WM_LBUTTONUP:
-        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(false, MK_LBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), (int)msg->wParam);
-        break;
-    case WM_RBUTTONDOWN:
-        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(true, MK_RBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), (int)msg->wParam);
-        break;
-    case WM_RBUTTONUP:
-        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(false, MK_RBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), (int)msg->wParam);
-        break;
-    case WM_MBUTTONDOWN:
-        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(true, MK_MBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), (int)msg->wParam);
-        break;
-    case WM_MBUTTONUP:
-        if (list->MouseButtonHook) pass_msg = list->MouseButtonHook(false, MK_MBUTTON, LOWORD(msg->lParam), HIWORD(msg->lParam), (int)msg->wParam);
-        break;
-    }
-
-    // If code < 0, the value from CallNextHookEx must be return
-    // If code >= 0, recommended to return the value from CallNextHookEx, or if we don't then return 0
-    if (code >= 0 && !pass_msg)
-    {
-        msg->message = WM_NULL;
-        return 0;
-    }
-
-    return CallNextHookEx(pCore->m_hhkGetMessage, code, wParam, lParam);
-
 }
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* pDestRect, HWND hDestWindowOverride, RGNDATA* pDirtyRegion)
 {

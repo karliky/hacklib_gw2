@@ -15,15 +15,8 @@ http://www.gamerevision.com/showthread.php?3691-Gw2lib&p=45709
 #include <utility>
 #include <cstdint>
 
+#include "Gw2Hook.h"
 
-struct HookInterface {
-    void(*ChatHook)(wchar_t*) = nullptr;
-    bool(*MouseMoveHook)(int x, int y, int modkeys) = nullptr;
-    bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
-    bool(*MouseWheelHook)(int delta, int modkeys) = nullptr;
-};
-
-HookInterface* get_hook_list();
 
 struct PrimitiveDiffuseMesh;
 namespace GameData {
@@ -103,41 +96,6 @@ namespace GW2LIB
     // registers a callback to be used for a custom esp
     // use draw functions inside the callback function
     void EnableEsp(void (*)());
-
-
-    //////////////////////////////////////////////////////////////////////////
-    // # callback framework
-    //////////////////////////////////////////////////////////////////////////
-    enum Gw2Hook {
-        ChatHook,
-        MouseMoveHook,
-        MouseButtonHook,
-        MouseWheelHook
-    };
-
-    template<typename T>
-    void SetGameHook(Gw2Hook type, T hook) {
-        HookInterface *list = get_hook_list();
-
-        switch (type) {
-        case ChatHook:
-            if (typeid(list->ChatHook) == typeid(hook))
-                list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook);
-            break;
-        case MouseMoveHook:
-            if (typeid(list->MouseMoveHook) == typeid(hook))
-                list->MouseMoveHook = decltype(list->MouseMoveHook)((uintptr_t)hook);
-            break;
-        case MouseButtonHook:
-            if (typeid(list->MouseButtonHook) == typeid(hook))
-                list->MouseButtonHook = decltype(list->MouseButtonHook)((uintptr_t)hook);
-            break;
-        case MouseWheelHook:
-            if (typeid(list->MouseWheelHook) == typeid(hook))
-                list->MouseWheelHook = decltype(list->MouseWheelHook)((uintptr_t)hook);
-            break;
-        }
-    }
 
 
     //////////////////////////////////////////////////////////////////////////
