@@ -8,6 +8,8 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC
     EspDraw.cpp
     GameData.h
     GameData.cpp
+    Gw2Hook.h
+    Gw2Hook.cpp
     main.h
     main.cpp
     )
