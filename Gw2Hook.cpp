@@ -93,7 +93,8 @@ void hkCombatLog(hl::CpuContext *ctx)
     uintptr_t *ag = *(uintptr_t**)(ctx->EBP + 0xC);
 #endif
 
-    if (ag == GetMain()->GetGameData()->objData.ownAgent->pAgent.data())
+    auto agOwn = GetMain()->GetGameData()->objData.ownAgent;
+    if (agOwn && ag == agOwn->pAgent.data())
         HL_LOG_DBG("hit: %i\n", hit);
 
     Gw2Hooks* list = get_hook_list();
