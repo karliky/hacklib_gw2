@@ -4,7 +4,7 @@
 
 static const int CIRCLE_RES = 64;
 static const hl::VertexBuffer *vbCircle;
-
+static const hl::VertexBuffer *vbRect;
 
 bool InitEsp()
 {
@@ -18,6 +18,19 @@ bool InitEsp()
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         pDrawer = GetMain()->GetDrawer(false);
     }
+
+    std::vector<hl::VERTEX_3D_COL> rectVerts = {
+        {-1, -1, 0},
+        {1, -1, 0},
+        {1, 1, 0},
+        {-1, 1, 0},
+        {-1, -1, 0}
+    };
+
+    vbRect = pDrawer->AllocVertexBuffer(rectVerts);
+    if (!vbRect)
+        return false;
+
 
     std::vector<hl::VERTEX_3D_COL> verts;
     verts.resize(CIRCLE_RES+1);
@@ -109,6 +122,30 @@ void GW2LIB::DrawCircleFilledProjected(Vector3 pos, float r, DWORD color)
         D3DXMatrixScaling(&scale, r, r, r);
         D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
         pDrawer->DrawPrimitive(vbCircle, nullptr, D3DPT_TRIANGLEFAN, scale*translate, color);
+    }
+}
+
+void GW2LIB::DrawRectProjected(Vector3 pos, float x, float y, float rot, DWORD color)
+{
+    const auto pDrawer = GetMain()->GetDrawer(true);
+    if (pDrawer) {
+        D3DXMATRIX scale, translate, rotationZ;
+        D3DXMatrixScaling(&scale, x, y, 0);
+        D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
+        D3DXMatrixRotationZ(&rotationZ, rot);
+        pDrawer->DrawPrimitive(vbRect, nullptr, D3DPT_LINESTRIP, scale*rotationZ*translate, color);
+    }
+}
+
+void GW2LIB::DrawRectFilledProjected(Vector3 pos, float x, float y, float rot, DWORD color)
+{
+    const auto pDrawer = GetMain()->GetDrawer(true);
+    if (pDrawer) {
+        D3DXMATRIX scale, translate, rotationZ;
+        D3DXMatrixScaling(&scale, x, y, 0);
+        D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
+        D3DXMatrixRotationZ(&rotationZ, rot);
+        pDrawer->DrawPrimitive(vbRect, nullptr, D3DPT_TRIANGLEFAN, scale*rotationZ*translate, color);
     }
 }
 

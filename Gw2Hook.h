@@ -9,7 +9,7 @@ struct Gw2Hooks {
     bool(*MouseMoveHook)(int x, int y, int modkeys) = nullptr;
     bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
     bool(*MouseWheelHook)(int delta, int modkeys) = nullptr;
-    void(*CombatHook)(int) = nullptr;
+    void(*CombatHook)(uintptr_t*, uintptr_t*, int) = nullptr;
 };
 
 class Gw2GameHook {

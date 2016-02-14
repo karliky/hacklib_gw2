@@ -87,18 +87,20 @@ void hkCombatLog(hl::CpuContext *ctx)
 {
 #ifdef ARCH_64BIT
     int hit = (int)ctx->R9;
-    uintptr_t *ag = (uintptr_t*)(ctx->R8);
+    uintptr_t *agSrc = (uintptr_t*)(ctx->R8);
+    uintptr_t *agTgt = (uintptr_t*)(ctx->R9);
 #else
     int hit = *(int*)(ctx->EBP + 0x10);
-    uintptr_t *ag = *(uintptr_t**)(ctx->EBP + 0xC);
+    uintptr_t *agSrc = *(uintptr_t**)(ctx->EBP + 0xC);
+    uintptr_t *agTgt = *(uintptr_t**)(ctx->EBP + 0x8);
 #endif
 
-    auto agOwn = GetMain()->GetGameData()->objData.ownAgent;
+    /*auto agOwn = GetMain()->GetGameData()->objData.ownAgent;
     if (agOwn && ag == agOwn->pAgent.data())
-        HL_LOG_DBG("hit: %i\n", hit);
+        HL_LOG_DBG("hit: %i\n", hit);*/
 
     Gw2Hooks* list = get_hook_list();
-    if (list->CombatHook) list->CombatHook(1);
+    if (list->CombatHook) list->CombatHook(agSrc, agTgt, hit);
 }
 
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)

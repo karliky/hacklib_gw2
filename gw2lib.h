@@ -205,6 +205,10 @@ namespace GW2LIB
     void DrawCircleProjected(Vector3 pos, float r, DWORD color);
     void DrawCircleFilledProjected(Vector3 pos, float r, DWORD color);
 
+    void DrawRectProjected(Vector3 pos, float x, float y, float rot, DWORD color);
+    void DrawRectFilledProjected(Vector3 pos, float x, float y, float rot, DWORD color);
+
+
     // returns false when projected position is not on screen
     bool WorldToScreen(Vector3 in, float *outX, float *outY);
 
