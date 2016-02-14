@@ -506,6 +506,14 @@ void Gw2HackMain::GameHook()
                             if (m_gameData.objData.agentDataList[agentId]) {
                                 pCharData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
                                 pCharData->pAgentData->pCharData = pCharData;
+
+                                if (pCharData->pAgentData->pAgent) {
+                                    hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
+                                    if (transform && !pCharData->isPlayer) {
+                                        pCharData->pAgentData->rot = atan2(transform.get<float>(m_pubmems.npc_agtransRY), transform.get<float>(m_pubmems.npc_agtransRX));
+                                    }
+                                }
+
                                 bAgentDataFound = true;
                             }
 

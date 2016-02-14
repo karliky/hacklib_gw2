@@ -280,6 +280,8 @@ namespace GW2LIB
         uintptr_t agtransX = 0x30;
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
+        uintptr_t npc_agtransRX = 0xc0;
+        uintptr_t npc_agtransRY = 0xc4;
         uintptr_t agtransRX = 0x140;
         uintptr_t agtransRY = 0x144;
         uintptr_t charctxCharArray = 0x58;
@@ -416,6 +418,10 @@ namespace GW2LIB
         uintptr_t agtransY = 0x24;
         // float z;
         uintptr_t agtransZ = 0x28;
+        // float rx;
+        uintptr_t npc_agtransRX = 0x90;
+        // float ry;
+        uintptr_t npc_agtransRY = 0x94;
         // float rx;
         uintptr_t agtransRX = 0x100;
         // float ry;
