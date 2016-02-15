@@ -2,6 +2,7 @@
 #include "main.h"
 
 void hkProcessText(hl::CpuContext*);
+void hkDmgLog(hl::CpuContext*);
 void hkCombatLog(hl::CpuContext*);
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam);
 
@@ -11,33 +12,44 @@ bool Gw2GameHook::init_hooks() {
 
     auto results = scanner.find({
         "codedProcessedText",
-        "targetAgent"
+        "targetAgent",
+        "logType < UI_COMBAT_LOG_TYPES"
     });
 
     uintptr_t pProcessText = NULL;
+    uintptr_t pDmgLog = NULL;
     uintptr_t pCombatLog = NULL;
 
 #ifdef ARCH_64BIT
     pProcessText = (results[0] - 0x49);
-    pCombatLog = (results[1] - 0x2a);
+    pDmgLog = (results[1] - 0x2a);
+    pCombatLog = (results[2] - 0x20);
 
-    m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 15, hkCombatLog);
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 17, hkProcessText);
+    m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 15, hkDmgLog);
+    m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 16, hkCombatLog);
 #else
     pProcessText = (results[0] - 0x2d);
-    pCombatLog = (results[1] - 0x10);
+    pDmgLog = (results[1] - 0x10);
+    pCombatLog = (results[2] - 0x14);
 
-    m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 6, hkCombatLog);
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 6, hkProcessText);
+    m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 6, hkDmgLog);
+    m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 7, hkCombatLog);
 #endif
-
-    if (!m_hkCombatLog) {
-        HL_LOG_ERR("[Hook::Init] Hooking combat log failed\n");
-        return false;
-    }
 
     if (!m_hkProcessText) {
         HL_LOG_ERR("[Hook::Init] Hooking chat log failed\n");
+        return false;
+    }
+
+    if (!m_hkDmgLog) {
+        HL_LOG_ERR("[Hook::Init] Hooking damage log failed\n");
+        return false;
+    }
+
+    if (!m_hkCombatLog) {
+        HL_LOG_ERR("[Hook::Init] Hooking combat log failed\n");
         return false;
     }
 
@@ -59,6 +71,7 @@ bool Gw2GameHook::init_hooks() {
 
 void Gw2GameHook::cleanup() {
     m_hooker.unhook(m_hkProcessText);
+    m_hooker.unhook(m_hkDmgLog);
     m_hooker.unhook(m_hkCombatLog);
 
     if (m_hhkGetMessage != NULL)
@@ -83,7 +96,7 @@ void hkProcessText(hl::CpuContext *ctx)
 }
 
 
-void hkCombatLog(hl::CpuContext *ctx)
+void hkDmgLog(hl::CpuContext *ctx)
 {
 #ifdef ARCH_64BIT
     int hit = (int)ctx->R9;
@@ -95,12 +108,22 @@ void hkCombatLog(hl::CpuContext *ctx)
     uintptr_t *agTgt = *(uintptr_t**)(ctx->EBP + 0x8);
 #endif
 
-    /*auto agOwn = GetMain()->GetGameData()->objData.ownAgent;
-    if (agOwn && ag == agOwn->pAgent.data())
-        HL_LOG_DBG("hit: %i\n", hit);*/
+    Gw2Hooks* list = get_hook_list();
+    if (list->DmgLogHook) list->DmgLogHook(agSrc, agTgt, hit);
+}
+
+void hkCombatLog(hl::CpuContext *ctx)
+{
+#ifdef ARCH_64BIT
+    GW2LIB::CombatLogType type = (GW2LIB::CombatLogType)(ctx->R8);
+    int hit = *(int*)(ctx->RSP + 0x4c);
+#else
+    GW2LIB::CombatLogType type = *(GW2LIB::CombatLogType*)(ctx->EBP + 0xC);
+    int hit = *(int*)(ctx->EBP + 0x18);
+#endif
 
     Gw2Hooks* list = get_hook_list();
-    if (list->CombatHook) list->CombatHook(agSrc, agTgt, hit);
+    if (list->CombatLogHook) list->CombatLogHook(type, hit);
 }
 
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)
