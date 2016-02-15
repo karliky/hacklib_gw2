@@ -107,15 +107,10 @@ bool Gw2HackMain::init()
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
 #else
             m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
-
             pAlertCtx = **(uintptr_t**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
-
             m_mems.pAgentSelectionCtx = *(void**)(hl::FollowRelativeAddress(results[1] + 0xa) + 0x1);
-
             m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
-
             m_mems.pMapId = *(int**)(MapIdSig + 0x6);
-
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
 #endif
@@ -165,7 +160,18 @@ bool Gw2HackMain::init()
         return false;
     }
 
-    m_gw2Hook.init_hooks();
+    if (![&](){
+        __try {
+            m_gw2Hook.init_hooks();
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            return false;
+        }
+        return true;
+    }()) {
+        HL_LOG_ERR("[Core::Init] Could not initialize GW2 game hooks\n");
+        return false;
+    }
+
 
     HL_LOG_DBG("Init ESP data\n");
 

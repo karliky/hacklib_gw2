@@ -70,9 +70,9 @@ bool Gw2GameHook::init_hooks() {
 }
 
 void Gw2GameHook::cleanup() {
-    m_hooker.unhook(m_hkProcessText);
-    m_hooker.unhook(m_hkDmgLog);
-    m_hooker.unhook(m_hkCombatLog);
+    if (m_hkProcessText) m_hooker.unhook(m_hkProcessText);
+    if (m_hkDmgLog) m_hooker.unhook(m_hkDmgLog);
+    if (m_hkCombatLog) m_hooker.unhook(m_hkCombatLog);
 
     if (m_hhkGetMessage != NULL)
     {
