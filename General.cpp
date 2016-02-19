@@ -79,6 +79,10 @@ int GW2LIB::GetPing() {
     return GetMain()->GetGameData()->ping;
 }
 
+GW2LIB::GW2::UiIntefaceSize GW2LIB::GetUiInterfaceSize() {
+    return GetMain()->GetGameData()->uiIntSize;
+}
+
 GW2LIB::Compass GW2LIB::GetCompass() {
     Compass comp;
     comp.m_ptr = GetMain()->GetGameData()->objData.compData.get();

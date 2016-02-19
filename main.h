@@ -25,6 +25,7 @@ struct GamePointers
     void **ppWorldViewContext = nullptr;
     void *pAgentSelectionCtx = nullptr;
     void *pCompass = nullptr;
+    void *pUiSize = nullptr;
 };
 
 

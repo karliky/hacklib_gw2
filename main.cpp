@@ -92,7 +92,8 @@ bool Gw2HackMain::init()
         "ViewAdvanceAgentSelect",
         "ViewAdvanceAgentView",
         "ViewAdvanceWorldView",
-        "CompassManager()->IsCompassFixed()"
+        "CompassManager()->IsCompassFixed()",
+        "ViewAdvanceUi"
     });
 
     uintptr_t pAlertCtx = 0;
@@ -104,6 +105,7 @@ bool Gw2HackMain::init()
             m_mems.pAgentSelectionCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[1] + 0xa) + 0x3);
             m_mems.ppWorldViewContext = (void**)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[3] + 0xa) + 0x7);
             m_mems.pCompass = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[4] + 0x10) + 0x3);
+            m_mems.pUiSize = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[5] + 0xa) + 0x3);
             m_mems.pMapId = (int*)hl::FollowRelativeAddress(MapIdSig + 0x6);
             m_mems.pPing = (int*)hl::FollowRelativeAddress(ping + 0x9);
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
@@ -113,6 +115,7 @@ bool Gw2HackMain::init()
             m_mems.pAgentSelectionCtx = *(void**)(hl::FollowRelativeAddress(results[1] + 0xa) + 0x1);
             m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
             m_mems.pCompass = *(void**)(hl::FollowRelativeAddress(results[4] + 0xa) + 0x1);
+            m_mems.pUiSize = *(void**)(hl::FollowRelativeAddress(results[5] + 0xa) + 0x1);
             m_mems.pMapId = *(int**)(MapIdSig + 0x6);
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
@@ -133,6 +136,7 @@ bool Gw2HackMain::init()
     HL_LOG_DBG("asctx:  %p\n", m_mems.pAgentSelectionCtx);
     HL_LOG_DBG("wv:     %p\n", m_mems.ppWorldViewContext);
     HL_LOG_DBG("comp:   %p\n", m_mems.pCompass);
+    HL_LOG_DBG("uiSz:   %p\n", m_mems.pUiSize);
     HL_LOG_DBG("mpid:   %p\n", m_mems.pMapId);
     HL_LOG_DBG("ping:   %p\n", m_mems.pPing);
     HL_LOG_DBG("fps:    %p\n", m_mems.pFps);
@@ -584,6 +588,9 @@ void Gw2HackMain::GameHook()
     hl::ForeignClass comp = m_mems.pCompass;
     m_gameData.objData.compData = std::make_unique<GameData::CompassData>();
     RefreshDataCompass(m_gameData.objData.compData.get(), comp);
+
+    hl::ForeignClass uiOpts = m_mems.pUiSize;
+    m_gameData.uiIntSize = uiOpts.get<GW2LIB::GW2::UiIntefaceSize>(m_pubmems.uiIntSize);
 }
 
 

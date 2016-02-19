@@ -93,6 +93,13 @@ namespace GW2LIB
             COMP_ROTATION = 0x1,
             COMP_POSITION = 0x4
         };
+
+        enum UiIntefaceSize {
+            UI_IF_SMALL,
+            UI_IF_NORMAL,
+            UI_IF_LARGE,
+            UI_IF_LARGER
+        };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -209,6 +216,7 @@ namespace GW2LIB
     Vector3 GetViewVector();
     float GetFieldOfViewY();
     Compass GetCompass();
+    GW2::UiIntefaceSize GetUiInterfaceSize();
     int GetPing();
     int GetFPS();
 
@@ -356,6 +364,7 @@ namespace GW2LIB
         uintptr_t compFlags = 0x28;
         uintptr_t compMaxWidth = 0x18;
         uintptr_t compMaxHeight = 0x1c;
+        uintptr_t uiIntSize = 0x54;
 #else
         /*
         If you update gw2lib and the patterns are still working it can be useful to know
@@ -633,6 +642,9 @@ namespace GW2LIB
         uintptr_t compFlags = 0x1c;
         uintptr_t compMaxWidth = 0xc;   // max width?
         uintptr_t compMaxHeight = 0x10; // max height?
+
+        // ui options
+        uintptr_t uiIntSize = 0x2c;
 
 #endif
     };
