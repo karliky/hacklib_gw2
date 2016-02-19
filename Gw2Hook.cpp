@@ -86,7 +86,7 @@ void Gw2GameHook::cleanup() {
 void hkProcessText(hl::CpuContext *ctx)
 {
 #ifdef ARCH_64BIT
-    wchar_t *wtxt = *(wchar_t**)(ctx->RDX + 0x08);
+    wchar_t *wtxt = *(wchar_t**)(ctx->RDX + 0x8);
 #else
     wchar_t *wtxt = (wchar_t*)ctx->ECX;
 #endif

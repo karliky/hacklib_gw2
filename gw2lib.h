@@ -22,6 +22,7 @@ struct PrimitiveDiffuseMesh;
 namespace GameData {
     struct CharacterData;
     struct AgentData;
+    struct CompassData;
 }
 
 namespace GW2LIB
@@ -86,6 +87,11 @@ namespace GW2LIB
             BREAKBAR_STATE_READY,
             BREAKBAR_STATE_RECOVER,
             BREAKBAR_STATE_IMMUNE
+        };
+
+        enum CompassFlags {
+            COMP_ROTATION = 0x1,
+            COMP_POSITION = 0x4
         };
     }
 
@@ -170,6 +176,23 @@ namespace GW2LIB
     
         GameData::CharacterData *m_ptr;
     };
+    // compass (minimap)
+    class Compass {
+    public:
+        Compass();
+        Compass(const Compass &);
+        Compass &operator= (const Compass &);
+
+        float GetMaxWidth() const;
+        float GetMaxHeight() const;
+        float GetWidth() const;
+        float GetHeight() const;
+        int   GetZoom() const;
+        bool  GetRotation() const;
+        bool  GetPosition() const;
+
+        GameData::CompassData *m_ptr;
+    };
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -185,6 +208,7 @@ namespace GW2LIB
     Vector3 GetCameraPosition();
     Vector3 GetViewVector();
     float GetFieldOfViewY();
+    Compass GetCompass();
     int GetPing();
     int GetFPS();
 
@@ -325,6 +349,13 @@ namespace GW2LIB
         uintptr_t asctxStoW = 0x26c;
         uintptr_t wvctxVtGetMetrics = 0x78;
         uintptr_t wvctxStatus = 0x58;
+
+        uintptr_t compWidth = 0x40;
+        uintptr_t compHeight = 0x44;
+        uintptr_t compZoom = 0x48;
+        uintptr_t compFlags = 0x28;
+        uintptr_t compMaxWidth = 0x18;
+        uintptr_t compMaxHeight = 0x1c;
 #else
         /*
         If you update gw2lib and the patterns are still working it can be useful to know
@@ -593,6 +624,16 @@ namespace GW2LIB
 
         camStatus is a bit that flips in loading screens and can be found by inspection.
         */
+
+
+        // compass (minimap) offsets
+        uintptr_t compWidth = 0x34;
+        uintptr_t compHeight = 0x38;
+        uintptr_t compZoom = 0x3c;
+        uintptr_t compFlags = 0x1c;
+        uintptr_t compMaxWidth = 0xc;   // max width?
+        uintptr_t compMaxHeight = 0x10; // max height?
+
 #endif
     };
 }

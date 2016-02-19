@@ -91,7 +91,8 @@ bool Gw2HackMain::init()
         "ViewAdvanceDevice",
         "ViewAdvanceAgentSelect",
         "ViewAdvanceAgentView",
-        "ViewAdvanceWorldView"
+        "ViewAdvanceWorldView",
+        "CompassManager()->IsCompassFixed()"
     });
 
     uintptr_t pAlertCtx = 0;
@@ -102,6 +103,7 @@ bool Gw2HackMain::init()
             pAlertCtx = *(uintptr_t*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[0] + 0xa) + 0x3);
             m_mems.pAgentSelectionCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[1] + 0xa) + 0x3);
             m_mems.ppWorldViewContext = (void**)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[3] + 0xa) + 0x7);
+            m_mems.pCompass = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[4] + 0x10) + 0x3);
             m_mems.pMapId = (int*)hl::FollowRelativeAddress(MapIdSig + 0x6);
             m_mems.pPing = (int*)hl::FollowRelativeAddress(ping + 0x9);
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
@@ -110,6 +112,7 @@ bool Gw2HackMain::init()
             pAlertCtx = **(uintptr_t**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
             m_mems.pAgentSelectionCtx = *(void**)(hl::FollowRelativeAddress(results[1] + 0xa) + 0x1);
             m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
+            m_mems.pCompass = *(void**)(hl::FollowRelativeAddress(results[4] + 0xa) + 0x1);
             m_mems.pMapId = *(int**)(MapIdSig + 0x6);
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
@@ -129,6 +132,7 @@ bool Gw2HackMain::init()
     HL_LOG_DBG("actx:   %p\n", pAlertCtx);
     HL_LOG_DBG("asctx:  %p\n", m_mems.pAgentSelectionCtx);
     HL_LOG_DBG("wv:     %p\n", m_mems.ppWorldViewContext);
+    HL_LOG_DBG("comp:   %p\n", m_mems.pCompass);
     HL_LOG_DBG("mpid:   %p\n", m_mems.pMapId);
     HL_LOG_DBG("ping:   %p\n", m_mems.pPing);
     HL_LOG_DBG("fps:    %p\n", m_mems.pFps);
@@ -359,6 +363,25 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
     }
 }
 
+void Gw2HackMain::RefreshDataCompass(GameData::CompassData *pCompData, hl::ForeignClass comp) {
+    __try {
+        pCompData->pComp = comp;
+
+        pCompData->width  = comp.get<float>(m_pubmems.compWidth);
+        pCompData->height = comp.get<float>(m_pubmems.compHeight);
+        pCompData->zoom = comp.get<int>(m_pubmems.compZoom);
+        pCompData->maxWidth = comp.get<float>(m_pubmems.compMaxWidth);
+        pCompData->maxHeight = comp.get<float>(m_pubmems.compMaxHeight);
+
+        DWORD flags = comp.get<DWORD>(m_pubmems.compFlags);
+        pCompData->flags.rotation = !!(flags & GW2LIB::GW2::COMP_ROTATION);
+        pCompData->flags.position = !!(flags & GW2LIB::GW2::COMP_POSITION);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        HL_LOG_ERR("[RefreshDataCompass] access violation\n");
+    }
+}
+
 void Gw2HackMain::GameHook()
 {
     void ***pLocalStorage;
@@ -557,6 +580,10 @@ void Gw2HackMain::GameHook()
     m_gameData.mapId = *m_mems.pMapId;
     m_gameData.ping = *m_mems.pPing;
     m_gameData.fps = *m_mems.pFps;
+
+    hl::ForeignClass comp = m_mems.pCompass;
+    m_gameData.objData.compData = std::make_unique<GameData::CompassData>();
+    RefreshDataCompass(m_gameData.objData.compData.get(), comp);
 }
 
 

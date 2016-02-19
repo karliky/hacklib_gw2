@@ -54,12 +54,28 @@ namespace GameData
         std::string name;
     };
 
+    struct CompassData {
+        hl::ForeignClass pComp = nullptr;
+        float width = 0;
+        float height = 0;
+        float maxWidth = 0;
+        float maxHeight = 0;
+        int zoom = 0;
+        struct {
+            unsigned int : 29; // unknown
+            bool position : 1; // position of compass on screen (top = 1/bottom = 0)
+            bool : 1; // unknown (possibly bottom position width snap to skillbar)
+            bool rotation : 1; // rotation lock (true if map rotation is enabled)
+        } flags;
+    };
+
     struct GameData
     {
         struct ObjectData
         {
             std::vector<std::unique_ptr<CharacterData>> charDataList;
             std::vector<std::unique_ptr<AgentData>> agentDataList;
+            std::unique_ptr<CompassData> compData;
             CharacterData *ownCharacter = nullptr;
             AgentData *ownAgent = nullptr;
             AgentData *autoSelection = nullptr;

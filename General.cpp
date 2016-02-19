@@ -79,6 +79,12 @@ int GW2LIB::GetPing() {
     return GetMain()->GetGameData()->ping;
 }
 
+GW2LIB::Compass GW2LIB::GetCompass() {
+    Compass comp;
+    comp.m_ptr = GetMain()->GetGameData()->objData.compData.get();
+    return comp;
+}
+
 int GW2LIB::GetFPS() {
     return GetMain()->GetGameData()->fps;
 }

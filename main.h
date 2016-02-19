@@ -24,6 +24,7 @@ struct GamePointers
     void *pAgentViewCtx = nullptr;
     void **ppWorldViewContext = nullptr;
     void *pAgentSelectionCtx = nullptr;
+    void *pCompass = nullptr;
 };
 
 
@@ -53,6 +54,7 @@ public:
 private:
     void RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent);
     void RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character);
+    void RefreshDataCompass(GameData::CompassData *pCompData, hl::ForeignClass comp);
 
 private:
     hl::ConsoleEx m_con;
