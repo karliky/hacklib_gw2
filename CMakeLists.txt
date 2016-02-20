@@ -6,6 +6,8 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC
     Agent.cpp
     Character.cpp
     EspDraw.cpp
+    Gadget.cpp
+    Compass.cpp
     GameData.h
     GameData.cpp
     Gw2Hook.h
