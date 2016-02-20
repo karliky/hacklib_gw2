@@ -70,6 +70,14 @@ Character Agent::GetCharacter() const
     return chr;
 }
 
+Gadget Agent::GetGadget() const
+{
+    Gadget gd;
+    if (m_ptr)
+        gd.m_ptr = m_ptr->gadgetData.get();
+    return gd;
+}
+
 
 GW2::AgentCategory Agent::GetCategory() const
 {

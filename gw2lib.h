@@ -22,6 +22,7 @@ struct PrimitiveDiffuseMesh;
 namespace GameData {
     struct CharacterData;
     struct AgentData;
+    struct GadgetData;
     struct CompassData;
 }
 
@@ -32,6 +33,7 @@ namespace GW2LIB
 
     class Agent;
     class Character;
+    class Gadget;
     struct Vector3 {
         Vector3() { }
         Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
@@ -128,6 +130,7 @@ namespace GW2LIB
         void BeSelf();
 
         Character GetCharacter() const;
+        Gadget GetGadget() const;
 
         GW2::AgentCategory GetCategory() const;
         GW2::AgentType GetType() const;
@@ -182,6 +185,20 @@ namespace GW2LIB
         std::string GetName() const;
     
         GameData::CharacterData *m_ptr;
+    };
+    // represents a gadget
+    class Gadget {
+    public:
+        Gadget();
+        Gadget(const Gadget &);
+        Gadget &operator= (const Gadget &);
+        bool operator== (const Gadget &);
+        Agent Gadget::GetAgent() const;
+        bool IsValid() const;
+        float GetCurrentHealth() const;
+        float GetMaxHealth() const;
+
+        GameData::GadgetData *m_ptr;
     };
     // compass (minimap)
     class Compass {
@@ -365,6 +382,10 @@ namespace GW2LIB
         uintptr_t compMaxWidth = 0x18;
         uintptr_t compMaxHeight = 0x1c;
         uintptr_t uiIntSize = 0x54;
+
+        uintptr_t contextGadget = 0x128;
+        uintptr_t ctxgdVtGetGadget = 0x8;
+        uintptr_t gdHealth = 0x1e8;
 #else
         /*
         If you update gw2lib and the patterns are still working it can be useful to know
@@ -645,6 +666,11 @@ namespace GW2LIB
 
         // ui options
         uintptr_t uiIntSize = 0x2c;
+
+        // gadget stuff
+        uintptr_t contextGadget = 0x94;
+        uintptr_t ctxgdVtGetGadget = 0x4;
+        uintptr_t gdHealth = 0x18c;
 
 #endif
     };

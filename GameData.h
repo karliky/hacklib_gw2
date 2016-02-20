@@ -14,11 +14,13 @@
 namespace GameData
 {
     struct CharacterData;
+    struct GadgetData;
 
     struct AgentData
     {
         hl::ForeignClass pAgent = nullptr;
         CharacterData *pCharData = nullptr;
+        std::unique_ptr<GadgetData> gadgetData;
         GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AgentCategory::AGENT_CATEGORY_CHAR;
         GW2LIB::GW2::AgentType type = GW2LIB::GW2::AgentType::AGENT_TYPE_CHAR;
         int agentId = 0;
@@ -52,6 +54,15 @@ namespace GameData
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::Attitude::ATTITUDE_FRIENDLY;
         GW2LIB::GW2::CharacterStats stats;
         std::string name;
+    };
+
+    struct GadgetData
+    {
+        hl::ForeignClass pGadget = nullptr;
+        AgentData *pAgentData = nullptr;
+
+        float currentHealth = 0;
+        float maxHealth = 0;
     };
 
     struct CompassData {

@@ -105,7 +105,7 @@ bool Gw2HackMain::init()
             m_mems.pAgentSelectionCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[1] + 0xa) + 0x3);
             m_mems.ppWorldViewContext = (void**)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[3] + 0xa) + 0x7);
             m_mems.pCompass = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[4] + 0x10) + 0x3);
-            m_mems.pUiSize = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[5] + 0xa) + 0x3);
+            m_mems.pUiOpts = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[5] + 0xa) + 0x3);
             m_mems.pMapId = (int*)hl::FollowRelativeAddress(MapIdSig + 0x6);
             m_mems.pPing = (int*)hl::FollowRelativeAddress(ping + 0x9);
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
@@ -115,7 +115,7 @@ bool Gw2HackMain::init()
             m_mems.pAgentSelectionCtx = *(void**)(hl::FollowRelativeAddress(results[1] + 0xa) + 0x1);
             m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
             m_mems.pCompass = *(void**)(hl::FollowRelativeAddress(results[4] + 0xa) + 0x1);
-            m_mems.pUiSize = *(void**)(hl::FollowRelativeAddress(results[5] + 0xa) + 0x1);
+            m_mems.pUiOpts = *(void**)(hl::FollowRelativeAddress(results[5] + 0xa) + 0x1);
             m_mems.pMapId = *(int**)(MapIdSig + 0x6);
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
@@ -386,6 +386,21 @@ void Gw2HackMain::RefreshDataCompass(GameData::CompassData *pCompData, hl::Forei
     }
 }
 
+void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::ForeignClass gd) {
+    __try {
+        pGadgetData->pGadget = gd;
+
+        hl::ForeignClass health = gd.get<void*>(m_pubmems.gdHealth);
+        if (health) {
+            pGadgetData->currentHealth = health.get<float>(m_pubmems.healthCurrent);
+            pGadgetData->maxHealth = health.get<float>(m_pubmems.healthMax);
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        HL_LOG_ERR("[RefreshDataGadget] access violation\n");
+    }
+}
+
 void Gw2HackMain::GameHook()
 {
     void ***pLocalStorage;
@@ -427,8 +442,9 @@ void Gw2HackMain::GameHook()
         hl::ForeignClass ctx = m_mems.pCtx;
         if (ctx)
         {
+            hl::ForeignClass gdctx = ctx.get<void*>(m_pubmems.contextGadget);
             hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
-            if (charctx && avctx && asctx)
+            if (gdctx && charctx && avctx && asctx)
             {
                 auto charArray = charctx.get<GW2::ANet::Array<void*>>(m_pubmems.charctxCharArray);
                 auto agentArray = avctx.get<GW2::ANet::Array<void*>>(m_pubmems.avctxAgentArray);
@@ -464,6 +480,15 @@ void Gw2HackMain::GameHook()
 
                                 // update values
                                 RefreshDataAgent(pAgentData, pAgent);
+
+                                // gadget update
+                                if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
+                                    hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);
+                                    pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
+                                    GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
+                                    RefreshDataGadget(pGadgetData, pGadget);
+                                    pGadgetData->pAgentData = pAgentData;
+                                }
 
                                 bool bCharDataFound = false;
 
@@ -589,7 +614,7 @@ void Gw2HackMain::GameHook()
     m_gameData.objData.compData = std::make_unique<GameData::CompassData>();
     RefreshDataCompass(m_gameData.objData.compData.get(), comp);
 
-    hl::ForeignClass uiOpts = m_mems.pUiSize;
+    hl::ForeignClass uiOpts = m_mems.pUiOpts;
     m_gameData.uiIntSize = uiOpts.get<GW2LIB::GW2::UiIntefaceSize>(m_pubmems.uiIntSize);
 }
 
