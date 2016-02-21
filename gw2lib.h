@@ -402,6 +402,7 @@ namespace GW2LIB
         uintptr_t contextGadget = 0x128;
         uintptr_t ctxgdVtGetGadget = 0x8;
         uintptr_t gdHealth = 0x1e8;
+        uintptr_t gdVtGetType = 0xa8;
 #else
         /*
         If you update gw2lib and the patterns are still working it can be useful to know
