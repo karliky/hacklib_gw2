@@ -59,7 +59,12 @@ void cbESP()
                 font.Draw(x, y-30, fontColor, "agentptr: %p", *(void**)ag.m_ptr);
 
                 if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
-                    font.Draw(x, y - 120, fontColor, "gadget: %p - type: %i", ag.GetGadget().m_ptr->pGadget, ag.GetGadget().GetType());
+                    Gadget gd = ag.GetGadget();
+                    font.Draw(x, y - 120, fontColor, "gadget: %p - type: %i", gd.m_ptr->pGadget, gd.GetType());
+                    if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
+                        ResourceNode node = gd.GetResourceNode();
+                        font.Draw(x, y - 135, fontColor, "resource: %p - type: %i - depleted: %i", node.m_ptr->pResourceNode, node.GetType(), !node.IsGatherable());
+                    }
                 }
 
                 if (ag.GetCategory() == GW2::AGENT_CATEGORY_KEYFRAMED) {

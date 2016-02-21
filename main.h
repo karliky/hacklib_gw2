@@ -57,6 +57,7 @@ private:
     void RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character);
     void RefreshDataCompass(GameData::CompassData *pCompData, hl::ForeignClass comp);
     void RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::ForeignClass gd);
+    void RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData, hl::ForeignClass res);
 
 private:
     hl::ConsoleEx m_con;

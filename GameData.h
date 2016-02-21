@@ -60,10 +60,23 @@ namespace GameData
     {
         hl::ForeignClass pGadget = nullptr;
         AgentData *pAgentData = nullptr;
+        std::unique_ptr<ResourceNodeData> rNodeData;
 
         float currentHealth = 0;
         float maxHealth = 0;
-        GW2LIB::GW2::GadgetType type = (GW2LIB::GW2::GadgetType)0;
+        GW2LIB::GW2::GadgetType type = GW2LIB::GW2::GADGET_TYPE_ATTACKABLE;
+    };
+
+    struct ResourceNodeData
+    {
+        hl::ForeignClass pResourceNode = nullptr;
+        AgentData *pAgentData = nullptr;
+        GW2LIB::GW2::ResourceNodeType type = GW2LIB::GW2::RE_NODE_TYPE_PLANT;
+        struct {
+            unsigned int : 6;
+            bool depleted : 1;
+            bool : 1;
+        } flags;
     };
 
     struct CompassData {

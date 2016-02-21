@@ -403,6 +403,19 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
     }
 }
 
+void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData, hl::ForeignClass node) {
+    __try {
+        pRNodeData->pResourceNode = node;
+        pRNodeData->type = node.get<GW2LIB::GW2::ResourceNodeType>(m_pubmems.nodeType);
+
+        BYTE flags = node.get<BYTE>(m_pubmems.nodeFlags);
+        pRNodeData->flags.depleted = !(flags & GW2LIB::GW2::RE_NODE_FLAG_DEPLETED);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        HL_LOG_ERR("[RefreshDataResourceNode] access violation\n");
+    }
+}
+
 void Gw2HackMain::GameHook()
 {
     void ***pLocalStorage;
@@ -490,6 +503,15 @@ void Gw2HackMain::GameHook()
                                     GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
                                     RefreshDataGadget(pGadgetData, pGadget);
                                     pGadgetData->pAgentData = pAgentData;
+
+                                    // resource node update
+                                    if (pGadgetData && pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
+                                        hl::ForeignClass pRNode = pGadget.call<void*>(m_pubmems.gdVtGetRNode);
+                                        pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
+                                        GameData::ResourceNodeData *pRNodeData = pGadgetData->rNodeData.get();
+                                        RefreshDataResourceNode(pRNodeData, pRNode);
+                                        pRNodeData->pAgentData = pAgentData;
+                                    }
                                 }
 
                                 bool bCharDataFound = false;

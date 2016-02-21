@@ -61,3 +61,11 @@ GW2::GadgetType Gadget::GetType() const
     return (GW2::GadgetType)0;
 }
 
+ResourceNode Gadget::GetResourceNode() const
+{
+    ResourceNode node;
+    if (m_ptr)
+        node.m_ptr = m_ptr->rNodeData.get();
+    return node;
+}
+
