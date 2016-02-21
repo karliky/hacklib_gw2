@@ -121,7 +121,7 @@ namespace GW2LIB
             RE_NODE_TYPE_PLANT,
             RE_NODE_TYPE_TREE,
             RE_NODE_TYPE_MINERAL,
-            RE_NODE_TYPE_EVENT
+            RE_NODE_TYPE_QUEST
         };
     }
 
