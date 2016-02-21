@@ -12,6 +12,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC
     GameData.cpp
     Gw2Hook.h
     Gw2Hook.cpp
+    ResourceNode.cpp
     main.h
     main.cpp
     )
