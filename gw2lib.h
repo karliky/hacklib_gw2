@@ -108,14 +108,14 @@ namespace GW2LIB
             GADGET_TYPE_EVENT = 2,   // event spawn? (saw at VB Pale Reaver primary rally point)
             GADGET_TYPE_CRAFT = 4,   // crafting station
             GADGET_TYPE_INTERACT = 9,// sw chest, AB exalted portal
-            GADGET_TYPE_ACHIEVEMENT = 10, // LA karka hatchling, VB floating airship cargo
+            GADGET_TYPE_PLAYER_SPECIFIC = 10, // LA karka hatchling, VB floating airship cargo
             GADGET_TYPE_BOSS = 11,   // world boss
             GADGET_TYPE_PORTAL = 12, // map border portal
             GADGET_TYPE_WP = 13,     // waypoint
-            GADGET_TYPE_NODE = 14,   // gathering nodes, AB masks, strongbox
+            GADGET_TYPE_RESOURCE_NODE = 14,   // gathering nodes, AB masks, strongbox
             GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom
             GADGET_TYPE_AB = 18,     // AB armor spawn? (saw at AB pylons, gold circle platforms)
-            GADGET_TYPE_VISTA = 19,  // vista
+            GADGET_TYPE_VISTA = 19   // vista
         };
     }
 
