@@ -390,6 +390,8 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
     __try {
         pGadgetData->pGadget = gd;
 
+        pGadgetData->type = gd.call<GW2LIB::GW2::GadgetType>(m_pubmems.gdVtGetType);
+
         hl::ForeignClass health = gd.get<void*>(m_pubmems.gdHealth);
         if (health) {
             pGadgetData->currentHealth = health.get<float>(m_pubmems.healthCurrent);

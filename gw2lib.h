@@ -102,6 +102,21 @@ namespace GW2LIB
             UI_IF_LARGE,
             UI_IF_LARGER
         };
+
+        enum GadgetType {
+            GADGET_TYPE_ATTACKABLE = 1, // training dummy
+            GADGET_TYPE_EVENT = 2,   // event spawn? (saw at VB Pale Reaver primary rally point)
+            GADGET_TYPE_CRAFT = 4,   // crafting station
+            GADGET_TYPE_INTERACT = 9,// sw chest, AB exalted portal
+            GADGET_TYPE_ACHIEVEMENT = 10, // LA karka hatchling, VB floating airship cargo
+            GADGET_TYPE_BOSS = 11,   // world boss
+            GADGET_TYPE_PORTAL = 12, // map border portal
+            GADGET_TYPE_WP = 13,     // waypoint
+            GADGET_TYPE_NODE = 14,   // gathering nodes, AB masks, strongbox
+            GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom
+            GADGET_TYPE_AB = 18,     // AB armor spawn? (saw at AB pylons, gold circle platforms)
+            GADGET_TYPE_VISTA = 19,  // vista
+        };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -197,6 +212,7 @@ namespace GW2LIB
         bool IsValid() const;
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
+        GW2::GadgetType GetType() const;
 
         GameData::GadgetData *m_ptr;
     };
@@ -671,6 +687,7 @@ namespace GW2LIB
         uintptr_t contextGadget = 0x94;
         uintptr_t ctxgdVtGetGadget = 0x4;
         uintptr_t gdHealth = 0x18c;
+        uintptr_t gdVtGetType = 0x54;
 
 #endif
     };

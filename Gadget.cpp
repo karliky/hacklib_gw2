@@ -54,3 +54,10 @@ float Gadget::GetMaxHealth() const
     return 0;
 }
 
+GW2::GadgetType Gadget::GetType() const
+{
+    if (m_ptr)
+        return m_ptr->type;
+    return (GW2::GadgetType)0;
+}
+

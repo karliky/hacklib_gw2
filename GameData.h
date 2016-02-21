@@ -63,6 +63,7 @@ namespace GameData
 
         float currentHealth = 0;
         float maxHealth = 0;
+        GW2LIB::GW2::GadgetType type = (GW2LIB::GW2::GadgetType)0;
     };
 
     struct CompassData {

@@ -1,4 +1,5 @@
 #include "gw2lib.h"
+#include "GameData.h"
 #include <sstream>
 #include <thread>
 #include <chrono>
@@ -56,6 +57,10 @@ void cbESP()
             if (ag.IsValid())
             {
                 font.Draw(x, y-30, fontColor, "agentptr: %p", *(void**)ag.m_ptr);
+
+                if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
+                    font.Draw(x, y - 120, fontColor, "gadget: %p - type: %i", ag.GetGadget().m_ptr->pGadget, ag.GetGadget().GetType());
+                }
 
                 if (ag.GetCategory() == GW2::AGENT_CATEGORY_KEYFRAMED) {
                     /*unsigned long agmetrics = *(unsigned long*)(*(unsigned long*)ag.m_ptr + 0x1c);
