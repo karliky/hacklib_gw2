@@ -15,6 +15,17 @@ namespace GameData
 {
     struct CharacterData;
     struct GadgetData;
+    struct ResourceNodeData;
+    struct CompassData;
+
+    enum CompassFlags {
+        COMP_ROTATION = 0x1,
+        COMP_POSITION = 0x4
+    };
+
+    enum ResourceNodeFlags {
+        RE_NODE_FLAG_DEPLETED = 0x2
+    };
 
     struct AgentData
     {

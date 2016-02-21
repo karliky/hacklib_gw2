@@ -378,8 +378,8 @@ void Gw2HackMain::RefreshDataCompass(GameData::CompassData *pCompData, hl::Forei
         pCompData->maxHeight = comp.get<float>(m_pubmems.compMaxHeight);
 
         DWORD flags = comp.get<DWORD>(m_pubmems.compFlags);
-        pCompData->flags.rotation = !!(flags & GW2LIB::GW2::COMP_ROTATION);
-        pCompData->flags.position = !!(flags & GW2LIB::GW2::COMP_POSITION);
+        pCompData->flags.rotation = !!(flags & GameData::COMP_ROTATION);
+        pCompData->flags.position = !!(flags & GameData::COMP_POSITION);
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataCompass] access violation\n");
@@ -409,7 +409,7 @@ void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData
         pRNodeData->type = node.get<GW2LIB::GW2::ResourceNodeType>(m_pubmems.nodeType);
 
         BYTE flags = node.get<BYTE>(m_pubmems.nodeFlags);
-        pRNodeData->flags.depleted = !(flags & GW2LIB::GW2::RE_NODE_FLAG_DEPLETED);
+        pRNodeData->flags.depleted = !(flags & GameData::RE_NODE_FLAG_DEPLETED);
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataResourceNode] access violation\n");

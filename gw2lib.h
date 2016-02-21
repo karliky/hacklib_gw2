@@ -95,11 +95,6 @@ namespace GW2LIB
             BREAKBAR_STATE_IMMUNE
         };
 
-        enum CompassFlags {
-            COMP_ROTATION = 0x1,
-            COMP_POSITION = 0x4
-        };
-
         enum UiIntefaceSize {
             UI_IF_SMALL,
             UI_IF_NORMAL,
@@ -127,10 +122,6 @@ namespace GW2LIB
             RE_NODE_TYPE_TREE,
             RE_NODE_TYPE_MINERAL,
             RE_NODE_TYPE_EVENT
-        };
-
-        enum ResourceNodeFlags {
-            RE_NODE_FLAG_DEPLETED = 0x2
         };
     }
 
