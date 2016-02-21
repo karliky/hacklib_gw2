@@ -10,6 +10,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC
     Compass.cpp
     GameData.h
     GameData.cpp
+    ResourceNode.cpp
     Gw2Hook.h
     Gw2Hook.cpp
     main.h
