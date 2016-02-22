@@ -6,7 +6,7 @@
 
 
 float offsety = 0;
-#define OFFSETY (offsety-=15)
+#define OFFSETY (offsety-=12)
 
 GW2LIB::Font font;
 static const DWORD fontColor = 0xffffffff;
@@ -70,8 +70,7 @@ void cbESP()
                 // assign colors
                 if (chr == GetOwnCharacter()) {
                     color |= 0x000000ff;
-                }
-                else {
+                } else {
                     switch (chr.GetAttitude()) {
                     case GW2::ATTITUDE_FRIENDLY:
                         color |= 0x0033ff00;
@@ -131,7 +130,7 @@ void cbESP()
 
             if (chr.IsValid())
             {
-                font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
+                if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
