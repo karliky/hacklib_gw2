@@ -113,7 +113,7 @@ namespace GW2LIB
             GADGET_TYPE_WP = 13,     // waypoint
             GADGET_TYPE_RESOURCE_NODE = 14,  // gathering nodes, AB masks, strongbox
             GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom
-            GADGET_TYPE_BANNER = 18, // guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
+            GADGET_TYPE_BANNER = 18, // wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
             GADGET_TYPE_VISTA = 19   // vista
         };
 

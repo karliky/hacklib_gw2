@@ -5,6 +5,9 @@
 #include <chrono>
 
 
+float offsety = 0;
+#define OFFSETY (offsety-=15)
+
 GW2LIB::Font font;
 static const DWORD fontColor = 0xffffffff;
 
@@ -48,46 +51,16 @@ void cbESP()
         if (dist(mypos, pos) > 2000.0f)
             continue;
 
+        offsety = 0;
+
         float x, y;
         if (WorldToScreen(pos, &x, &y)) {
-            font.Draw(x, y, fontColor, "pos: %.1f %.1f %.1f", pos.x, pos.y, pos.z);
-            font.Draw(x, y-15, fontColor, "agentId: %i / 0x%04X", ag.GetAgentId(), ag.GetAgentId());
-            font.Draw(x, y-45, fontColor, "category: %i, type: %i", ag.GetCategory(), ag.GetType());
-
-            if (ag.IsValid())
-            {
-                font.Draw(x, y-30, fontColor, "agentptr: %p", *(void**)ag.m_ptr);
-
-                if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
-                    Gadget gd = ag.GetGadget();
-                    font.Draw(x, y - 120, fontColor, "gadget: %p - type: %i", gd.m_ptr->pGadget, gd.GetType());
-                    if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
-                        ResourceNode node = gd.GetResourceNode();
-                        font.Draw(x, y - 135, fontColor, "resource: %p - type: %i - depleted: %i", node.m_ptr->pResourceNode, node.GetType(), !node.IsGatherable());
-                    }
-                }
-
-                if (ag.GetCategory() == GW2::AGENT_CATEGORY_KEYFRAMED) {
-                    /*unsigned long agmetrics = *(unsigned long*)(*(unsigned long*)ag.m_ptr + 0x1c);
-                    unsigned long long tok = *(unsigned long long*)(agmetrics + 0x98);
-                    unsigned long long seq = *(unsigned long long*)(agmetrics + 0xa0);
-
-                    std::stringstream tokseq;
-                    tokseq << "token: " << tok << " sequence: " << seq;
-                    font.Draw(x, y-60, fontColor, tokseq.str());*/
-                }
-            }
 
             float circleSize = 10.0f;
             DWORD color = 0x66ffffff;
 
             if (chr.IsValid())
             {
-                font.Draw(x, y-60, fontColor, chr.GetName());
-                font.Draw(x, y-75, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
-                font.Draw(x, y-90, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
-                font.Draw(x, y-105, fontColor, "wvw supply: %i", chr.GetWvwSupply());
-
                 color = 0xcc000000;
 
                 // lower opacity for non players
@@ -97,7 +70,8 @@ void cbESP()
                 // assign colors
                 if (chr == GetOwnCharacter()) {
                     color |= 0x000000ff;
-                } else {
+                }
+                else {
                     switch (chr.GetAttitude()) {
                     case GW2::ATTITUDE_FRIENDLY:
                         color |= 0x0033ff00;
@@ -126,6 +100,42 @@ void cbESP()
             DrawCircleProjected(pos, circleSize, color);
             DrawCircleFilledProjected(pos, circleSize, color);
             DrawLineProjected(pos, rotArrow, color);
+
+            font.Draw(x, y, fontColor, "pos: %.1f %.1f %.1f", pos.x, pos.y, pos.z);
+            font.Draw(x, y + OFFSETY, fontColor, "agentId: %i / 0x%04X", ag.GetAgentId(), ag.GetAgentId());
+            font.Draw(x, y + OFFSETY, fontColor, "category: %i, type: %i", ag.GetCategory(), ag.GetType());
+
+            if (ag.IsValid())
+            {
+                font.Draw(x, y + OFFSETY, fontColor, "agentptr: %p", *(void**)ag.m_ptr);
+
+                if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
+                    Gadget gd = ag.GetGadget();
+                    font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", gd.m_ptr->pGadget, gd.GetType());
+                    if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
+                        ResourceNode node = gd.GetResourceNode();
+                        font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i - depleted: %i", node.m_ptr->pResourceNode, node.GetType(), !node.IsGatherable());
+                    }
+                }
+
+                if (ag.GetCategory() == GW2::AGENT_CATEGORY_KEYFRAMED) {
+                    /*unsigned long agmetrics = *(unsigned long*)(*(unsigned long*)ag.m_ptr + 0x1c);
+                    unsigned long long tok = *(unsigned long long*)(agmetrics + 0x98);
+                    unsigned long long seq = *(unsigned long long*)(agmetrics + 0xa0);
+
+                    std::stringstream tokseq;
+                    tokseq << "token: " << tok << " sequence: " << seq;
+                    font.Draw(x, y-60, fontColor, tokseq.str());*/
+                }
+            }
+
+            if (chr.IsValid())
+            {
+                font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
+                font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
+                font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
+                font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
+            }
         }
     }
 }
