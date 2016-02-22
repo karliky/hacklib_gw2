@@ -79,10 +79,12 @@ bool Gw2HackMain::init()
     uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
     uintptr_t ping = hl::FindPattern("\xCC\x4C\x8B\xDA\x33\xC0\x4C\x8D\x0D\x00\x00\x00\x00\x48\x8B\xD1", "xxxxxxxxx????xxx");
     uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
+    uintptr_t ifHide = hl::FindPattern("\xCC\x33\xC0\x39\x05\x00\x00\x00\x00\x0F\x9D\xC0\xC3\xCC", "xxxxx????xxxxx");
 #else
     uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
     uintptr_t ping = hl::FindPattern("\x88\x13\x00\x00\x77\x17\x6A\x24\xBA\x00\x00\x00\x00\xB9", "xxxxxxxxx????x");
     uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
+    uintptr_t ifHide = hl::FindPattern("\xCC\x33\xC0\x39\x05\x00\x00\x00\x00\x0F\x9D\xC0\xC3\xCC", "xxxxx????xxxxx");
 #endif
 
     hl::PatternScanner scanner;
@@ -109,6 +111,7 @@ bool Gw2HackMain::init()
             m_mems.pMapId = (int*)hl::FollowRelativeAddress(MapIdSig + 0x6);
             m_mems.pPing = (int*)hl::FollowRelativeAddress(ping + 0x9);
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
+            m_mems.pIfHide = (int*)hl::FollowRelativeAddress(ifHide + 0x5);
 #else
             m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
             pAlertCtx = **(uintptr_t**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
@@ -119,6 +122,7 @@ bool Gw2HackMain::init()
             m_mems.pMapId = *(int**)(MapIdSig + 0x6);
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
+            m_mems.pIfHide = *(int**)(ifHide + 0x5);
 #endif
         } __except (EXCEPTION_EXECUTE_HANDLER) {
             return false;
@@ -140,6 +144,7 @@ bool Gw2HackMain::init()
     HL_LOG_DBG("mpid:   %p\n", m_mems.pMapId);
     HL_LOG_DBG("ping:   %p\n", m_mems.pPing);
     HL_LOG_DBG("fps:    %p\n", m_mems.pFps);
+    HL_LOG_DBG("ifHide: %p\n", m_mems.pIfHide);
 
     // hook functions
 #ifdef NOD3DHOOK
@@ -633,6 +638,7 @@ void Gw2HackMain::GameHook()
     m_gameData.mapId = *m_mems.pMapId;
     m_gameData.ping = *m_mems.pPing;
     m_gameData.fps = *m_mems.pFps;
+    m_gameData.ifHide = *m_mems.pIfHide;
 
     hl::ForeignClass comp = m_mems.pCompass;
     m_gameData.objData.compData = std::make_unique<GameData::CompassData>();

@@ -273,6 +273,7 @@ namespace GW2LIB
     GW2::UiIntefaceSize GetUiInterfaceSize();
     int GetPing();
     int GetFPS();
+    bool IsInterfaceHidden();
 
 
     //////////////////////////////////////////////////////////////////////////
