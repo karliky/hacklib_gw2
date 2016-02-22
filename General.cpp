@@ -101,4 +101,7 @@ Gw2Hooks* get_hook_list() {
     return &get_hook()->m_hookList;
 }
 
+bool GW2LIB::IsInterfaceHidden() {
+    return !!GetMain()->GetGameData()->ifHide;
+}
 

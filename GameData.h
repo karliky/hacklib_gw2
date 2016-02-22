@@ -131,6 +131,7 @@ namespace GameData
         int mapId = 0;
         int ping = 0;
         int fps = 0;
+        int ifHide = 0;
         GW2LIB::GW2::UiIntefaceSize uiIntSize = GW2LIB::GW2::UI_IF_NORMAL;
     };
 
