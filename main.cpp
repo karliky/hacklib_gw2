@@ -140,7 +140,7 @@ bool Gw2HackMain::init()
     HL_LOG_DBG("asctx:  %p\n", m_mems.pAgentSelectionCtx);
     HL_LOG_DBG("wv:     %p\n", m_mems.ppWorldViewContext);
     HL_LOG_DBG("comp:   %p\n", m_mems.pCompass);
-    HL_LOG_DBG("uiSz:   %p\n", m_mems.pUiSize);
+    HL_LOG_DBG("uiOpts: %p\n", m_mems.pUiOpts);
     HL_LOG_DBG("mpid:   %p\n", m_mems.pMapId);
     HL_LOG_DBG("ping:   %p\n", m_mems.pPing);
     HL_LOG_DBG("fps:    %p\n", m_mems.pFps);
