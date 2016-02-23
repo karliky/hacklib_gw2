@@ -218,6 +218,13 @@ GW2::Profession Character::GetProfession() const
     return GW2::PROFESSION_NONE;
 }
 
+GW2::ElementalistAttunement Character::GetAttunement() const
+{
+    if (m_ptr)
+        return m_ptr->attunement;
+    return GW2::ATTUNED_NONE;
+}
+
 GW2::Attitude Character::GetAttitude() const
 {
     if (m_ptr)
