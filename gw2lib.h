@@ -123,6 +123,14 @@ namespace GW2LIB
             RE_NODE_TYPE_MINERAL,
             RE_NODE_TYPE_QUEST
         };
+
+        enum ElementalistAttunement {
+            ATTUNED_NONE,
+            ATTUNED_FIRE,
+            ATTUNED_WATER,
+            ATTUNED_AIR,
+            ATTUNED_EARTH
+        };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -201,6 +209,7 @@ namespace GW2LIB
 
         GW2::BreakbarState GetBreakbarState() const;
         GW2::Profession GetProfession() const;
+        GW2::ElementalistAttunement GetAttunement() const;
         GW2::Attitude GetAttitude() const;
 
         std::string GetName() const;
@@ -720,6 +729,11 @@ namespace GW2LIB
         // resource node stuff
         uintptr_t nodeType = 0x8;
         uintptr_t nodeFlags = 0xc;
+
+        // elementalist profession (64-bit are 0x340-ish and 0x40)
+        // find attunement, then subtract the offset and find the offset of the resulting pointer in the player char class
+        uintptr_t professionEle = 0x210;
+        uintptr_t eleAttunement = 0x20;
 #endif
     };
 }
