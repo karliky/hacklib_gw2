@@ -12,8 +12,7 @@ GW2LIB::Font font;
 static const DWORD fontColor = 0xffffffff;
 
 std::string strProf[] = { "Error", "Guardian", "Warrior", "Engineer", "Ranger", "Thief", "Elementalist", "Mesmer", "Necromancer", "Revenant", "None" };
-
-std::string strAttune[] = { "None", "Fire", "Water", "Air", "Earth" };
+std::string strStance[] = { "None", "Fire", "Water", "Air", "Earth", "Necro_DS", "TEST2", "TEST3", "TEST4", "Ranger1", "TEST6", "Dragon", "Assassin", "Dwarf", "TEST10", "TEST11", "Centaur", "TEST13", "TEST14" };
 
 float dist(GW2LIB::Vector3 p1, GW2LIB::Vector3 p2)
 {
@@ -133,7 +132,8 @@ void cbESP()
             {
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
-                if (chr.GetAttunement()) font.Draw(x, y + OFFSETY, fontColor, "attuned: %s", strAttune[chr.GetAttunement()].c_str());
+                if (chr.GetStance()) font.Draw(x, y + OFFSETY, fontColor, "stance: %s", strStance[chr.GetStance()].c_str());
+                font.Draw(x, y + OFFSETY, fontColor, "clones: %i", chr.GetCloneCount());
                 font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
             }

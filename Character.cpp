@@ -160,6 +160,12 @@ int Character::GetWvwSupply() const
     return 0;
 }
 
+int Character::GetCloneCount() const {
+    if (m_ptr)
+        return m_ptr->cloneCnt;
+    return 0;
+}
+
 
 float Character::GetCurrentHealth() const
 {
@@ -218,11 +224,11 @@ GW2::Profession Character::GetProfession() const
     return GW2::PROFESSION_NONE;
 }
 
-GW2::ElementalistAttunement Character::GetAttunement() const
+GW2::ProfessionStance Character::GetStance() const
 {
     if (m_ptr)
-        return m_ptr->attunement;
-    return GW2::ATTUNED_NONE;
+        return m_ptr->stance;
+    return GW2::STANCE_NONE;
 }
 
 GW2::Attitude Character::GetAttitude() const

@@ -341,9 +341,11 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->stats = corestats.get<GW2LIB::GW2::CharacterStats>(m_pubmems.statsStats);
         }
 
-        hl::ForeignClass elementalist = character.get<void*>(m_pubmems.professionEle);
-        if (elementalist) {
-            pCharData->attunement = elementalist.get<GW2LIB::GW2::ElementalistAttunement>(m_pubmems.eleAttunement);
+        hl::ForeignClass prof = character.get<void*>(m_pubmems.charProfession);
+        if (prof) {
+            pCharData->stance = prof.get<GW2LIB::GW2::ProfessionStance>(m_pubmems.profStance);
+            if(pCharData->profession == GW2LIB::GW2::PROFESSION_MESMER)
+                pCharData->cloneCnt = prof.get<int>(m_pubmems.profCloneCnt);
         }
 
         hl::ForeignClass inventory = character.get<void*>(m_pubmems.charInventory);
