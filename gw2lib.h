@@ -23,6 +23,7 @@ namespace GameData {
     struct CharacterData;
     struct AgentData;
     struct GadgetData;
+    struct AttackTargetData;
     struct CompassData;
     struct ResourceNodeData;
 }
@@ -36,6 +37,7 @@ namespace GW2LIB
     class Character;
     class Compass;
     class Gadget;
+    class AttackTarget;
     class ResourceNode;
 
     struct Vector3 {
@@ -72,13 +74,13 @@ namespace GW2LIB
             PROFESSION_NONE
         };
         enum Attitude {
-            ATTITUDE_FRIENDLY = 0,
+            ATTITUDE_FRIENDLY,
             ATTITUDE_HOSTILE,
             ATTITUDE_INDIFFERENT,
             ATTITUDE_NEUTRAL
         };
         enum AgentCategory {
-            AGENT_CATEGORY_CHAR = 0,
+            AGENT_CATEGORY_CHAR,
             AGENT_CATEGORY_DYNAMIC,
             AGENT_CATEGORY_KEYFRAMED
         };
@@ -89,10 +91,10 @@ namespace GW2LIB
             AGENT_TYPE_ITEM = 15
         };
         enum BreakbarState {
-            BREAKBAR_STATE_NONE = -1,
             BREAKBAR_STATE_READY,
             BREAKBAR_STATE_RECOVER,
-            BREAKBAR_STATE_IMMUNE
+            BREAKBAR_STATE_IMMUNE,
+            BREAKBAR_STATE_NONE
         };
 
         enum UiIntefaceSize {
@@ -104,24 +106,53 @@ namespace GW2LIB
 
         enum GadgetType {
             GADGET_TYPE_ATTACKABLE = 1, // training dummy
-            GADGET_TYPE_EVENT = 2,   // event spawn? (saw at VB Pale Reaver primary rally point)
+            GADGET_TYPE_POINT = 2,   // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
             GADGET_TYPE_CRAFT = 4,   // crafting station
+            GADGET_TYPE_PVP_GATE = 5,// pvp base gate
             GADGET_TYPE_INTERACT = 9,// sw chest, AB exalted portal
             GADGET_TYPE_PLAYER_SPECIFIC = 10, // LA karka hatchling, VB floating airship cargo
             GADGET_TYPE_BOSS = 11,   // world boss
             GADGET_TYPE_PORTAL = 12, // map border portal
             GADGET_TYPE_WP = 13,     // waypoint
-            GADGET_TYPE_RESOURCE_NODE = 14,  // gathering nodes, AB masks, strongbox
-            GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom
+            GADGET_TYPE_RESOURCE_NODE = 14,  // gathering node, AB mask, strongbox, chest
+            GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
             GADGET_TYPE_BANNER = 18, // wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
-            GADGET_TYPE_VISTA = 19   // vista
+            GADGET_TYPE_VISTA = 19,  // vista
+            GADGET_TYPE_NONE
         };
 
         enum ResourceNodeType {
             RE_NODE_TYPE_PLANT,
             RE_NODE_TYPE_TREE,
             RE_NODE_TYPE_MINERAL,
-            RE_NODE_TYPE_QUEST
+            RE_NODE_TYPE_QUEST,
+            RE_NODE_TYPE_NONE
+        };
+
+        enum ProfessionStance {
+            STANCE_NONE,
+            STANCE_ELE_FIRE,
+            STANCE_ELE_WATER,
+            STANCE_ELE_AIR,
+            STANCE_ELE_EARTH,
+            STANCE_NECRO_SHROUD,
+            STANCE_WAR_ADREN1,
+            STANCE_WAR_ADREN2,
+            STANCE_WAR_ADREN3,
+            STANCE_RANGER_DRUID,
+            STANCE_RANGER_ASTRAL,
+            STANCE_REV_DRAGON,
+            STANCE_REV_ASSASSIN,
+            STANCE_REV_DWARF,
+            STANCE_REV_DEMON,
+            STANCE_UNKNOWN1,
+            STANCE_REV_CENTAUR
+        };
+
+        enum AgentSequence {
+            AGENT_SEQ_NONE,
+            AGENT_SEQ_DOOR_OPEN = 0x7160F,
+            AGENT_SEQ_DOOR_CLOSED = 0x59BD83
         };
     }
 
@@ -152,6 +183,7 @@ namespace GW2LIB
 
         Character GetCharacter() const;
         Gadget GetGadget() const;
+        AttackTarget GetAttackTarget() const;
 
         GW2::AgentCategory GetCategory() const;
         GW2::AgentType GetType() const;
@@ -159,6 +191,8 @@ namespace GW2LIB
 
         Vector3 GetPos() const;
         float GetRot() const;
+        uint64_t GetToken() const;
+        uint64_t GetSequence() const;
 
         GameData::AgentData *m_ptr;
         size_t iterator = 0;
@@ -191,6 +225,8 @@ namespace GW2LIB
         int GetScaledLevel() const;
         GW2::CharacterStats GetStats() const;
         int GetWvwSupply() const;
+        float GetProfessionEnergy() const;
+        float GetProfessionEnergyMax() const;
 
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
@@ -201,6 +237,7 @@ namespace GW2LIB
 
         GW2::BreakbarState GetBreakbarState() const;
         GW2::Profession GetProfession() const;
+        GW2::ProfessionStance GetStance() const;
         GW2::Attitude GetAttitude() const;
 
         std::string GetName() const;
@@ -214,7 +251,7 @@ namespace GW2LIB
         Gadget(const Gadget &);
         Gadget &operator= (const Gadget &);
         bool operator== (const Gadget &);
-        Agent Gadget::GetAgent() const;
+        Agent GetAgent() const;
         bool IsValid() const;
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
@@ -222,6 +259,20 @@ namespace GW2LIB
         ResourceNode GetResourceNode() const;
 
         GameData::GadgetData *m_ptr;
+    };
+    // represents a gadget attack target
+    class AttackTarget {
+    public:
+        AttackTarget();
+        AttackTarget(const AttackTarget &);
+        AttackTarget &operator= (const AttackTarget &);
+        bool operator== (const AttackTarget &);
+        Agent GetAgent() const;
+        bool IsValid() const;
+        float GetCurrentHealth() const;
+        float GetMaxHealth() const;
+
+        GameData::AttackTargetData *m_ptr;
     };
     // resource nodes
     class ResourceNode {
@@ -236,6 +287,11 @@ namespace GW2LIB
         bool IsGatherable() const;
 
         GameData::ResourceNodeData *m_ptr;
+    };
+    // profession specific data
+    class Profession {
+    public:
+        Profession();
     };
     // compass (minimap)
     class Compass {
@@ -367,16 +423,16 @@ namespace GW2LIB
         uintptr_t agtransX = 0x30;
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
-        uintptr_t npc_agtransRX = 0xc0;
-        uintptr_t npc_agtransRY = 0xc4;
-        uintptr_t agtransRX = 0x140;
-        uintptr_t agtransRY = 0x144;
+        uintptr_t npc_agtransRX = 0xe0;
+        uintptr_t npc_agtransRY = 0xe4;
+        uintptr_t agtransRX = 0x160;
+        uintptr_t agtransRY = 0x164;
+        uintptr_t agtransToken = 0xf0;
+        uintptr_t agtransSeq = 0xf8;
+
         uintptr_t charctxCharArray = 0x58;
         uintptr_t charctxPlayerArray = 0x78;
         uintptr_t charctxControlled = 0x90;
-        uintptr_t charBreakbar = 0xa8;
-        uintptr_t breakbarState = 0x40;
-        uintptr_t breakbarPercent = 0x44;
 
         uintptr_t charVtGetAgent = 0x170;
         uintptr_t charVtGetAgentId = 0x178;
@@ -387,16 +443,19 @@ namespace GW2LIB
         uintptr_t charVtInWater = 0x328;
         uintptr_t charVtMonster = 0x340;
         uintptr_t charVtClone = 0x360;
-        uintptr_t charVtPlayer = 0x398;
-        uintptr_t charVtRangerPet = 0x390;
+        uintptr_t charVtPlayer = 0x3a0;
+        uintptr_t charVtRangerPet = 0x398;
         uintptr_t charAttitude = 0xa0;
-        uintptr_t charCoreStats = 0x280;
-        uintptr_t charEndurance = 0x2c8;
-        uintptr_t charHealth = 0x2d0;
-        uintptr_t charInventory = 0x2d8;
+        uintptr_t charBreakbar = 0xa8;
+        uintptr_t charCoreStats = 0x288;
+        uintptr_t charEndurance = 0x2d0;
+        uintptr_t charHealth = 0x2d8;
+        uintptr_t charInventory = 0x2e0;
+        uintptr_t charGliderPercent = 0x130;
+        uintptr_t charProfession = 0x368;
+        uintptr_t charName = 0x188;
 
         uintptr_t playerName = 0x68;
-        uintptr_t charGliderPercent = 0x130;
         uintptr_t statsStats = 0xac;
         uintptr_t statsLevel = 0x1ec;
         uintptr_t statsScaledLevel = 0x21c;
@@ -413,22 +472,33 @@ namespace GW2LIB
         uintptr_t wvctxVtGetMetrics = 0x78;
         uintptr_t wvctxStatus = 0x58;
 
+        uintptr_t breakbarState = 0x40;
+        uintptr_t breakbarPercent = 0x44;
+
         uintptr_t compWidth = 0x40;
         uintptr_t compHeight = 0x44;
         uintptr_t compZoom = 0x48;
         uintptr_t compFlags = 0x28;
         uintptr_t compMaxWidth = 0x18;
         uintptr_t compMaxHeight = 0x1c;
+
         uintptr_t uiIntSize = 0x54;
 
         uintptr_t contextGadget = 0x128;
         uintptr_t ctxgdVtGetGadget = 0x8;
+        uintptr_t ctxgdVtGetAtkTgt = 0x18;
+
+        uintptr_t atkTgt = 0x58;
         uintptr_t gdHealth = 0x1e8;
         uintptr_t gdVtGetType = 0xa8;
         uintptr_t gdVtGetRNode = 0xf0;
 
         uintptr_t nodeType = 0xc;
         uintptr_t nodeFlags = 0x10;
+
+        uintptr_t profStance = 0x40;
+        uintptr_t profEnergy = 0x50;
+        uintptr_t profEnergyMax = 0x54;
 #else
         /*
         If you update gw2lib and the patterns are still working it can be useful to know
@@ -502,6 +572,7 @@ namespace GW2LIB
         uintptr_t agentVtGetPos = 0xb4;
         // Agent::CAgentTransform* m_transform;
         uintptr_t agentTransform = 0x1c;
+
         /*
         Contains agent data that is important to this lib.
 
@@ -523,13 +594,17 @@ namespace GW2LIB
         // float z;
         uintptr_t agtransZ = 0x28;
         // float rx;
-        uintptr_t npc_agtransRX = 0x90;
+        uintptr_t npc_agtransRX = 0xa0;
         // float ry;
-        uintptr_t npc_agtransRY = 0x94;
+        uintptr_t npc_agtransRY = 0xa4;
         // float rx;
-        uintptr_t agtransRX = 0x100;
+        uintptr_t agtransRX = 0x110;
         // float ry;
-        uintptr_t agtransRY = 0x104;
+        uintptr_t agtransRY = 0x114;
+
+        uintptr_t agtransToken = 0xa8;
+        uintptr_t agtransSeq = 0xb0;
+        //uintptr_t transVtGetSeq = 0x88; // void GetSeq(_out_ &UINT64 buf);
         /*
         Holds metric information about an agent.
 
@@ -548,16 +623,6 @@ namespace GW2LIB
         Context that contains data about CCharacters.
 
         Easy to recognize by the arrays. The order of them is unlikely to change.
-        */
-
-        // CharClient::CBreakBar* m_breakBar;
-        uintptr_t charBreakbar = 0x64;
-        // BreakbarState
-        uintptr_t breakbarState = 0x20;
-        // float
-        uintptr_t breakbarPercent = 0x24;
-        /*
-        "m_breakBar"
         */
 
         // CharClient::CCharacter
@@ -580,19 +645,25 @@ namespace GW2LIB
         // bool IsMonsterPlayerClone();
         uintptr_t charVtClone = 0x1b0;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1cc;
+        uintptr_t charVtPlayer = 0x1d0;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1c8;
+        uintptr_t charVtRangerPet = 0x1cc;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x60;
+        // CharClient::CBreakBar* m_breakBar;
+        uintptr_t charBreakbar = 0x64;
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x194;
+        uintptr_t charCoreStats = 0x19c;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x1b8;
+        uintptr_t charEndurance = 0x1c0;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x1bc;
+        uintptr_t charHealth = 0x1c4;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x1c0;
+        uintptr_t charInventory = 0x1c8;
+
+        uintptr_t charGliderPercent = 0xb8;
+        uintptr_t charProfession = 0x218;
+        uintptr_t charName = 0x100;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
@@ -608,13 +679,16 @@ namespace GW2LIB
         Two at once! "IsPlayer() || IsMonster()"
         Two at once! "character->IsPlayer() || character->IsMonsterPlayerClone()"
         "character->IsPlayer() || character->IsMonsterPlayerClone()"
-        "m_kennel" then search up for "speciesDef", 3rd vt call counting up
+        "m_kennel" then look up for "speciesDef", 3rd vt call counting up
 
         "m_attitudeTowardControlled < Content::AFFINITY_ATTITUDES"
+        "m_breakBar"
         "m_coreStats"
         "!m_endurance"
         "m_health"
         "m_inventory"
+        Glider found by looking for float value between 0.0 - 1.0 in your own character data while gliding.
+        "m_profession"
         */
 
         // CharClient::CPlayer
@@ -625,14 +699,6 @@ namespace GW2LIB
 
         The name is very easy to find by just comparing to your name.
         "TextValidateLiteral(m_name.Ptr())"
-        */
-
-        uintptr_t charGliderPercent = 0xb8;
-        /*
-        Glider percentage level as a float.
-
-        Found by looking for float value between 0.0 - 1.0 in your own character data while gliding.
-        always show 1.0 for other players.
         */
 
         // CharClient::CCoreStats
@@ -698,6 +764,11 @@ namespace GW2LIB
         camStatus is a bit that flips in loading screens and can be found by inspection.
         */
 
+        // BreakbarState
+        uintptr_t breakbarState = 0x20;
+        // float
+        uintptr_t breakbarPercent = 0x24;
+
 
         // compass (minimap) offsets
         uintptr_t compWidth = 0x34;
@@ -713,6 +784,9 @@ namespace GW2LIB
         // gadget stuff
         uintptr_t contextGadget = 0x94;
         uintptr_t ctxgdVtGetGadget = 0x4;
+        uintptr_t ctxgdVtGetAtkTgt = 0xc;
+
+        uintptr_t atkTgt = 0x30;
         uintptr_t gdHealth = 0x18c;
         uintptr_t gdVtGetType = 0x54;
         uintptr_t gdVtGetRNode = 0x78;
@@ -720,6 +794,13 @@ namespace GW2LIB
         // resource node stuff
         uintptr_t nodeType = 0x8;
         uintptr_t nodeFlags = 0xc;
+
+        // profession stuff
+        uintptr_t profStance = 0x20;
+        uintptr_t profEnergy = 0x28;
+        uintptr_t profEnergyMax = 0x2c;
+
+        // "TextValidateLiteral(m_nameOverride.Ptr())"
 #endif
     };
 }

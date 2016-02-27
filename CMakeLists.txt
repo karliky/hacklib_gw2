@@ -7,6 +7,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC
     Character.cpp
     EspDraw.cpp
     Gadget.cpp
+    AttackTarget.cpp
     Compass.cpp
     GameData.h
     GameData.cpp

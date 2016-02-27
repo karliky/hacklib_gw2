@@ -160,6 +160,18 @@ int Character::GetWvwSupply() const
     return 0;
 }
 
+float Character::GetProfessionEnergy() const {
+    if (m_ptr)
+        return m_ptr->energyLvl;
+    return 0;
+}
+
+float Character::GetProfessionEnergyMax() const {
+    if (m_ptr)
+        return m_ptr->energyLvlMax;
+    return 0;
+}
+
 
 float Character::GetCurrentHealth() const
 {
@@ -216,6 +228,13 @@ GW2::Profession Character::GetProfession() const
     if (m_ptr)
         return m_ptr->profession;
     return GW2::PROFESSION_NONE;
+}
+
+GW2::ProfessionStance Character::GetStance() const
+{
+    if (m_ptr)
+        return m_ptr->stance;
+    return GW2::STANCE_NONE;
 }
 
 GW2::Attitude Character::GetAttitude() const

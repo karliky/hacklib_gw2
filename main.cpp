@@ -140,7 +140,7 @@ bool Gw2HackMain::init()
     HL_LOG_DBG("asctx:  %p\n", m_mems.pAgentSelectionCtx);
     HL_LOG_DBG("wv:     %p\n", m_mems.ppWorldViewContext);
     HL_LOG_DBG("comp:   %p\n", m_mems.pCompass);
-    HL_LOG_DBG("uiSz:   %p\n", m_mems.pUiSize);
+    HL_LOG_DBG("uiOpts: %p\n", m_mems.pUiOpts);
     HL_LOG_DBG("mpid:   %p\n", m_mems.pMapId);
     HL_LOG_DBG("ping:   %p\n", m_mems.pPing);
     HL_LOG_DBG("fps:    %p\n", m_mems.pFps);
@@ -298,6 +298,11 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         if (transform)
         {
             pAgentData->rot = atan2(transform.get<float>(m_pubmems.agtransRY), transform.get<float>(m_pubmems.agtransRX));
+
+            if (pAgentData->category == GW2LIB::GW2::AGENT_CATEGORY_KEYFRAMED) {
+                pAgentData->token = transform.get<uint64_t>(m_pubmems.agtransToken);
+                pAgentData->seq = transform.get<uint64_t>(m_pubmems.agtransSeq);
+            }
         }
 
     } __except (EXCEPTION_EXECUTE_HANDLER) {
@@ -352,11 +357,34 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->breakbarPercent = breakbar.get<float>(m_pubmems.breakbarPercent);
         }
 
+        char *name = character.get<char*>(m_pubmems.charName);
+        if (name) {
+            int i = 0;
+            pCharData->name = "";
+            while (name[i]) {
+                pCharData->name += name[i];
+                i += 2;
+            }
+        }
+
         if (pCharData->isPlayer)
         {
             hl::ForeignClass player = character.call<void*>(m_pubmems.charVtGetPlayer);
             if (player)
             {
+                hl::ForeignClass prof = character.get<void*>(m_pubmems.charProfession);
+                if (prof) {
+                    bool toInt =
+                        pCharData->profession == GW2LIB::GW2::PROFESSION_MESMER ||
+                        pCharData->profession == GW2LIB::GW2::PROFESSION_WARRIOR ||
+                        pCharData->profession == GW2LIB::GW2::PROFESSION_ELEMENTALIST;
+
+                    pCharData->stance = prof.get<GW2LIB::GW2::ProfessionStance>(m_pubmems.profStance);
+                    pCharData->energyLvl = toInt ? prof.get<int>(m_pubmems.profEnergy) : prof.get<float>(m_pubmems.profEnergy);
+                    pCharData->energyLvlMax = toInt ? prof.get<int>(m_pubmems.profEnergyMax) : prof.get<float>(m_pubmems.profEnergyMax);
+                }
+
+
                 char *name = player.get<char*>(m_pubmems.playerName);
                 int i = 0;
                 pCharData->name = "";
@@ -405,6 +433,22 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataGadget] access violation\n");
+    }
+}
+
+void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAttackTgtData, hl::ForeignClass gd) {
+    __try {
+        hl::ForeignClass tgt = gd.get<void*>(m_pubmems.atkTgt);
+        pAttackTgtData->pAttackTgt = tgt;
+
+        hl::ForeignClass health = tgt.get<void*>(m_pubmems.gdHealth);
+        if (health) {
+            pAttackTgtData->currentHealth = health.get<float>(m_pubmems.healthCurrent);
+            pAttackTgtData->maxHealth = health.get<float>(m_pubmems.healthMax);
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        HL_LOG_ERR("[RefreshDataGadgetTarget] access violation\n");
     }
 }
 
@@ -517,6 +561,15 @@ void Gw2HackMain::GameHook()
                                         RefreshDataResourceNode(pRNodeData, pRNode);
                                         pRNodeData->pAgentData = pAgentData;
                                     }
+                                }
+
+                                // gadget attack target update
+                                if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
+                                    hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
+                                    pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
+                                    GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
+                                    RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
+                                    pAttackTgtData->pAgentData = pAgentData;
                                 }
 
                                 bool bCharDataFound = false;

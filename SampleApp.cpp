@@ -3,16 +3,18 @@
 #include <sstream>
 #include <thread>
 #include <chrono>
-
+#include <codecvt>
+#include <locale>
 
 float offsety = 0;
 #define OFFSETY (offsety-=12)
 
 GW2LIB::Font font;
 static const DWORD fontColor = 0xffffffff;
+std::string chat;
 
 std::string strProf[] = { "Error", "Guardian", "Warrior", "Engineer", "Ranger", "Thief", "Elementalist", "Mesmer", "Necromancer", "Revenant", "None" };
-
+std::string strStance[] = { "None", "Fire", "Water", "Air", "Earth", "Shroud", "Adrenaline 1", "Adrenaline 2", "Adrenaline 3", "Druid", "Astral", "Dragon", "Assassin", "Dwarf", "Demon", "TEST11", "Centaur", "TEST13", "TEST14", "TEST15", "TEST16", "TEST17" };
 
 float dist(GW2LIB::Vector3 p1, GW2LIB::Vector3 p2)
 {
@@ -30,6 +32,8 @@ void cbESP()
     Character chrAuto = agAuto.GetCharacter();
     Character chrHover = agHover.GetCharacter();
     Character chrLocked = agLocked.GetCharacter();
+
+    font.Draw(10, 25, fontColor, "%s", chat.c_str());
     font.Draw(25, 100, fontColor, "MapId: %i", GetCurrentMapId());
     font.Draw(25, 125, fontColor, "Mouse: %.1f %.1f %.1f", GetMouseInWorld().x, GetMouseInWorld().y, GetMouseInWorld().z);
     if (agAuto.m_ptr)
@@ -110,21 +114,16 @@ void cbESP()
 
                 if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
                     Gadget gd = ag.GetGadget();
-                    font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", gd.m_ptr->pGadget, gd.GetType());
+                    if (gd.m_ptr) font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", *(void**)gd.m_ptr, gd.GetType());
                     if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
                         ResourceNode node = gd.GetResourceNode();
-                        font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i - depleted: %i", node.m_ptr->pResourceNode, node.GetType(), !node.IsGatherable());
+                        if (node.m_ptr) font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i - depleted: %i", *(void**)node.m_ptr, node.GetType(), !node.IsGatherable());
                     }
                 }
 
                 if (ag.GetCategory() == GW2::AGENT_CATEGORY_KEYFRAMED) {
-                    /*unsigned long agmetrics = *(unsigned long*)(*(unsigned long*)ag.m_ptr + 0x1c);
-                    unsigned long long tok = *(unsigned long long*)(agmetrics + 0x98);
-                    unsigned long long seq = *(unsigned long long*)(agmetrics + 0xa0);
-
-                    std::stringstream tokseq;
-                    tokseq << "token: " << tok << " sequence: " << seq;
-                    font.Draw(x, y-60, fontColor, tokseq.str());*/
+                    font.Draw(x, y + OFFSETY, fontColor, "seq: 0x%llX", ag.GetSequence());
+                    font.Draw(x, y + OFFSETY, fontColor, "token: 0x%llX", ag.GetToken());
                 }
             }
 
@@ -132,6 +131,8 @@ void cbESP()
             {
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
+                if (chr.GetStance()) font.Draw(x, y + OFFSETY, fontColor, "stance: %s", strStance[chr.GetStance()].c_str());
+                if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "energy: %.1f / %.1f", chr.GetProfessionEnergy(), chr.GetProfessionEnergyMax());
                 font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
             }
@@ -139,6 +140,10 @@ void cbESP()
     }
 }
 
+void sample_chat_hook(wchar_t *wtxt) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    chat = converter.to_bytes(wtxt);
+}
 
 void GW2LIB::gw2lib_main()
 {
@@ -148,6 +153,8 @@ void GW2LIB::gw2lib_main()
         //DbgOut("could not create font");
         return;
     }
+
+    SetGameHook(ChatHook, sample_chat_hook);
 
     while (GetAsyncKeyState(VK_HOME) >= 0)
         std::this_thread::sleep_for(std::chrono::milliseconds(25));

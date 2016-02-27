@@ -58,7 +58,7 @@ GW2::GadgetType Gadget::GetType() const
 {
     if (m_ptr)
         return m_ptr->type;
-    return (GW2::GadgetType)0;
+    return GW2::GADGET_TYPE_NONE;
 }
 
 ResourceNode Gadget::GetResourceNode() const

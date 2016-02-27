@@ -15,6 +15,7 @@ namespace GameData
 {
     struct CharacterData;
     struct GadgetData;
+    struct AttackTargetData;
     struct ResourceNodeData;
     struct CompassData;
 
@@ -32,11 +33,14 @@ namespace GameData
         hl::ForeignClass pAgent = nullptr;
         CharacterData *pCharData = nullptr;
         std::unique_ptr<GadgetData> gadgetData;
+        std::unique_ptr<AttackTargetData> attackTgtData;
         GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AgentCategory::AGENT_CATEGORY_CHAR;
         GW2LIB::GW2::AgentType type = GW2LIB::GW2::AgentType::AGENT_TYPE_CHAR;
         int agentId = 0;
         D3DXVECTOR3 pos = D3DXVECTOR3(0, 0, 0);
         float rot = 0;
+        uint64_t token = 0;
+        uint64_t seq = 0;
     };
 
     struct CharacterData
@@ -54,6 +58,8 @@ namespace GameData
         int level = 0;
         int scaledLevel = 0;
         int wvwsupply = 0;
+        float energyLvl = 0;
+        float energyLvlMax = 0;
         float currentHealth = 0;
         float maxHealth = 0;
         float currentEndurance = 0;
@@ -62,6 +68,7 @@ namespace GameData
         float breakbarPercent = 0;
         GW2LIB::GW2::BreakbarState breakbarState = GW2LIB::GW2::BREAKBAR_STATE_NONE;
         GW2LIB::GW2::Profession profession = GW2LIB::GW2::Profession::PROFESSION_NONE;
+        GW2LIB::GW2::ProfessionStance stance = GW2LIB::GW2::ProfessionStance::STANCE_NONE;
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::Attitude::ATTITUDE_FRIENDLY;
         GW2LIB::GW2::CharacterStats stats;
         std::string name;
@@ -75,14 +82,23 @@ namespace GameData
 
         float currentHealth = 0;
         float maxHealth = 0;
-        GW2LIB::GW2::GadgetType type = GW2LIB::GW2::GADGET_TYPE_ATTACKABLE;
+        GW2LIB::GW2::GadgetType type = GW2LIB::GW2::GADGET_TYPE_NONE;
+    };
+
+    struct AttackTargetData
+    {
+        hl::ForeignClass pAttackTgt = nullptr;
+        AgentData *pAgentData = nullptr;
+
+        float currentHealth = 0;
+        float maxHealth = 0;
     };
 
     struct ResourceNodeData
     {
         hl::ForeignClass pResourceNode = nullptr;
         AgentData *pAgentData = nullptr;
-        GW2LIB::GW2::ResourceNodeType type = GW2LIB::GW2::RE_NODE_TYPE_PLANT;
+        GW2LIB::GW2::ResourceNodeType type = GW2LIB::GW2::RE_NODE_TYPE_NONE;
         struct {
             unsigned int : 6;
             bool depleted : 1;

@@ -78,6 +78,14 @@ Gadget Agent::GetGadget() const
     return gd;
 }
 
+AttackTarget Agent::GetAttackTarget() const
+{
+    AttackTarget tgt;
+    if (m_ptr)
+        tgt.m_ptr = m_ptr->attackTgtData.get();
+    return tgt;
+}
+
 
 GW2::AgentCategory Agent::GetCategory() const
 {
@@ -118,5 +126,19 @@ float Agent::GetRot() const
 {
     if (m_ptr)
         return m_ptr->rot;
+    return 0;
+}
+
+uint64_t Agent::GetToken() const
+{
+    if (m_ptr)
+        return m_ptr->token;
+    return 0;
+}
+
+uint64_t Agent::GetSequence() const
+{
+    if (m_ptr)
+        return m_ptr->seq;
     return 0;
 }
