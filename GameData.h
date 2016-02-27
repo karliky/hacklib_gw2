@@ -37,6 +37,8 @@ namespace GameData
         int agentId = 0;
         D3DXVECTOR3 pos = D3DXVECTOR3(0, 0, 0);
         float rot = 0;
+        uint64_t token = 0;
+        uint64_t seq = 0;
     };
 
     struct CharacterData
@@ -54,7 +56,8 @@ namespace GameData
         int level = 0;
         int scaledLevel = 0;
         int wvwsupply = 0;
-        int cloneCnt = 0;
+        float energyLvl = 0;
+        float energyLvlMax = 0;
         float currentHealth = 0;
         float maxHealth = 0;
         float currentEndurance = 0;

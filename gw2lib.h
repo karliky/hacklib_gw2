@@ -104,15 +104,16 @@ namespace GW2LIB
 
         enum GadgetType {
             GADGET_TYPE_ATTACKABLE = 1, // training dummy
-            GADGET_TYPE_EVENT = 2,   // event spawn? (saw at VB Pale Reaver primary rally point)
+            GADGET_TYPE_POINT = 2,   // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
             GADGET_TYPE_CRAFT = 4,   // crafting station
+            GADGET_TYPE_PVP_GATE = 5,// pvp base gate
             GADGET_TYPE_INTERACT = 9,// sw chest, AB exalted portal
             GADGET_TYPE_PLAYER_SPECIFIC = 10, // LA karka hatchling, VB floating airship cargo
             GADGET_TYPE_BOSS = 11,   // world boss
             GADGET_TYPE_PORTAL = 12, // map border portal
             GADGET_TYPE_WP = 13,     // waypoint
-            GADGET_TYPE_RESOURCE_NODE = 14,  // gathering nodes, AB masks, strongbox
-            GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom
+            GADGET_TYPE_RESOURCE_NODE = 14,  // gathering node, AB mask, strongbox, chest
+            GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
             GADGET_TYPE_BANNER = 18, // wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
             GADGET_TYPE_VISTA = 19,  // vista
             GADGET_TYPE_NONE
@@ -128,19 +129,28 @@ namespace GW2LIB
 
         enum ProfessionStance {
             STANCE_NONE,
-
             STANCE_ELE_FIRE,
             STANCE_ELE_WATER,
             STANCE_ELE_AIR,
             STANCE_ELE_EARTH,
-            STANCE_NECRO_DS,
-
-            STANCE_RANGER_UNKNOWN = 9,
-
-            STANCE_REV_DRAGON = 11,
+            STANCE_NECRO_SHROUD,
+            STANCE_WAR_ADREN1,
+            STANCE_WAR_ADREN2,
+            STANCE_WAR_ADREN3,
+            STANCE_RANGER_DRUID,
+            STANCE_RANGER_ASTRAL,
+            STANCE_REV_DRAGON,
             STANCE_REV_ASSASSIN,
             STANCE_REV_DWARF,
-            STANCE_REV_CENTAUR = 16
+            STANCE_REV_DEMON,
+            STANCE_UNKNOWN1,
+            STANCE_REV_CENTAUR
+        };
+
+        enum AgentSequence {
+            AGENT_SEQ_NONE,
+            AGENT_SEQ_DOOR_OPEN = 0x7160F,
+            AGENT_SEQ_DOOR_CLOSED = 0x59BD83
         };
     }
 
@@ -178,6 +188,8 @@ namespace GW2LIB
 
         Vector3 GetPos() const;
         float GetRot() const;
+        uint64_t GetToken() const;
+        uint64_t GetSequence() const;
 
         GameData::AgentData *m_ptr;
         size_t iterator = 0;
@@ -210,7 +222,8 @@ namespace GW2LIB
         int GetScaledLevel() const;
         GW2::CharacterStats GetStats() const;
         int GetWvwSupply() const;
-        int GetCloneCount() const;
+        float GetProfessionEnergy() const;
+        float GetProfessionEnergyMax() const;
 
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
@@ -257,6 +270,11 @@ namespace GW2LIB
         bool IsGatherable() const;
 
         GameData::ResourceNodeData *m_ptr;
+    };
+    // profession specific data
+    class Profession {
+    public:
+        Profession();
     };
     // compass (minimap)
     class Compass {
@@ -392,6 +410,9 @@ namespace GW2LIB
         uintptr_t npc_agtransRY = 0xe4;
         uintptr_t agtransRX = 0x160;
         uintptr_t agtransRY = 0x164;
+        uintptr_t agtransToken = 0xf0;
+        uintptr_t agtransSeq = 0xf8;
+
         uintptr_t charctxCharArray = 0x58;
         uintptr_t charctxPlayerArray = 0x78;
         uintptr_t charctxControlled = 0x90;
@@ -415,6 +436,7 @@ namespace GW2LIB
         uintptr_t charInventory = 0x2e0;
         uintptr_t charGliderPercent = 0x130;
         uintptr_t charProfession = 0x368;
+        uintptr_t charName = 0x188;
 
         uintptr_t playerName = 0x68;
         uintptr_t statsStats = 0xac;
@@ -455,7 +477,8 @@ namespace GW2LIB
         uintptr_t nodeFlags = 0x10;
 
         uintptr_t profStance = 0x40;
-        uintptr_t profCloneCnt = 0x50;
+        uintptr_t profEnergy = 0x50;
+        uintptr_t profEnergyMax = 0x54;
 #else
         /*
         If you update gw2lib and the patterns are still working it can be useful to know
@@ -529,6 +552,7 @@ namespace GW2LIB
         uintptr_t agentVtGetPos = 0xb4;
         // Agent::CAgentTransform* m_transform;
         uintptr_t agentTransform = 0x1c;
+
         /*
         Contains agent data that is important to this lib.
 
@@ -557,6 +581,10 @@ namespace GW2LIB
         uintptr_t agtransRX = 0x110;
         // float ry;
         uintptr_t agtransRY = 0x114;
+
+        uintptr_t agtransToken = 0xa8;
+        uintptr_t agtransSeq = 0xb0;
+        //uintptr_t transVtGetSeq = 0x88; // void GetSeq(_out_ &UINT64 buf);
         /*
         Holds metric information about an agent.
 
@@ -615,6 +643,7 @@ namespace GW2LIB
 
         uintptr_t charGliderPercent = 0xb8;
         uintptr_t charProfession = 0x218;
+        uintptr_t charName = 0x100;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.
@@ -745,7 +774,10 @@ namespace GW2LIB
 
         // profession stuff
         uintptr_t profStance = 0x20;
-        uintptr_t profCloneCnt = 0x28;
+        uintptr_t profEnergy = 0x28;
+        uintptr_t profEnergyMax = 0x2c;
+
+        // "TextValidateLiteral(m_nameOverride.Ptr())"
 #endif
     };
 }

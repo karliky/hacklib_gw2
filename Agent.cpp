@@ -120,3 +120,17 @@ float Agent::GetRot() const
         return m_ptr->rot;
     return 0;
 }
+
+uint64_t Agent::GetToken() const
+{
+    if (m_ptr)
+        return m_ptr->token;
+    return 0;
+}
+
+uint64_t Agent::GetSequence() const
+{
+    if (m_ptr)
+        return m_ptr->seq;
+    return 0;
+}

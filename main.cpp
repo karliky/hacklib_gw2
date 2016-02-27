@@ -298,6 +298,11 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         if (transform)
         {
             pAgentData->rot = atan2(transform.get<float>(m_pubmems.agtransRY), transform.get<float>(m_pubmems.agtransRX));
+
+            if (pAgentData->category == GW2LIB::GW2::AGENT_CATEGORY_KEYFRAMED) {
+                pAgentData->token = transform.get<uint64_t>(m_pubmems.agtransToken);
+                pAgentData->seq = transform.get<uint64_t>(m_pubmems.agtransSeq);
+            }
         }
 
     } __except (EXCEPTION_EXECUTE_HANDLER) {
@@ -341,13 +346,6 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->stats = corestats.get<GW2LIB::GW2::CharacterStats>(m_pubmems.statsStats);
         }
 
-        hl::ForeignClass prof = character.get<void*>(m_pubmems.charProfession);
-        if (prof) {
-            pCharData->stance = prof.get<GW2LIB::GW2::ProfessionStance>(m_pubmems.profStance);
-            if(pCharData->profession == GW2LIB::GW2::PROFESSION_MESMER)
-                pCharData->cloneCnt = prof.get<int>(m_pubmems.profCloneCnt);
-        }
-
         hl::ForeignClass inventory = character.get<void*>(m_pubmems.charInventory);
         if (inventory) {
             pCharData->wvwsupply = inventory.get<int>(m_pubmems.invSupply);
@@ -359,11 +357,34 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->breakbarPercent = breakbar.get<float>(m_pubmems.breakbarPercent);
         }
 
+        char *name = character.get<char*>(m_pubmems.charName);
+        if (name) {
+            int i = 0;
+            pCharData->name = "";
+            while (name[i]) {
+                pCharData->name += name[i];
+                i += 2;
+            }
+        }
+
         if (pCharData->isPlayer)
         {
             hl::ForeignClass player = character.call<void*>(m_pubmems.charVtGetPlayer);
             if (player)
             {
+                hl::ForeignClass prof = character.get<void*>(m_pubmems.charProfession);
+                if (prof) {
+                    bool toInt =
+                        pCharData->profession == GW2LIB::GW2::PROFESSION_MESMER ||
+                        pCharData->profession == GW2LIB::GW2::PROFESSION_WARRIOR ||
+                        pCharData->profession == GW2LIB::GW2::PROFESSION_ELEMENTALIST;
+
+                    pCharData->stance = prof.get<GW2LIB::GW2::ProfessionStance>(m_pubmems.profStance);
+                    pCharData->energyLvl = toInt ? prof.get<int>(m_pubmems.profEnergy) : prof.get<float>(m_pubmems.profEnergy);
+                    pCharData->energyLvlMax = toInt ? prof.get<int>(m_pubmems.profEnergyMax) : prof.get<float>(m_pubmems.profEnergyMax);
+                }
+
+
                 char *name = player.get<char*>(m_pubmems.playerName);
                 int i = 0;
                 pCharData->name = "";

@@ -160,9 +160,15 @@ int Character::GetWvwSupply() const
     return 0;
 }
 
-int Character::GetCloneCount() const {
+float Character::GetProfessionEnergy() const {
     if (m_ptr)
-        return m_ptr->cloneCnt;
+        return m_ptr->energyLvl;
+    return 0;
+}
+
+float Character::GetProfessionEnergyMax() const {
+    if (m_ptr)
+        return m_ptr->energyLvlMax;
     return 0;
 }
 

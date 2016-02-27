@@ -3,6 +3,7 @@
 #include "hacklib/Logging.h"
 #include "hacklib/Hooker.h"
 
+#define ASSIGN_HOOK(d, h) if (typeid(d) == typeid(h)) d = decltype(d)((uintptr_t)h);
 
 namespace GW2LIB {
     enum Gw2Hook {
@@ -68,30 +69,12 @@ namespace GW2LIB {
         Gw2Hooks *list = get_hook_list();
 
         switch (type) {
-        case ChatHook:
-            if (typeid(list->ChatHook) == typeid(hook))
-                list->ChatHook = decltype(list->ChatHook)((uintptr_t)hook);
-            break;
-        case MouseMoveHook:
-            if (typeid(list->MouseMoveHook) == typeid(hook))
-                list->MouseMoveHook = decltype(list->MouseMoveHook)((uintptr_t)hook);
-            break;
-        case MouseButtonHook:
-            if (typeid(list->MouseButtonHook) == typeid(hook))
-                list->MouseButtonHook = decltype(list->MouseButtonHook)((uintptr_t)hook);
-            break;
-        case MouseWheelHook:
-            if (typeid(list->MouseWheelHook) == typeid(hook))
-                list->MouseWheelHook = decltype(list->MouseWheelHook)((uintptr_t)hook);
-            break;
-        case DamageLogHook:
-            if (typeid(list->DmgLogHook) == typeid(hook))
-                list->DmgLogHook = decltype(list->DmgLogHook)((uintptr_t)hook);
-            break;
-        case CombatLogHook:
-            if (typeid(list->CombatLogHook) == typeid(hook))
-                list->CombatLogHook = decltype(list->CombatLogHook)((uintptr_t)hook);
-            break;
+        case ChatHook: ASSIGN_HOOK(list->ChatHook, hook); break;
+        case MouseMoveHook: ASSIGN_HOOK(list->MouseMoveHook, hook); break;
+        case MouseButtonHook: ASSIGN_HOOK(list->MouseButtonHook, hook); break;
+        case MouseWheelHook: ASSIGN_HOOK(list->MouseWheelHook, hook); break;
+        case DamageLogHook: ASSIGN_HOOK(list->DmgLogHook, hook); break;
+        case CombatLogHook: ASSIGN_HOOK(list->CombatLogHook, hook); break;
         }
     }
 };
