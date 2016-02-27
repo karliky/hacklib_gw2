@@ -436,6 +436,22 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
     }
 }
 
+void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAttackTgtData, hl::ForeignClass gd) {
+    __try {
+        hl::ForeignClass tgt = gd.get<void*>(m_pubmems.atkTgt);
+        pAttackTgtData->pAttackTgt = tgt;
+
+        hl::ForeignClass health = tgt.get<void*>(m_pubmems.gdHealth);
+        if (health) {
+            pAttackTgtData->currentHealth = health.get<float>(m_pubmems.healthCurrent);
+            pAttackTgtData->maxHealth = health.get<float>(m_pubmems.healthMax);
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        HL_LOG_ERR("[RefreshDataGadgetTarget] access violation\n");
+    }
+}
+
 void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData, hl::ForeignClass node) {
     __try {
         pRNodeData->pResourceNode = node;
@@ -545,6 +561,15 @@ void Gw2HackMain::GameHook()
                                         RefreshDataResourceNode(pRNodeData, pRNode);
                                         pRNodeData->pAgentData = pAgentData;
                                     }
+                                }
+
+                                // gadget attack target update
+                                if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
+                                    hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
+                                    pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
+                                    GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
+                                    RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
+                                    pAttackTgtData->pAgentData = pAgentData;
                                 }
 
                                 bool bCharDataFound = false;

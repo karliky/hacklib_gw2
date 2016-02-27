@@ -78,6 +78,14 @@ Gadget Agent::GetGadget() const
     return gd;
 }
 
+AttackTarget Agent::GetAttackTarget() const
+{
+    AttackTarget tgt;
+    if (m_ptr)
+        tgt.m_ptr = m_ptr->attackTgtData.get();
+    return tgt;
+}
+
 
 GW2::AgentCategory Agent::GetCategory() const
 {

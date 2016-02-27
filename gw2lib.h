@@ -23,6 +23,7 @@ namespace GameData {
     struct CharacterData;
     struct AgentData;
     struct GadgetData;
+    struct AttackTargetData;
     struct CompassData;
     struct ResourceNodeData;
 }
@@ -36,6 +37,7 @@ namespace GW2LIB
     class Character;
     class Compass;
     class Gadget;
+    class AttackTarget;
     class ResourceNode;
 
     struct Vector3 {
@@ -181,6 +183,7 @@ namespace GW2LIB
 
         Character GetCharacter() const;
         Gadget GetGadget() const;
+        AttackTarget GetAttackTarget() const;
 
         GW2::AgentCategory GetCategory() const;
         GW2::AgentType GetType() const;
@@ -248,7 +251,7 @@ namespace GW2LIB
         Gadget(const Gadget &);
         Gadget &operator= (const Gadget &);
         bool operator== (const Gadget &);
-        Agent Gadget::GetAgent() const;
+        Agent GetAgent() const;
         bool IsValid() const;
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
@@ -256,6 +259,20 @@ namespace GW2LIB
         ResourceNode GetResourceNode() const;
 
         GameData::GadgetData *m_ptr;
+    };
+    // represents a gadget attack target
+    class AttackTarget {
+    public:
+        AttackTarget();
+        AttackTarget(const AttackTarget &);
+        AttackTarget &operator= (const AttackTarget &);
+        bool operator== (const AttackTarget &);
+        Agent GetAgent() const;
+        bool IsValid() const;
+        float GetCurrentHealth() const;
+        float GetMaxHealth() const;
+
+        GameData::AttackTargetData *m_ptr;
     };
     // resource nodes
     class ResourceNode {
@@ -469,6 +486,9 @@ namespace GW2LIB
 
         uintptr_t contextGadget = 0x128;
         uintptr_t ctxgdVtGetGadget = 0x8;
+        uintptr_t ctxgdVtGetAtkTgt = 0x18;
+
+        uintptr_t atkTgt = 0x58;
         uintptr_t gdHealth = 0x1e8;
         uintptr_t gdVtGetType = 0xa8;
         uintptr_t gdVtGetRNode = 0xf0;
@@ -764,6 +784,9 @@ namespace GW2LIB
         // gadget stuff
         uintptr_t contextGadget = 0x94;
         uintptr_t ctxgdVtGetGadget = 0x4;
+        uintptr_t ctxgdVtGetAtkTgt = 0xc;
+
+        uintptr_t atkTgt = 0x30;
         uintptr_t gdHealth = 0x18c;
         uintptr_t gdVtGetType = 0x54;
         uintptr_t gdVtGetRNode = 0x78;
