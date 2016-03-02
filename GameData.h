@@ -59,8 +59,8 @@ namespace GameData
         int level = 0;
         int scaledLevel = 0;
         int wvwsupply = 0;
-        float energyLvl = 0;
-        float energyLvlMax = 0;
+        float currentEnergy = 0;
+        float maxEnergy = 0;
         float currentHealth = 0;
         float maxHealth = 0;
         float currentEndurance = 0;
