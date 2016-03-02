@@ -32,8 +32,8 @@ namespace GameData
     {
         hl::ForeignClass pAgent = nullptr;
         CharacterData *pCharData = nullptr;
-        std::unique_ptr<GadgetData> gadgetData;
-        std::unique_ptr<AttackTargetData> attackTgtData;
+        std::unique_ptr<GadgetData> gadgetData = nullptr;
+        std::unique_ptr<AttackTargetData> attackTgtData = nullptr;
         GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AgentCategory::AGENT_CATEGORY_CHAR;
         GW2LIB::GW2::AgentType type = GW2LIB::GW2::AgentType::AGENT_TYPE_CHAR;
         int agentId = 0;
@@ -47,6 +47,7 @@ namespace GameData
     {
         hl::ForeignClass pCharacter = nullptr;
         AgentData *pAgentData = nullptr;
+        hl::ForeignClass pPlayer = nullptr;
         bool isAlive = false;
         bool isDowned = false;
         bool isControlled = false;
@@ -78,10 +79,11 @@ namespace GameData
     {
         hl::ForeignClass pGadget = nullptr;
         AgentData *pAgentData = nullptr;
-        std::unique_ptr<ResourceNodeData> rNodeData;
+        std::unique_ptr<ResourceNodeData> rNodeData = nullptr;
 
         float currentHealth = 0;
         float maxHealth = 0;
+        int wvwTeamId = 0;
         GW2LIB::GW2::GadgetType type = GW2LIB::GW2::GADGET_TYPE_NONE;
     };
 
@@ -127,7 +129,7 @@ namespace GameData
         {
             std::vector<std::unique_ptr<CharacterData>> charDataList;
             std::vector<std::unique_ptr<AgentData>> agentDataList;
-            std::unique_ptr<CompassData> compData;
+            std::unique_ptr<CompassData> compData = nullptr;
             CharacterData *ownCharacter = nullptr;
             AgentData *ownAgent = nullptr;
             AgentData *autoSelection = nullptr;

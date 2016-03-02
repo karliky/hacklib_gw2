@@ -108,16 +108,17 @@ namespace GW2LIB
             GADGET_TYPE_ATTACKABLE = 1, // training dummy
             GADGET_TYPE_POINT = 2,   // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
             GADGET_TYPE_CRAFT = 4,   // crafting station
-            GADGET_TYPE_PVP_GATE = 5,// pvp base gate
+            GADGET_TYPE_DOOR = 5,    // pvp base gate, interactive door
             GADGET_TYPE_INTERACT = 9,// sw chest, AB exalted portal
             GADGET_TYPE_PLAYER_SPECIFIC = 10, // LA karka hatchling, VB floating airship cargo
             GADGET_TYPE_BOSS = 11,   // world boss
             GADGET_TYPE_PORTAL = 12, // map border portal
             GADGET_TYPE_WP = 13,     // waypoint
             GADGET_TYPE_RESOURCE_NODE = 14,  // gathering node, AB mask, strongbox, chest
-            GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
-            GADGET_TYPE_BANNER = 18, // wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
+            GADGET_TYPE_PROP = 15,   // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
+            GADGET_TYPE_PLAYER_CREATED = 18, // turret, wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
             GADGET_TYPE_VISTA = 19,  // vista
+            GADGET_TYPE_BUILD_SITE = 20, // wvw build site
             GADGET_TYPE_NONE
         };
 
@@ -257,6 +258,7 @@ namespace GW2LIB
         float GetMaxHealth() const;
         GW2::GadgetType GetType() const;
         ResourceNode GetResourceNode() const;
+        int GetWvwTeamId() const;
 
         GameData::GadgetData *m_ptr;
     };
@@ -491,6 +493,7 @@ namespace GW2LIB
 
         uintptr_t atkTgt = 0x58;
         uintptr_t gdHealth = 0x1e8;
+        uintptr_t gdWvwTeamId = 0x450;
         uintptr_t gdVtGetType = 0xa8;
         uintptr_t gdVtGetRNode = 0xf0;
 
@@ -789,6 +792,7 @@ namespace GW2LIB
 
         uintptr_t atkTgt = 0x30;
         uintptr_t gdHealth = 0x18c;
+        uintptr_t gdWvwTeamId = 0x3d8;
         uintptr_t gdVtGetType = 0x54;
         uintptr_t gdVtGetRNode = 0x78;
 
@@ -801,7 +805,14 @@ namespace GW2LIB
         uintptr_t profEnergy = 0x28;
         uintptr_t profEnergyMax = 0x2c;
 
+        // squad stuff
+        uintptr_t contextSquad = 0x130;
+
+        // "CParser::Validate(sourceBuffer.Ptr(), sourceBuffer.Term(), true ) == sourceBuffer.Term()"
         // "TextValidateLiteral(m_nameOverride.Ptr())"
+        // "squadContext"
+        // "kennel->GetOwner() == CharClientContext()->GetControlledCharacter()"
+        // "ConstWvwTeamIsPlayerTeam(wvwTeamId)" ebp-0x8 = pGadget, ebp+0x8 = team id
 #endif
     };
 }
