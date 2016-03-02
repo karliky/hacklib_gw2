@@ -371,6 +371,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             hl::ForeignClass player = character.call<void*>(m_pubmems.charVtGetPlayer);
             if (player)
             {
+                pCharData->pPlayer = player;
                 hl::ForeignClass prof = character.get<void*>(m_pubmems.charProfession);
                 if (prof) {
                     bool toInt =
@@ -423,6 +424,7 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
         pGadgetData->pGadget = gd;
 
         pGadgetData->type = gd.call<GW2LIB::GW2::GadgetType>(m_pubmems.gdVtGetType);
+        pGadgetData->wvwTeamId = gd.get<int>(m_pubmems.gdWvwTeamId);
 
         hl::ForeignClass health = gd.get<void*>(m_pubmems.gdHealth);
         if (health) {

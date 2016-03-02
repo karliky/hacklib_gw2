@@ -114,7 +114,9 @@ void cbESP()
 
                 if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
                     Gadget gd = ag.GetGadget();
-                    if (gd.m_ptr) font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", *(void**)gd.m_ptr, gd.GetType());
+                    if (gd.m_ptr) {
+                        font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - teamid: %i - type: %i", *(void**)gd.m_ptr, gd.GetWvwTeamId(), gd.GetType());
+                    }
                     if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
                         ResourceNode node = gd.GetResourceNode();
                         if (node.m_ptr) font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i - depleted: %i", *(void**)node.m_ptr, node.GetType(), !node.IsGatherable());
@@ -131,6 +133,7 @@ void cbESP()
             {
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
+                if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "playerPtr: %p", chr.m_ptr->pPlayer);
                 if (chr.GetStance()) font.Draw(x, y + OFFSETY, fontColor, "stance: %s", strStance[chr.GetStance()].c_str());
                 if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "energy: %.1f / %.1f", chr.GetProfessionEnergy(), chr.GetProfessionEnergyMax());
                 font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());

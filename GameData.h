@@ -47,6 +47,7 @@ namespace GameData
     {
         hl::ForeignClass pCharacter = nullptr;
         AgentData *pAgentData = nullptr;
+        hl::ForeignClass pPlayer = nullptr;
         bool isAlive = false;
         bool isDowned = false;
         bool isControlled = false;
@@ -82,6 +83,7 @@ namespace GameData
 
         float currentHealth = 0;
         float maxHealth = 0;
+        int wvwTeamId = 0;
         GW2LIB::GW2::GadgetType type = GW2LIB::GW2::GADGET_TYPE_NONE;
     };
 
