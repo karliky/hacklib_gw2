@@ -135,7 +135,7 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
                 if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "playerPtr: %p", chr.m_ptr->pPlayer);
                 if (chr.GetStance()) font.Draw(x, y + OFFSETY, fontColor, "stance: %s", strStance[chr.GetStance()].c_str());
-                if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "energy: %.1f / %.1f", chr.GetProfessionEnergy(), chr.GetProfessionEnergyMax());
+                if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "energy: %.1f / %.1f", chr.GetCurrentEnergy(), chr.GetMaxEnergy());
                 font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
             }

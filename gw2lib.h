@@ -105,19 +105,19 @@ namespace GW2LIB
         };
 
         enum GadgetType {
-            GADGET_TYPE_ATTACKABLE = 1, // training dummy
-            GADGET_TYPE_POINT = 2,   // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
-            GADGET_TYPE_CRAFT = 4,   // crafting station
-            GADGET_TYPE_DOOR = 5,    // pvp base gate, interactive door
-            GADGET_TYPE_INTERACT = 9,// sw chest, AB exalted portal
+            GADGET_TYPE_ATTACKABLE = 1,  // training dummy
+            GADGET_TYPE_POINT = 2,       // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
+            GADGET_TYPE_CRAFT = 4,       // crafting station
+            GADGET_TYPE_DOOR = 5,        // pvp base gate, interactive door
+            GADGET_TYPE_INTERACT = 9,    // sw chest, AB exalted portal
             GADGET_TYPE_PLAYER_SPECIFIC = 10, // LA karka hatchling, VB floating airship cargo
-            GADGET_TYPE_BOSS = 11,   // world boss
-            GADGET_TYPE_PORTAL = 12, // map border portal
-            GADGET_TYPE_WP = 13,     // waypoint
+            GADGET_TYPE_BOSS = 11,       // world boss
+            GADGET_TYPE_TELEPORT = 12,   // map border portal
+            GADGET_TYPE_WP = 13,         // waypoint
             GADGET_TYPE_RESOURCE_NODE = 14,  // gathering node, AB mask, strongbox, chest
-            GADGET_TYPE_PROP = 15,   // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
+            GADGET_TYPE_PROP = 15,       // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
             GADGET_TYPE_PLAYER_CREATED = 18, // turret, wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
-            GADGET_TYPE_VISTA = 19,  // vista
+            GADGET_TYPE_VISTA = 19,      // vista
             GADGET_TYPE_BUILD_SITE = 20, // wvw build site
             GADGET_TYPE_NONE
         };
@@ -153,7 +153,9 @@ namespace GW2LIB
         enum AgentSequence {
             AGENT_SEQ_NONE,
             AGENT_SEQ_DOOR_OPEN = 0x7160F,
-            AGENT_SEQ_DOOR_CLOSED = 0x59BD83
+            AGENT_SEQ_DOOR_CLOSED = 0x59BD83,
+            AGENT_SEQ_SIEGE_READY = 0x817B0B2,
+            AGENT_SEQ_SIEGE_FIRING = 0x1037542C
         };
     }
 
@@ -226,9 +228,9 @@ namespace GW2LIB
         int GetScaledLevel() const;
         GW2::CharacterStats GetStats() const;
         int GetWvwSupply() const;
-        float GetProfessionEnergy() const;
-        float GetProfessionEnergyMax() const;
 
+        float GetCurrentEnergy() const;
+        float GetMaxEnergy() const;
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
         float GetCurrentEndurance() const;
