@@ -44,7 +44,7 @@ Agent ResourceNode::GetAgent() const
 GW2::ResourceNodeType ResourceNode::GetType() const {
     if (m_ptr)
         return m_ptr->type;
-    return GW2::RE_NODE_TYPE_NONE;
+    return GW2::RNODE_TYPE_NONE;
 }
 
 bool ResourceNode::IsGatherable() const {
