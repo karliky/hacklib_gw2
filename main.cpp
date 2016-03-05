@@ -296,11 +296,12 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         hl::ForeignClass transform = agent.get<void*>(m_pubmems.agentTransform);
         if (transform)
         {
-            pAgentData->rot = atan2(transform.get<float>(m_pubmems.agtransRY), transform.get<float>(m_pubmems.agtransRX));
-
             if (pAgentData->category == GW2LIB::GW2::AGENT_CATEGORY_KEYFRAMED) {
+                pAgentData->rot = atan2(transform.get<float>(m_pubmems.gd_agtransRY), transform.get<float>(m_pubmems.gd_agtransRX)) * 2.0f;
                 pAgentData->token = transform.get<uint64_t>(m_pubmems.agtransToken);
                 pAgentData->seq = transform.get<uint64_t>(m_pubmems.agtransSeq);
+            } else {
+                pAgentData->rot = atan2(transform.get<float>(m_pubmems.agtransRY), transform.get<float>(m_pubmems.agtransRX));
             }
         }
 
@@ -456,9 +457,9 @@ void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAtkTgtDat
 void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData, hl::ForeignClass node) {
     __try {
         pRNodeData->pResourceNode = node;
-        pRNodeData->type = node.get<GW2LIB::GW2::ResourceNodeType>(m_pubmems.nodeType);
+        pRNodeData->type = node.get<GW2LIB::GW2::ResourceNodeType>(m_pubmems.rnodeType);
 
-        BYTE flags = node.get<BYTE>(m_pubmems.nodeFlags);
+        BYTE flags = node.get<BYTE>(m_pubmems.rnodeFlags);
         pRNodeData->flags.depleted = !(flags & GameData::RE_NODE_FLAG_DEPLETED);
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {

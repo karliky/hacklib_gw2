@@ -100,7 +100,7 @@ namespace GameData
     {
         hl::ForeignClass pResourceNode = nullptr;
         AgentData *pAgentData = nullptr;
-        GW2LIB::GW2::ResourceNodeType type = GW2LIB::GW2::RE_NODE_TYPE_NONE;
+        GW2LIB::GW2::ResourceNodeType type = GW2LIB::GW2::RNODE_TYPE_NONE;
         struct {
             unsigned int : 6;
             bool depleted : 1;
