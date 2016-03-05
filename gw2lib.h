@@ -435,8 +435,8 @@ namespace GW2LIB
         uintptr_t agtransZ = 0x38;
         uintptr_t npc_agtransRX = 0xe0;
         uintptr_t npc_agtransRY = 0xe4;
-        uintptr_t gd_agtransRX = 0xd8;
-        uintptr_t gd_agtransRY = 0xdc;
+        uintptr_t gd_agtransRX = 0xdc;
+        uintptr_t gd_agtransRY = 0xd8;
         uintptr_t agtransRX = 0x160;
         uintptr_t agtransRY = 0x164;
         uintptr_t agtransToken = 0xf0;
@@ -611,9 +611,9 @@ namespace GW2LIB
         // float ry;
         uintptr_t npc_agtransRY = 0xa4;
         // float rx;
-        uintptr_t gd_agtransRX = 0x98;
+        uintptr_t gd_agtransRX = 0x9c;
         // float ry;
-        uintptr_t gd_agtransRY = 0x9c;
+        uintptr_t gd_agtransRY = 0x98;
         // float rx;
         uintptr_t agtransRX = 0x110;
         // float ry;

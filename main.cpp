@@ -297,7 +297,7 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         if (transform)
         {
             if (pAgentData->category == GW2LIB::GW2::AGENT_CATEGORY_KEYFRAMED) {
-                pAgentData->rot = atan2(transform.get<float>(m_pubmems.gd_agtransRX), transform.get<float>(m_pubmems.gd_agtransRY)) * 2.0f;
+                pAgentData->rot = atan2(transform.get<float>(m_pubmems.gd_agtransRY), transform.get<float>(m_pubmems.gd_agtransRX)) * 2.0f;
                 pAgentData->token = transform.get<uint64_t>(m_pubmems.agtransToken);
                 pAgentData->seq = transform.get<uint64_t>(m_pubmems.agtransSeq);
             } else {
