@@ -183,6 +183,7 @@ namespace GW2LIB
         Agent(const Agent &);
         Agent &operator= (const Agent &);
         bool operator== (const Agent &);
+        bool operator!= (const Agent &);
 
         bool IsValid() const;
 
