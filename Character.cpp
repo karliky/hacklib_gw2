@@ -160,15 +160,15 @@ int Character::GetWvwSupply() const
     return 0;
 }
 
-float Character::GetProfessionEnergy() const {
+float Character::GetCurrentEnergy() const {
     if (m_ptr)
-        return m_ptr->energyLvl;
+        return m_ptr->currentEnergy;
     return 0;
 }
 
-float Character::GetProfessionEnergyMax() const {
+float Character::GetMaxEnergy() const {
     if (m_ptr)
-        return m_ptr->energyLvlMax;
+        return m_ptr->maxEnergy;
     return 0;
 }
 

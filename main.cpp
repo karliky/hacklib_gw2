@@ -50,8 +50,7 @@ namespace GW2
                 throw 1;
             }
             bool IsValid() {
-                if (m_basePtr) return true;
-                return false;
+                return !!m_basePtr;
             }
             uint32_t Count() {
                 return m_count;
@@ -297,11 +296,12 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         hl::ForeignClass transform = agent.get<void*>(m_pubmems.agentTransform);
         if (transform)
         {
-            pAgentData->rot = atan2(transform.get<float>(m_pubmems.agtransRY), transform.get<float>(m_pubmems.agtransRX));
-
             if (pAgentData->category == GW2LIB::GW2::AGENT_CATEGORY_KEYFRAMED) {
+                pAgentData->rot = atan2(transform.get<float>(m_pubmems.gd_agtransRY), transform.get<float>(m_pubmems.gd_agtransRX)) * 2.0f;
                 pAgentData->token = transform.get<uint64_t>(m_pubmems.agtransToken);
                 pAgentData->seq = transform.get<uint64_t>(m_pubmems.agtransSeq);
+            } else {
+                pAgentData->rot = atan2(transform.get<float>(m_pubmems.agtransRY), transform.get<float>(m_pubmems.agtransRX));
             }
         }
 
@@ -372,6 +372,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             hl::ForeignClass player = character.call<void*>(m_pubmems.charVtGetPlayer);
             if (player)
             {
+                pCharData->pPlayer = player;
                 hl::ForeignClass prof = character.get<void*>(m_pubmems.charProfession);
                 if (prof) {
                     bool toInt =
@@ -380,8 +381,8 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                         pCharData->profession == GW2LIB::GW2::PROFESSION_ELEMENTALIST;
 
                     pCharData->stance = prof.get<GW2LIB::GW2::ProfessionStance>(m_pubmems.profStance);
-                    pCharData->energyLvl = toInt ? prof.get<int>(m_pubmems.profEnergy) : prof.get<float>(m_pubmems.profEnergy);
-                    pCharData->energyLvlMax = toInt ? prof.get<int>(m_pubmems.profEnergyMax) : prof.get<float>(m_pubmems.profEnergyMax);
+                    pCharData->currentEnergy = toInt ? prof.get<int>(m_pubmems.profEnergy) : prof.get<float>(m_pubmems.profEnergy);
+                    pCharData->maxEnergy = toInt ? prof.get<int>(m_pubmems.profEnergyMax) : prof.get<float>(m_pubmems.profEnergyMax);
                 }
 
 
@@ -424,6 +425,7 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
         pGadgetData->pGadget = gd;
 
         pGadgetData->type = gd.call<GW2LIB::GW2::GadgetType>(m_pubmems.gdVtGetType);
+        pGadgetData->wvwTeamId = gd.get<int>(m_pubmems.gdWvwTeamId);
 
         hl::ForeignClass health = gd.get<void*>(m_pubmems.gdHealth);
         if (health) {
@@ -436,28 +438,28 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
     }
 }
 
-void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAttackTgtData, hl::ForeignClass gd) {
+void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAtkTgtData, hl::ForeignClass gd) {
     __try {
         hl::ForeignClass tgt = gd.get<void*>(m_pubmems.atkTgt);
-        pAttackTgtData->pAttackTgt = tgt;
+        pAtkTgtData->pAttackTgt = tgt;
 
         hl::ForeignClass health = tgt.get<void*>(m_pubmems.gdHealth);
         if (health) {
-            pAttackTgtData->currentHealth = health.get<float>(m_pubmems.healthCurrent);
-            pAttackTgtData->maxHealth = health.get<float>(m_pubmems.healthMax);
+            pAtkTgtData->currentHealth = health.get<float>(m_pubmems.healthCurrent);
+            pAtkTgtData->maxHealth = health.get<float>(m_pubmems.healthMax);
         }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataGadgetTarget] access violation\n");
+        HL_LOG_ERR("[RefreshDataAttackTarget] access violation\n");
     }
 }
 
 void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData, hl::ForeignClass node) {
     __try {
         pRNodeData->pResourceNode = node;
-        pRNodeData->type = node.get<GW2LIB::GW2::ResourceNodeType>(m_pubmems.nodeType);
+        pRNodeData->type = node.get<GW2LIB::GW2::ResourceNodeType>(m_pubmems.rnodeType);
 
-        BYTE flags = node.get<BYTE>(m_pubmems.nodeFlags);
+        BYTE flags = node.get<BYTE>(m_pubmems.rnodeFlags);
         pRNodeData->flags.depleted = !(flags & GameData::RE_NODE_FLAG_DEPLETED);
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
@@ -548,7 +550,7 @@ void Gw2HackMain::GameHook()
                                 // gadget update
                                 if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
                                     hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);
-                                    pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
+                                    if (!pAgentData->gadgetData) pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
                                     GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
                                     RefreshDataGadget(pGadgetData, pGadget);
                                     pGadgetData->pAgentData = pAgentData;
@@ -556,7 +558,7 @@ void Gw2HackMain::GameHook()
                                     // resource node update
                                     if (pGadgetData && pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
                                         hl::ForeignClass pRNode = pGadget.call<void*>(m_pubmems.gdVtGetRNode);
-                                        pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
+                                        if (!pGadgetData->rNodeData) pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
                                         GameData::ResourceNodeData *pRNodeData = pGadgetData->rNodeData.get();
                                         RefreshDataResourceNode(pRNodeData, pRNode);
                                         pRNodeData->pAgentData = pAgentData;
@@ -566,7 +568,7 @@ void Gw2HackMain::GameHook()
                                 // gadget attack target update
                                 if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
                                     hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
-                                    pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
+                                    if (!pAgentData->attackTgtData) pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
                                     GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
                                     RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
                                     pAttackTgtData->pAgentData = pAgentData;
@@ -694,7 +696,7 @@ void Gw2HackMain::GameHook()
     m_gameData.ifHide = *m_mems.pIfHide;
 
     hl::ForeignClass comp = m_mems.pCompass;
-    m_gameData.objData.compData = std::make_unique<GameData::CompassData>();
+    if (!m_gameData.objData.compData) m_gameData.objData.compData = std::make_unique<GameData::CompassData>();
     RefreshDataCompass(m_gameData.objData.compData.get(), comp);
 
     hl::ForeignClass uiOpts = m_mems.pUiOpts;

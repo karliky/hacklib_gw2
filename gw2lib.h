@@ -62,7 +62,8 @@ namespace GW2LIB
         };
 
         enum Profession {
-            PROFESSION_GUARDIAN = 1,
+            PROFESSION_NONE,
+            PROFESSION_GUARDIAN,
             PROFESSION_WARRIOR,
             PROFESSION_ENGINEER,
             PROFESSION_RANGER,
@@ -71,25 +72,29 @@ namespace GW2LIB
             PROFESSION_MESMER,
             PROFESSION_NECROMANCER,
             PROFESSION_REVENANT,
-            PROFESSION_NONE
+            PROFESSION_END
         };
+
         enum Attitude {
             ATTITUDE_FRIENDLY,
             ATTITUDE_HOSTILE,
             ATTITUDE_INDIFFERENT,
             ATTITUDE_NEUTRAL
         };
+
         enum AgentCategory {
             AGENT_CATEGORY_CHAR,
             AGENT_CATEGORY_DYNAMIC,
             AGENT_CATEGORY_KEYFRAMED
         };
+
         enum AgentType {
             AGENT_TYPE_CHAR = 0,
             AGENT_TYPE_GADGET = 10,
             AGENT_TYPE_GADGET_ATTACK_TARGET = 11,
             AGENT_TYPE_ITEM = 15
         };
+
         enum BreakbarState {
             BREAKBAR_STATE_READY,
             BREAKBAR_STATE_RECOVER,
@@ -105,28 +110,29 @@ namespace GW2LIB
         };
 
         enum GadgetType {
-            GADGET_TYPE_ATTACKABLE = 1, // training dummy
-            GADGET_TYPE_POINT = 2,   // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
-            GADGET_TYPE_CRAFT = 4,   // crafting station
-            GADGET_TYPE_PVP_GATE = 5,// pvp base gate
-            GADGET_TYPE_INTERACT = 9,// sw chest, AB exalted portal
+            GADGET_TYPE_DESTRUCTABLE = 1,// training dummy, wvw lobby siege practice target crate
+            GADGET_TYPE_POINT = 2,       // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
+            GADGET_TYPE_CRAFT = 4,       // crafting station
+            GADGET_TYPE_DOOR = 5,        // pvp base gate, interactive door
+            GADGET_TYPE_INTERACT = 9,    // SW chest, AB exalted portal
             GADGET_TYPE_PLAYER_SPECIFIC = 10, // LA karka hatchling, VB floating airship cargo
-            GADGET_TYPE_BOSS = 11,   // world boss
-            GADGET_TYPE_PORTAL = 12, // map border portal
-            GADGET_TYPE_WP = 13,     // waypoint
+            GADGET_TYPE_ATK_TARGET = 11, // world boss, SW fort wall
+            GADGET_TYPE_TELEPORT = 12,   // map border portal
+            GADGET_TYPE_WAYPOINT = 13,   // waypoint
             GADGET_TYPE_RESOURCE_NODE = 14,  // gathering node, AB mask, strongbox, chest
-            GADGET_TYPE_PROP = 15,   // anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
-            GADGET_TYPE_BANNER = 18, // wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
-            GADGET_TYPE_VISTA = 19,  // vista
+            GADGET_TYPE_PROP = 15,       // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
+            GADGET_TYPE_PLAYER_CREATED = 18, // turret, wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
+            GADGET_TYPE_VISTA = 19,      // vista
+            GADGET_TYPE_BUILD_SITE = 20, // wvw build site
             GADGET_TYPE_NONE
         };
 
         enum ResourceNodeType {
-            RE_NODE_TYPE_PLANT,
-            RE_NODE_TYPE_TREE,
-            RE_NODE_TYPE_MINERAL,
-            RE_NODE_TYPE_QUEST,
-            RE_NODE_TYPE_NONE
+            RNODE_TYPE_PLANT,
+            RNODE_TYPE_TREE,
+            RNODE_TYPE_ROCK,
+            RNODE_TYPE_QUEST,
+            RNODE_TYPE_NONE
         };
 
         enum ProfessionStance {
@@ -152,7 +158,9 @@ namespace GW2LIB
         enum AgentSequence {
             AGENT_SEQ_NONE,
             AGENT_SEQ_DOOR_OPEN = 0x7160F,
-            AGENT_SEQ_DOOR_CLOSED = 0x59BD83
+            AGENT_SEQ_DOOR_CLOSED = 0x59BD83,
+            AGENT_SEQ_SIEGE_READY = 0x817B0B2,
+            AGENT_SEQ_SIEGE_FIRING = 0x1037542C
         };
     }
 
@@ -225,9 +233,9 @@ namespace GW2LIB
         int GetScaledLevel() const;
         GW2::CharacterStats GetStats() const;
         int GetWvwSupply() const;
-        float GetProfessionEnergy() const;
-        float GetProfessionEnergyMax() const;
 
+        float GetCurrentEnergy() const;
+        float GetMaxEnergy() const;
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
         float GetCurrentEndurance() const;
@@ -257,6 +265,7 @@ namespace GW2LIB
         float GetMaxHealth() const;
         GW2::GadgetType GetType() const;
         ResourceNode GetResourceNode() const;
+        int GetWvwTeamId() const;
 
         GameData::GadgetData *m_ptr;
     };
@@ -426,6 +435,8 @@ namespace GW2LIB
         uintptr_t agtransZ = 0x38;
         uintptr_t npc_agtransRX = 0xe0;
         uintptr_t npc_agtransRY = 0xe4;
+        uintptr_t gd_agtransRX = 0xdc;
+        uintptr_t gd_agtransRY = 0xd8;
         uintptr_t agtransRX = 0x160;
         uintptr_t agtransRY = 0x164;
         uintptr_t agtransToken = 0xf0;
@@ -491,11 +502,12 @@ namespace GW2LIB
 
         uintptr_t atkTgt = 0x58;
         uintptr_t gdHealth = 0x1e8;
+        uintptr_t gdWvwTeamId = 0x450;
         uintptr_t gdVtGetType = 0xa8;
         uintptr_t gdVtGetRNode = 0xf0;
 
-        uintptr_t nodeType = 0xc;
-        uintptr_t nodeFlags = 0x10;
+        uintptr_t rnodeType = 0xc;
+        uintptr_t rnodeFlags = 0x10;
 
         uintptr_t profStance = 0x40;
         uintptr_t profEnergy = 0x50;
@@ -599,13 +611,17 @@ namespace GW2LIB
         // float ry;
         uintptr_t npc_agtransRY = 0xa4;
         // float rx;
+        uintptr_t gd_agtransRX = 0x9c;
+        // float ry;
+        uintptr_t gd_agtransRY = 0x98;
+        // float rx;
         uintptr_t agtransRX = 0x110;
         // float ry;
         uintptr_t agtransRY = 0x114;
 
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
-        //uintptr_t transVtGetSeq = 0x88; // void GetSeq(_out_ &UINT64 buf);
+        //uintptr_t transVtGetSeq = 0x88; // void GetSeq(_out_ UINT64 &buf);
         /*
         Holds metric information about an agent.
 
@@ -690,6 +706,7 @@ namespace GW2LIB
         "m_inventory"
         Glider found by looking for float value between 0.0 - 1.0 in your own character data while gliding.
         "m_profession"
+        "TextValidateLiteral(m_nameOverride.Ptr())"
         */
 
         // CharClient::CPlayer
@@ -789,19 +806,36 @@ namespace GW2LIB
 
         uintptr_t atkTgt = 0x30;
         uintptr_t gdHealth = 0x18c;
+        uintptr_t gdWvwTeamId = 0x3d8;
         uintptr_t gdVtGetType = 0x54;
         uintptr_t gdVtGetRNode = 0x78;
 
         // resource node stuff
-        uintptr_t nodeType = 0x8;
-        uintptr_t nodeFlags = 0xc;
+        uintptr_t rnodeType = 0x8;
+        uintptr_t rnodeFlags = 0xc;
 
         // profession stuff
         uintptr_t profStance = 0x20;
         uintptr_t profEnergy = 0x28;
         uintptr_t profEnergyMax = 0x2c;
 
-        // "TextValidateLiteral(m_nameOverride.Ptr())"
+        // squad stuff
+        uintptr_t contextSquad = 0x130;
+
+        // "CParser::Validate(sourceBuffer.Ptr(), sourceBuffer.Term(), true ) == sourceBuffer.Term()"
+        // "squadContext"
+        // "kennel->GetOwner() == CharClientContext()->GetControlledCharacter()"
+        // "ConstWvwTeamIsPlayerTeam(wvwTeamId)" ebp-0x8 = pGadget, ebp+0x8 = team id
+
+        // "mc->recvMsgPacked->defArray[0].defSize" = network packets
+        // "radiusCollision > 0" = (char)agent constructor
+        // "m_characterArray.Count() <= agentId || !m_characterArray[agentId]" = add char to array
+        // "!m_profession" = char constructor
+        // "..\..\..\Game\Ui\Widgets\AgentStatus\AsName.cpp" = get agent name?
+        // "TextValidateCoded(undecoratedCodedName)" = char name?
+        // "guildTagLogoFrame" = char name?
+
+        // agent vt+0x38 = get undecoratedName ?
 #endif
     };
 }

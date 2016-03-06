@@ -69,3 +69,10 @@ ResourceNode Gadget::GetResourceNode() const
     return node;
 }
 
+int Gadget::GetWvwTeamId() const
+{
+    if (m_ptr)
+        return m_ptr->wvwTeamId;
+    return 0;
+}
+

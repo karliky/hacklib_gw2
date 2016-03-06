@@ -20,11 +20,11 @@ bool InitEsp()
     }
 
     std::vector<hl::VERTEX_3D_COL> rectVerts = {
-        {-1, -1, 0},
-        {1, -1, 0},
-        {1, 1, 0},
-        {-1, 1, 0},
-        {-1, -1, 0}
+        { -1, -1, 0 },
+        {  1, -1, 0 },
+        {  1,  1, 0 },
+        { -1,  1, 0 },
+        { -1, -1, 0 }
     };
 
     vbRect = pDrawer->AllocVertexBuffer(rectVerts);
