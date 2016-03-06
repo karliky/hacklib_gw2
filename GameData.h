@@ -34,8 +34,8 @@ namespace GameData
         CharacterData *pCharData = nullptr;
         std::unique_ptr<GadgetData> gadgetData = nullptr;
         std::unique_ptr<AttackTargetData> attackTgtData = nullptr;
-        GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AgentCategory::AGENT_CATEGORY_CHAR;
-        GW2LIB::GW2::AgentType type = GW2LIB::GW2::AgentType::AGENT_TYPE_CHAR;
+        GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AGENT_CATEGORY_CHAR;
+        GW2LIB::GW2::AgentType type = GW2LIB::GW2::AGENT_TYPE_CHAR;
         int agentId = 0;
         D3DXVECTOR3 pos = D3DXVECTOR3(0, 0, 0);
         float rot = 0;
@@ -68,9 +68,10 @@ namespace GameData
         float gliderPercent = 0;
         float breakbarPercent = 0;
         GW2LIB::GW2::BreakbarState breakbarState = GW2LIB::GW2::BREAKBAR_STATE_NONE;
-        GW2LIB::GW2::Profession profession = GW2LIB::GW2::Profession::PROFESSION_NONE;
-        GW2LIB::GW2::ProfessionStance stance = GW2LIB::GW2::ProfessionStance::STANCE_NONE;
-        GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::Attitude::ATTITUDE_FRIENDLY;
+        GW2LIB::GW2::Profession profession = GW2LIB::GW2::PROFESSION_NONE;
+        GW2LIB::GW2::ProfessionStance stance = GW2LIB::GW2::STANCE_NONE;
+        GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::ATTITUDE_FRIENDLY;
+        GW2LIB::GW2::CharacterGender gender = GW2LIB::GW2::CHAR_GENDER_NONE;
         GW2LIB::GW2::CharacterStats stats;
         std::string name;
     };
