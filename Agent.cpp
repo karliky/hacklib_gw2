@@ -28,6 +28,10 @@ bool Agent::operator== (const Agent &ag)
     return false;
 }
 
+bool Agent::operator!= (const Agent &ag)
+{
+    return !(*this == ag);
+}
 
 bool Agent::IsValid() const
 {
