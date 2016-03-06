@@ -27,6 +27,10 @@ bool Agent::operator== (const Agent &ag)
     return ag.m_ptr == this->m_ptr;
 }
 
+bool Agent::operator!= (const Agent &ag)
+{
+    return !(*this == ag);
+}
 
 bool Agent::IsValid() const
 {
