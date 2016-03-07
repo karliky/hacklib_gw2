@@ -145,6 +145,13 @@ int Character::GetScaledLevel() const
     return 0;
 }
 
+GW2::CharacterGender Character::GetGender() const
+{
+    if (m_ptr)
+        return m_ptr->gender;
+    return GW2::CHAR_GENDER_NONE;
+}
+
 GW2::CharacterStats Character::GetStats() const
 {
     if (m_ptr)

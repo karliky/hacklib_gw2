@@ -162,6 +162,12 @@ namespace GW2LIB
             AGENT_SEQ_SIEGE_READY = 0x817B0B2,
             AGENT_SEQ_SIEGE_FIRING = 0x1037542C
         };
+
+        enum CharacterGender {
+            CHAR_GENDER_MALE,
+            CHAR_GENDER_FEMALE,
+            CHAR_GENDER_NONE
+        };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -183,6 +189,7 @@ namespace GW2LIB
         Agent(const Agent &);
         Agent &operator= (const Agent &);
         bool operator== (const Agent &);
+        bool operator!= (const Agent &);
 
         bool IsValid() const;
 
@@ -231,6 +238,7 @@ namespace GW2LIB
 
         int GetLevel() const;
         int GetScaledLevel() const;
+        GW2::CharacterGender GetGender() const;
         GW2::CharacterStats GetStats() const;
         int GetWvwSupply() const;
 
@@ -468,6 +476,7 @@ namespace GW2LIB
         uintptr_t charName = 0x188;
 
         uintptr_t playerName = 0x68;
+        uintptr_t statsGender = 0x35;
         uintptr_t statsStats = 0xac;
         uintptr_t statsLevel = 0x1ec;
         uintptr_t statsScaledLevel = 0x21c;
@@ -720,6 +729,8 @@ namespace GW2LIB
         */
 
         // CharClient::CCoreStats
+        // gender
+        uintptr_t statsGender = 0x29;
         // CharacterStats stats;
         uintptr_t statsStats = 0xa0;
         // int m_level;
@@ -836,6 +847,7 @@ namespace GW2LIB
         // "guildTagLogoFrame" = char name?
 
         // agent vt+0x38 = get undecoratedName ?
+        // char vt+0x14 = get char def?
 #endif
     };
 }

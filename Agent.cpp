@@ -24,10 +24,13 @@ Agent &Agent::operator= (const Agent &ag)
 
 bool Agent::operator== (const Agent &ag)
 {
-    if (ag.m_ptr == this->m_ptr) return true;
-    return false;
+    return ag.m_ptr == this->m_ptr;
 }
 
+bool Agent::operator!= (const Agent &ag)
+{
+    return !(*this == ag);
+}
 
 bool Agent::IsValid() const
 {

@@ -15,6 +15,7 @@ std::string chat;
 
 std::string strProf[] = { "Error", "Guardian", "Warrior", "Engineer", "Ranger", "Thief", "Elementalist", "Mesmer", "Necromancer", "Revenant", "None" };
 std::string strStance[] = { "None", "Fire", "Water", "Air", "Earth", "Shroud", "Adrenaline 1", "Adrenaline 2", "Adrenaline 3", "Druid", "Astral", "Dragon", "Assassin", "Dwarf", "Demon", "TEST11", "Centaur", "TEST13", "TEST14", "TEST15", "TEST16", "TEST17" };
+std::string charSex[] = { "Male", "Female", "None", "Error" };
 
 float dist(GW2LIB::Vector3 p1, GW2LIB::Vector3 p2)
 {
@@ -132,6 +133,7 @@ void cbESP()
 
             if (chr.IsValid())
             {
+                font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
                 if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "playerPtr: %p", chr.m_ptr->pPlayer);

@@ -343,6 +343,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->profession = corestats.get<GW2LIB::GW2::Profession>(m_pubmems.statsProfession);
             pCharData->level = corestats.get<int>(m_pubmems.statsLevel);
             pCharData->scaledLevel = corestats.get<int>(m_pubmems.statsScaledLevel);
+            pCharData->gender = (GW2LIB::GW2::CharacterGender)corestats.get<BYTE>(m_pubmems.statsGender);
             pCharData->stats = corestats.get<GW2LIB::GW2::CharacterStats>(m_pubmems.statsStats);
         }
 
