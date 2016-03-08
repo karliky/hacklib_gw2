@@ -236,7 +236,7 @@ bool GW2LIB::Font::Init(int size, std::string name)
     return false;
 }
 
-void GW2LIB::Font::vDraw(float x, float y, DWORD color, std::string format, va_list vl) const
+void GW2LIB::Font::Draw(float x, float y, DWORD color, std::string format, va_list vl) const
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer && m_ptr)
@@ -247,7 +247,7 @@ void GW2LIB::Font::Draw(float x, float y, DWORD color, std::string format, ...) 
 {
     va_list vl;
     va_start(vl, format);
-    vDraw(x, y, color, format, vl);
+    Draw(x, y, color, format, vl);
     va_end(vl);
 }
 

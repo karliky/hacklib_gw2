@@ -159,8 +159,8 @@ namespace GW2LIB
             AGENT_SEQ_NONE,
             AGENT_SEQ_DOOR_OPEN = 0x7160F,
             AGENT_SEQ_DOOR_CLOSED = 0x59BD83,
-            AGENT_SEQ_SIEGE_READY = 0x817B0B2,
-            AGENT_SEQ_SIEGE_FIRING = 0x1037542C
+            AGENT_SEQ_GADGET_READY = 0x817B0B2,
+            AGENT_SEQ_GADGET_FIRING = 0x1037542C
         };
 
         enum CharacterGender {
@@ -395,7 +395,7 @@ namespace GW2LIB
     public:
         Font();
         bool Init(int size, std::string name);
-        void vDraw(float x, float y, DWORD color, std::string format, va_list vl) const;
+        void Draw(float x, float y, DWORD color, std::string format, va_list vl) const;
         void Draw(float x, float y, DWORD color, std::string format, ...) const;
     private:
         Font(const Font &f) { }
