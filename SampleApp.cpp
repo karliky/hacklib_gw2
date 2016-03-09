@@ -107,6 +107,7 @@ void cbESP()
 
             font.Draw(x, y, fontColor, "pos: %.1f %.1f %.1f", pos.x, pos.y, pos.z);
             font.Draw(x, y + OFFSETY, fontColor, "rot: %.5f", ag.GetRot());
+            font.Draw(x, y + OFFSETY, fontColor, "speed: %.5f", ag.GetSpeed());
             font.Draw(x, y + OFFSETY, fontColor, "agentId: %i / 0x%04X", ag.GetAgentId(), ag.GetAgentId());
             font.Draw(x, y + OFFSETY, fontColor, "category: %i, type: %i", ag.GetCategory(), ag.GetType());
 

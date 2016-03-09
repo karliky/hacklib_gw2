@@ -159,8 +159,8 @@ namespace GW2LIB
             AGENT_SEQ_NONE,
             AGENT_SEQ_DOOR_OPEN = 0x7160F,
             AGENT_SEQ_DOOR_CLOSED = 0x59BD83,
-            AGENT_SEQ_SIEGE_READY = 0x817B0B2,
-            AGENT_SEQ_SIEGE_FIRING = 0x1037542C
+            AGENT_SEQ_GADGET_READY = 0x817B0B2,
+            AGENT_SEQ_GADGET_FIRING = 0x1037542C
         };
 
         enum CharacterGender {
@@ -208,6 +208,7 @@ namespace GW2LIB
         float GetRot() const;
         uint64_t GetToken() const;
         uint64_t GetSequence() const;
+        float GetSpeed() const;
 
         GameData::AgentData *m_ptr;
         size_t iterator = 0;
@@ -395,7 +396,7 @@ namespace GW2LIB
     public:
         Font();
         bool Init(int size, std::string name);
-        void vDraw(float x, float y, DWORD color, std::string format, va_list vl) const;
+        void Draw(float x, float y, DWORD color, std::string format, va_list vl) const;
         void Draw(float x, float y, DWORD color, std::string format, ...) const;
     private:
         Font(const Font &f) { }
@@ -449,6 +450,8 @@ namespace GW2LIB
         uintptr_t agtransRY = 0x164;
         uintptr_t agtransToken = 0xf0;
         uintptr_t agtransSeq = 0xf8;
+        uintptr_t npc_agtransSpeed = 0x148;
+        uintptr_t agtransSpeed = 0x204;
 
         uintptr_t charctxCharArray = 0x58;
         uintptr_t charctxPlayerArray = 0x78;
@@ -630,6 +633,8 @@ namespace GW2LIB
 
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
+        uintptr_t npc_agtransSpeed = 0x100;
+        uintptr_t agtransSpeed = 0x1b4;
         //uintptr_t transVtGetSeq = 0x88; // void GetSeq(_out_ UINT64 &buf);
         /*
         Holds metric information about an agent.

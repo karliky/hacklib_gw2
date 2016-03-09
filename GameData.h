@@ -25,7 +25,7 @@ namespace GameData
     };
 
     enum ResourceNodeFlags {
-        RE_NODE_FLAG_DEPLETED = 0x2
+        RNODE_FLAG_DEPLETED = 0x2
     };
 
     struct AgentData
@@ -41,6 +41,7 @@ namespace GameData
         float rot = 0;
         uint64_t token = 0;
         uint64_t seq = 0;
+        float speed = 0;
     };
 
     struct CharacterData

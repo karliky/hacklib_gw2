@@ -461,7 +461,7 @@ void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData
         pRNodeData->type = node.get<GW2LIB::GW2::ResourceNodeType>(m_pubmems.rnodeType);
 
         BYTE flags = node.get<BYTE>(m_pubmems.rnodeFlags);
-        pRNodeData->flags.depleted = !(flags & GameData::RE_NODE_FLAG_DEPLETED);
+        pRNodeData->flags.depleted = !(flags & GameData::RNODE_FLAG_DEPLETED);
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataResourceNode] access violation\n");
@@ -474,10 +474,7 @@ void Gw2HackMain::GameHook()
 #ifdef ARCH_64BIT
     pLocalStorage = (void ***)__readgsqword(0x58);
 #else
-    __asm {
-        MOV EAX, DWORD PTR FS : [0x2c];
-        MOV pLocalStorage, EAX;
-    }
+    pLocalStorage = (void ***)__readfsdword(0x2c);
 #endif
     m_mems.pCtx = pLocalStorage[0][1];
 
@@ -653,8 +650,11 @@ void Gw2HackMain::GameHook()
                                 if (pCharData->pAgentData->pAgent) {
                                     hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
                                     if (transform) {
-                                        if (!pCharData->isPlayer) {
+                                        if (pCharData->isPlayer) {
+                                            pCharData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
+                                        } else {
                                             pCharData->pAgentData->rot = atan2(transform.get<float>(m_pubmems.npc_agtransRY), transform.get<float>(m_pubmems.npc_agtransRX));
+                                            pCharData->pAgentData->speed = transform.get<float>(m_pubmems.npc_agtransSpeed);
                                         }
                                     }
                                 }
