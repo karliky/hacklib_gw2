@@ -41,6 +41,7 @@ namespace GameData
         float rot = 0;
         uint64_t token = 0;
         uint64_t seq = 0;
+        float speed = 0;
     };
 
     struct CharacterData

@@ -145,3 +145,10 @@ uint64_t Agent::GetSequence() const
         return m_ptr->seq;
     return 0;
 }
+
+float Agent::GetSpeed() const
+{
+    if (m_ptr)
+        return m_ptr->speed;
+    return 0;
+}
