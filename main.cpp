@@ -650,13 +650,11 @@ void Gw2HackMain::GameHook()
                                 if (pCharData->pAgentData->pAgent) {
                                     hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
                                     if (transform) {
-                                        if (transform) {
-                                            if (pCharData->isPlayer) {
-                                                pCharData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
-                                            } else {
-                                                pCharData->pAgentData->rot = atan2(transform.get<float>(m_pubmems.npc_agtransRY), transform.get<float>(m_pubmems.npc_agtransRX));
-                                                pCharData->pAgentData->speed = transform.get<float>(m_pubmems.npc_agtransSpeed);
-                                            }
+                                        if (pCharData->isPlayer) {
+                                            pCharData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
+                                        } else {
+                                            pCharData->pAgentData->rot = atan2(transform.get<float>(m_pubmems.npc_agtransRY), transform.get<float>(m_pubmems.npc_agtransRX));
+                                            pCharData->pAgentData->speed = transform.get<float>(m_pubmems.npc_agtransSpeed);
                                         }
                                     }
                                 }
