@@ -700,7 +700,7 @@ namespace GW2LIB
 
         // CharClient::CSkill
         uintptr_t charSkillRadius = 0xd8;
-        uintptr_t charSkillMaxRage = 0x110;
+        uintptr_t charSkillMaxRange = 0x110;
         uintptr_t charSkillRechargeMs = 0xfc;
 		
 
