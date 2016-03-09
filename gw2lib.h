@@ -692,13 +692,13 @@ namespace GW2LIB
         // CharClient::CInventory* m_inventory;
         uintptr_t charInventory = 0x1c8;
 
-		// CharClient::CSkillBar* m_skillBar;
+        // CharClient::CSkillBar* m_skillBar;
         uintptr_t charSkillbar = 0x220;
         uintptr_t charSkillbarSkillsArray = 0xcc;
         uintptr_t charSkillbarPressedSkill = 0x40;
         uintptr_t charSkillbarHoveredSkill = 0x5c;
 
-		// CharClient::CSkill
+        // CharClient::CSkill
         uintptr_t charSkillRadius = 0xd8;
         uintptr_t charSkillMaxRage = 0x110;
         uintptr_t charSkillRechargeMs = 0xfc;
