@@ -252,6 +252,8 @@ namespace GW2LIB
         float GetGliderPercent() const;
         float GetBreakbarPercent() const;
 
+        bool SetSpeed(float speed);
+
         GW2::BreakbarState GetBreakbarState() const;
         GW2::Profession GetProfession() const;
         GW2::ProfessionStance GetStance() const;
@@ -428,7 +430,7 @@ namespace GW2LIB
 
     void SetMems(const struct Mems& mems);
 
-    struct Mems
+    static struct Mems
     {
 #ifdef ARCH_64BIT
         uintptr_t contextChar = 0x90;
@@ -854,7 +856,7 @@ namespace GW2LIB
         // agent vt+0x38 = get undecoratedName ?
         // char vt+0x14 = get char def?
 #endif
-    };
+    } offsets;
 }
 
 #endif // GW2LIB_H

@@ -258,3 +258,16 @@ std::string Character::GetName() const
         return m_ptr->name;
     return "";
 }
+
+bool Character::SetSpeed(float speed) {
+    if (m_ptr && m_ptr->pAgentData && m_ptr->pAgentData->pAgent) {
+        hl::ForeignClass transform = m_ptr->pAgentData->pAgent.get<void*>(offsets.agentTransform);
+        if (IsPlayer()) {
+            transform.set<float>(offsets.agtransSpeed, speed);
+        } else {
+            transform.set<float>(offsets.npc_agtransSpeed, speed);
+        }
+        return true;
+    }
+    return false;
+}
