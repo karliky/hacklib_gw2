@@ -852,21 +852,6 @@ namespace GW2LIB
         // squad stuff
         uintptr_t contextSquad = 0x130;
 
-        // "CParser::Validate(sourceBuffer.Ptr(), sourceBuffer.Term(), true ) == sourceBuffer.Term()"
-        // "squadContext"
-        // "kennel->GetOwner() == CharClientContext()->GetControlledCharacter()"
-        // "ConstWvwTeamIsPlayerTeam(wvwTeamId)" ebp-0x8 = pGadget, ebp+0x8 = team id
-
-        // "mc->recvMsgPacked->defArray[0].defSize" = network packets
-        // "radiusCollision > 0" = (char)agent constructor
-        // "m_characterArray.Count() <= agentId || !m_characterArray[agentId]" = add char to array
-        // "!m_profession" = char constructor
-        // "..\..\..\Game\Ui\Widgets\AgentStatus\AsName.cpp" = get agent name?
-        // "TextValidateCoded(undecoratedCodedName)" = char name?
-        // "guildTagLogoFrame" = char name?
-
-        // agent vt+0x38 = get undecoratedName ?
-        // char vt+0x14 = get char def?
 #endif
     } gw2Offsets;
 }
