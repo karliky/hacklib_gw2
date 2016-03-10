@@ -705,7 +705,6 @@ namespace GW2LIB
         uintptr_t skillRadius = 0x44;
         uintptr_t skillRechargeMs = 0x68;
         uintptr_t skillMaxRange = 0x7c;
-		
 
         uintptr_t charGliderPercent = 0xb8;
         uintptr_t charProfession = 0x218;
@@ -869,7 +868,7 @@ namespace GW2LIB
         // agent vt+0x38 = get undecoratedName ?
         // char vt+0x14 = get char def?
 #endif
-    } offsets;
+    } gw2Offsets;
 }
 
 #endif // GW2LIB_H
