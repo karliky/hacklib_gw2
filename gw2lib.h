@@ -694,14 +694,15 @@ namespace GW2LIB
 
         // CharClient::CSkillBar* m_skillBar;
         uintptr_t charSkillbar = 0x220;
-        uintptr_t charSkillbarSkillsArray = 0xcc;
-        uintptr_t charSkillbarPressedSkill = 0x40;
-        uintptr_t charSkillbarHoveredSkill = 0x5c;
+        uintptr_t skillbarSkillsArray = 0xcc;
+        uintptr_t skillbarPressedSkill = 0x40;
+        uintptr_t skillbarHoveredSkill = 0x5c;
 
-        // CharClient::CSkill
-        uintptr_t charSkillRadius = 0xd8;
-        uintptr_t charSkillMaxRange = 0x110;
-        uintptr_t charSkillRechargeMs = 0xfc;
+        // CharClient::CSkill* m_skillDef
+        uintptr_t pSkillInfo = 0x48;
+        uintptr_t skillRadius = 0x44;
+        uintptr_t skillRechargeMs = 0x68;
+        uintptr_t skillMaxRange = 0x7c;
 		
 
         uintptr_t charGliderPercent = 0xb8;
