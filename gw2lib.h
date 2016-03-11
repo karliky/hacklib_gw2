@@ -43,7 +43,12 @@ namespace GW2LIB
     struct Vector3 {
         Vector3() { }
         Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
-        float x,y,z;
+        float x, y, z;
+    };
+    struct Vector4 {
+        Vector4() { }
+        Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
+        float x, y, z, w;
     };
     struct Matrix4x4 {
         float m[4][4];
@@ -444,12 +449,7 @@ namespace GW2LIB
         uintptr_t agtransX = 0x30;
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
-        uintptr_t npc_agtransRX = 0xe0;
-        uintptr_t npc_agtransRY = 0xe4;
-        uintptr_t gd_agtransRX = 0xdc;
-        uintptr_t gd_agtransRY = 0xd8;
-        uintptr_t agtransRX = 0x160;
-        uintptr_t agtransRY = 0x164;
+        uintptr_t agtransVtGetRot = 0x100;
         uintptr_t agtransToken = 0xf0;
         uintptr_t agtransSeq = 0xf8;
         uintptr_t npc_agtransSpeed = 0x148;
@@ -620,18 +620,7 @@ namespace GW2LIB
         uintptr_t agtransY = 0x24;
         // float z;
         uintptr_t agtransZ = 0x28;
-        // float rx;
-        uintptr_t npc_agtransRX = 0xa0;
-        // float ry;
-        uintptr_t npc_agtransRY = 0xa4;
-        // float rx;
-        uintptr_t gd_agtransRX = 0x9c;
-        // float ry;
-        uintptr_t gd_agtransRY = 0x98;
-        // float rx;
-        uintptr_t agtransRX = 0x110;
-        // float ry;
-        uintptr_t agtransRY = 0x114;
+        uintptr_t agtransVtGetRot = 0x80;
 
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
