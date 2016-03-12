@@ -75,16 +75,16 @@ bool Gw2HackMain::init()
     hl::ConfigLog(logConfig);
 
 #ifdef ARCH_64BIT
-    uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
-    uintptr_t ping = hl::FindPattern("\xCC\x4C\x8B\xDA\x33\xC0\x4C\x8D\x0D\x00\x00\x00\x00\x48\x8B\xD1", "xxxxxxxxx????xxx");
-    uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
-    uintptr_t ifHide = hl::FindPattern("\xCC\x33\xC0\x39\x05\x00\x00\x00\x00\x0F\x9D\xC0\xC3\xCC", "xxxxx????xxxxx");
+    uintptr_t MapIdSig = hl::FindPattern("00 00 08 00 89 0d ?? ?? ?? ?? c3");
+    uintptr_t ping = hl::FindPattern("CC 4C 8B DA 33 C0 4C 8D 0D ?? ?? ?? ?? 48 8B D1");
+    uintptr_t fps = hl::FindPattern("CC 83 0D ?? ?? ?? ?? 20 89 0D ?? ?? ?? ?? C3 CC");
+    uintptr_t ifHide = hl::FindPattern("CC 33 C0 39 05 ?? ?? ?? ?? 0F 9D C0 C3 CC");
     uintptr_t mapOpen = hl::FindPattern("83 3D ?? ?? ?? ?? 00 74 0A B8 10 00 00 00 E9");
 #else
-    uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
-    uintptr_t ping = hl::FindPattern("\x88\x13\x00\x00\x77\x17\x6A\x24\xBA\x00\x00\x00\x00\xB9", "xxxxxxxxx????x");
-    uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
-    uintptr_t ifHide = hl::FindPattern("\xCC\x33\xC0\x39\x05\x00\x00\x00\x00\x0F\x9D\xC0\xC3\xCC", "xxxxx????xxxxx");
+    uintptr_t MapIdSig = hl::FindPattern("00 00 08 00 89 0d ?? ?? ?? ?? c3");
+    uintptr_t ping = hl::FindPattern("88 13 00 00 77 17 6A 24 BA ?? ?? ?? ?? B9");
+    uintptr_t fps = hl::FindPattern("CC 83 0D ?? ?? ?? ?? 20 89 0D ?? ?? ?? ?? C3 CC");
+    uintptr_t ifHide = hl::FindPattern("CC 33 C0 39 05 ?? ?? ?? ?? 0F 9D C0 C3 CC");
     uintptr_t mapOpen = hl::FindPattern("83 3D ?? ?? ?? ?? 00 74 0A B8 10 00 00 00 E9");
 #endif
 
