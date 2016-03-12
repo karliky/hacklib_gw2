@@ -21,6 +21,7 @@ struct GamePointers
     int *pPing = nullptr;
     int *pFps = nullptr;
     int *pIfHide = nullptr;
+    int *pMapOpen = nullptr;
     void *pCtx = nullptr;
     void *pAgentViewCtx = nullptr;
     void **ppWorldViewContext = nullptr;

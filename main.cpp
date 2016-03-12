@@ -79,11 +79,13 @@ bool Gw2HackMain::init()
     uintptr_t ping = hl::FindPattern("\xCC\x4C\x8B\xDA\x33\xC0\x4C\x8D\x0D\x00\x00\x00\x00\x48\x8B\xD1", "xxxxxxxxx????xxx");
     uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
     uintptr_t ifHide = hl::FindPattern("\xCC\x33\xC0\x39\x05\x00\x00\x00\x00\x0F\x9D\xC0\xC3\xCC", "xxxxx????xxxxx");
+    uintptr_t mapOpen = hl::FindPattern("83 3D ?? ?? ?? ?? 00 74 0A B8 10 00 00 00 E9");
 #else
     uintptr_t MapIdSig = hl::FindPattern("\00\x00\x08\x00\x89\x0d\x00\x00\x00\x00\xc3", "xxxxxx????x");
     uintptr_t ping = hl::FindPattern("\x88\x13\x00\x00\x77\x17\x6A\x24\xBA\x00\x00\x00\x00\xB9", "xxxxxxxxx????x");
     uintptr_t fps = hl::FindPattern("\xCC\x83\x0D\x00\x00\x00\x00\x20\x89\x0D\x00\x00\x00\x00\xC3\xCC", "xxx????xxx????xx");
     uintptr_t ifHide = hl::FindPattern("\xCC\x33\xC0\x39\x05\x00\x00\x00\x00\x0F\x9D\xC0\xC3\xCC", "xxxxx????xxxxx");
+    uintptr_t mapOpen = hl::FindPattern("83 3D ?? ?? ?? ?? 00 74 0A B8 10 00 00 00 E9");
 #endif
 
     hl::PatternScanner scanner;
@@ -111,6 +113,7 @@ bool Gw2HackMain::init()
             m_mems.pPing = (int*)hl::FollowRelativeAddress(ping + 0x9);
             m_mems.pFps = (int*)hl::FollowRelativeAddress(fps + 0xa);
             m_mems.pIfHide = (int*)hl::FollowRelativeAddress(ifHide + 0x5);
+            m_mems.pMapOpen = (int*)hl::FollowRelativeAddress(mapOpen + 0x15);
 #else
             m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
             pAlertCtx = **(uintptr_t**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
@@ -122,6 +125,7 @@ bool Gw2HackMain::init()
             m_mems.pPing = *(int**)(ping + 0x9);
             m_mems.pFps = *(int**)(fps + 0xa);
             m_mems.pIfHide = *(int**)(ifHide + 0x5);
+            m_mems.pMapOpen = *(int**)(mapOpen + 0x15);
 #endif
         } __except (EXCEPTION_EXECUTE_HANDLER) {
             return false;
@@ -134,16 +138,17 @@ bool Gw2HackMain::init()
         return false;
     }
 
-    HL_LOG_DBG("aa:     %p\n", m_mems.pAgentViewCtx);
-    HL_LOG_DBG("actx:   %p\n", pAlertCtx);
-    HL_LOG_DBG("asctx:  %p\n", m_mems.pAgentSelectionCtx);
-    HL_LOG_DBG("wv:     %p\n", m_mems.ppWorldViewContext);
-    HL_LOG_DBG("comp:   %p\n", m_mems.pCompass);
-    HL_LOG_DBG("uiOpts: %p\n", m_mems.pUiOpts);
-    HL_LOG_DBG("mpid:   %p\n", m_mems.pMapId);
-    HL_LOG_DBG("ping:   %p\n", m_mems.pPing);
-    HL_LOG_DBG("fps:    %p\n", m_mems.pFps);
-    HL_LOG_DBG("ifHide: %p\n", m_mems.pIfHide);
+    HL_LOG_DBG("aa:      %p\n", m_mems.pAgentViewCtx);
+    HL_LOG_DBG("actx:    %p\n", pAlertCtx);
+    HL_LOG_DBG("asctx:   %p\n", m_mems.pAgentSelectionCtx);
+    HL_LOG_DBG("wv:      %p\n", m_mems.ppWorldViewContext);
+    HL_LOG_DBG("comp:    %p\n", m_mems.pCompass);
+    HL_LOG_DBG("uiOpts:  %p\n", m_mems.pUiOpts);
+    HL_LOG_DBG("mpid:    %p\n", m_mems.pMapId);
+    HL_LOG_DBG("ping:    %p\n", m_mems.pPing);
+    HL_LOG_DBG("fps:     %p\n", m_mems.pFps);
+    HL_LOG_DBG("ifHide:  %p\n", m_mems.pIfHide);
+    HL_LOG_DBG("mapOpen: %p\n", m_mems.pMapOpen);
 
     // hook functions
 #ifdef NOD3DHOOK
@@ -696,6 +701,7 @@ void Gw2HackMain::GameHook()
     m_gameData.ping = *m_mems.pPing;
     m_gameData.fps = *m_mems.pFps;
     m_gameData.ifHide = *m_mems.pIfHide;
+    m_gameData.mapOpen = *m_mems.pMapOpen;
 
     hl::ForeignClass comp = m_mems.pCompass;
     if (!m_gameData.objData.compData) m_gameData.objData.compData = std::make_unique<GameData::CompassData>();

@@ -105,3 +105,7 @@ bool GW2LIB::IsInterfaceHidden() {
     return !!GetMain()->GetGameData()->ifHide;
 }
 
+bool GW2LIB::IsMapOpen() {
+    return !!GetMain()->GetGameData()->mapOpen;
+}
+

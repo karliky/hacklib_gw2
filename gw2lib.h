@@ -355,6 +355,7 @@ namespace GW2LIB
     int GetPing();
     int GetFPS();
     bool IsInterfaceHidden();
+    bool IsMapOpen();
 
 
     //////////////////////////////////////////////////////////////////////////
