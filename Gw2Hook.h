@@ -12,7 +12,8 @@ namespace GW2LIB {
         MouseButtonHook,
         MouseWheelHook,
         DamageLogHook,
-        CombatLogHook
+        CombatLogHook,
+        AllocatorHook
     };
 
     enum CombatLogType {
@@ -41,6 +42,7 @@ struct Gw2Hooks {
     bool(*MouseWheelHook)(int delta, int modkeys) = nullptr;
     void(*DmgLogHook)(uintptr_t*, uintptr_t*, int) = nullptr;
     void(*CombatLogHook)(GW2LIB::CombatLogType, int) = nullptr;
+    void(*AllocatorHook)(int, size_t, int, int, char*) = nullptr;
 };
 
 class Gw2GameHook {
@@ -51,6 +53,7 @@ public:
     const hl::IHook *m_hkProcessText = nullptr;
     const hl::IHook *m_hkDmgLog = nullptr;
     const hl::IHook *m_hkCombatLog = nullptr;
+    const hl::IHook *m_hkAllocator = nullptr;
 
     HHOOK m_hhkGetMessage = NULL;
     Gw2Hooks m_hookList;
@@ -75,6 +78,7 @@ namespace GW2LIB {
         case MouseWheelHook: ASSIGN_HOOK(list->MouseWheelHook, hook); break;
         case DamageLogHook: ASSIGN_HOOK(list->DmgLogHook, hook); break;
         case CombatLogHook: ASSIGN_HOOK(list->CombatLogHook, hook); break;
+        case AllocatorHook: ASSIGN_HOOK(list->AllocatorHook, hook); break;
         }
     }
 };

@@ -21,7 +21,8 @@ namespace GameData
 
     enum CompassFlags {
         COMP_ROTATION = 0x1,
-        COMP_POSITION = 0x4
+        COMP_POSITION = 0x4,
+        COMP_MOUSE_OVER = 0x8
     };
 
     enum ResourceNodeFlags {

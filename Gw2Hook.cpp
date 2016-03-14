@@ -4,38 +4,46 @@
 void hkProcessText(hl::CpuContext*);
 void hkDmgLog(hl::CpuContext*);
 void hkCombatLog(hl::CpuContext*);
+void hkAllocator(hl::CpuContext*);
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam);
 
 
 bool Gw2GameHook::init_hooks() {
     hl::PatternScanner scanner;
-
     auto results = scanner.find({
         "codedProcessedText",
         "targetAgent",
-        "logType < UI_COMBAT_LOG_TYPES"
+        "logType < UI_COMBAT_LOG_TYPES",
+        "bytes < MAX_ALLOC"
     });
 
     uintptr_t pProcessText = NULL;
     uintptr_t pDmgLog = NULL;
     uintptr_t pCombatLog = NULL;
+    uintptr_t pAllocator = NULL;
 
 #ifdef ARCH_64BIT
     pProcessText = (results[0] - 0x49);
     pDmgLog = (results[1] - 0x2a);
     pCombatLog = (results[2] - 0x20);
+    pAllocator = (results[3] - 0x4d);
 
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 17, hkProcessText);
     m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 15, hkDmgLog);
     m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 16, hkCombatLog);
+    m_hkAllocator = m_hooker.hookDetour(pAllocator, 14, hkAllocator);
 #else
+
+
     pProcessText = (results[0] - 0x2d);
     pDmgLog = (results[1] - 0x10);
     pCombatLog = (results[2] - 0x14);
+    pAllocator = (results[3] - 0x21);
 
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 6, hkProcessText);
     m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 6, hkDmgLog);
     m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 7, hkCombatLog);
+    m_hkAllocator = m_hooker.hookDetour(pAllocator, 5, hkAllocator);
 #endif
 
     if (!m_hkProcessText) {
@@ -73,6 +81,7 @@ void Gw2GameHook::cleanup() {
     if (m_hkProcessText) m_hooker.unhook(m_hkProcessText);
     if (m_hkDmgLog) m_hooker.unhook(m_hkDmgLog);
     if (m_hkCombatLog) m_hooker.unhook(m_hkCombatLog);
+    if (m_hkAllocator) m_hooker.unhook(m_hkAllocator);
 
     if (m_hhkGetMessage != NULL)
     {
@@ -126,6 +135,25 @@ void hkCombatLog(hl::CpuContext *ctx)
     if (list->CombatLogHook) list->CombatLogHook(type, hit);
 }
 
+void hkAllocator(hl::CpuContext *ctx) {
+#ifdef ARCH_64BIT
+    int type = (int)(ctx->RCX);
+    size_t size = ctx->RDX;
+    int src = *(int*)(ctx->RSP + 0x38);
+    int line = *(int*)(ctx->RSP + 0x30);
+    char* file = *(char**)(ctx->RSP + 0x28);
+#else
+    int type = ctx->ECX;
+    size_t size = ctx->EDX;
+    int src = *(int*)(ctx->EBP + 0x18);
+    int line = *(int*)(ctx->EBP + 0x14);
+    char* file = *(char**)(ctx->EBP + 0x10);
+#endif
+
+    Gw2Hooks* list = get_hook_list();
+    if (list->AllocatorHook) list->AllocatorHook(type, size, src, line, file);
+}
+
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)
 {
     MSG* msg = (MSG*)lParam;
@@ -171,4 +199,3 @@ LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)
 
     return CallNextHookEx(mHook->m_hhkGetMessage, code, wParam, lParam);
 }
-
