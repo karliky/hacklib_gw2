@@ -410,8 +410,7 @@ void Gw2HackMain::RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::Forei
             pPlayerData->pWallet = wallet;
 
             for (uint32_t i = 0; i < GW2LIB::GW2::CURRENCY_END; i++) {
-                int curr = wallet.call<int>(m_pubmems.currVtGetCurrency, i);
-                pPlayerData->wallet[i] = curr;
+                pPlayerData->wallet[i] = wallet.call<int>(m_pubmems.currVtGetCurrency, i);
             }
         }
 

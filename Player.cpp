@@ -59,6 +59,15 @@ bool Player::BeNext()
     return false;
 }
 
+void Player::BeSelf()
+{
+    if (GetMain()->GetGameData()->objData.ownAgent) {
+        m_ptr = GetMain()->GetGameData()->objData.ownAgent->pPlayerData;
+    } else {
+        m_ptr = nullptr;
+    }
+}
+
 
 Agent Player::GetAgent() const
 {

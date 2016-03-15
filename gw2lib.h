@@ -301,6 +301,7 @@ namespace GW2LIB
         bool IsValid() const;
 
         bool BeNext();
+        void BeSelf();
 
         Agent GetAgent() const;
         Character GetCharacter() const;
