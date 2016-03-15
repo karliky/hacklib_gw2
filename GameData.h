@@ -88,7 +88,7 @@ namespace GameData
         AgentData *pAgentData = nullptr;
         CharacterData *pCharData = nullptr;
 
-        std::vector<int> wallet = std::vector<int>(GW2LIB::GW2::CURRENCY_END);
+        std::vector<int> wallet = std::vector<int>(GW2LIB::GW2::CURRENCY_END, 0);
         std::string name;
     };
 
