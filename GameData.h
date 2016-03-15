@@ -13,7 +13,9 @@
 
 namespace GameData
 {
+    struct PlayerData;
     struct CharacterData;
+    struct AgentData;
     struct GadgetData;
     struct AttackTargetData;
     struct ResourceNodeData;
@@ -33,6 +35,7 @@ namespace GameData
     {
         hl::ForeignClass pAgent = nullptr;
         CharacterData *pCharData = nullptr;
+        PlayerData *pPlayerData = nullptr;
         std::unique_ptr<GadgetData> gadgetData = nullptr;
         std::unique_ptr<AttackTargetData> attackTgtData = nullptr;
         GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AGENT_CATEGORY_CHAR;
@@ -48,8 +51,8 @@ namespace GameData
     struct CharacterData
     {
         hl::ForeignClass pCharacter = nullptr;
-        AgentData *pAgentData = nullptr;
         hl::ForeignClass pPlayer = nullptr;
+        AgentData *pAgentData = nullptr;
         bool isAlive = false;
         bool isDowned = false;
         bool isControlled = false;
@@ -75,6 +78,17 @@ namespace GameData
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::ATTITUDE_FRIENDLY;
         GW2LIB::GW2::CharacterGender gender = GW2LIB::GW2::CHAR_GENDER_NONE;
         GW2LIB::GW2::CharacterStats stats;
+        std::string name;
+    };
+
+    struct PlayerData {
+        hl::ForeignClass pPlayer = nullptr;
+        hl::ForeignClass pChar = nullptr;
+        hl::ForeignClass pWallet = nullptr;
+        AgentData *pAgentData = nullptr;
+        CharacterData *pCharData = nullptr;
+
+        std::vector<int> wallet = std::vector<int>(GW2LIB::GW2::CURRENCY_END);
         std::string name;
     };
 
@@ -132,6 +146,7 @@ namespace GameData
         {
             std::vector<std::unique_ptr<CharacterData>> charDataList;
             std::vector<std::unique_ptr<AgentData>> agentDataList;
+            std::vector<std::unique_ptr<PlayerData>> playerDataList;
             std::unique_ptr<CompassData> compData = nullptr;
             CharacterData *ownCharacter = nullptr;
             AgentData *ownAgent = nullptr;
@@ -158,6 +173,7 @@ namespace GameData
     };
 
     CharacterData *GetCharData(hl::ForeignClass pChar);
+    PlayerData *GetPlayerData(hl::ForeignClass pPlayer);
 }
 
 #endif

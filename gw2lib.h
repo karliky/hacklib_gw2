@@ -20,6 +20,7 @@ http://www.gamerevision.com/showthread.php?3691-Gw2lib&p=45709
 
 struct PrimitiveDiffuseMesh;
 namespace GameData {
+    struct PlayerData;
     struct CharacterData;
     struct AgentData;
     struct GadgetData;
@@ -35,6 +36,7 @@ namespace GW2LIB
 
     class Agent;
     class Character;
+    class Player;
     class Compass;
     class Gadget;
     class AttackTarget;
@@ -173,6 +175,26 @@ namespace GW2LIB
             CHAR_GENDER_FEMALE,
             CHAR_GENDER_NONE
         };
+
+        enum Currency {
+            CURRENCY_NONE,
+            CURRENCY_COIN,
+            CURRENCY_KARMA,
+            CURRENCY_LAURELS,
+            CURRENCY_GEMS,
+            CURRENCY_TEARS,
+            CURRENCY_SHARDS,
+            CURRENCY_RELICS,
+            CURRENCY_SEALS = 9,
+            CURRENCY_BLOOMS = 11,
+            CURRENCY_CARVINGS = 13,
+            CURRENCY_CRYSTALS,
+            CURRENCY_BADGES,
+            CURRENCY_COMMENDATIONS,
+            CURRENCY_TRANS_CHARGES = 18,
+            CURRENCY_SPIRIT_SHARDS = 23,
+            CURRENCY_END
+        };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -202,6 +224,7 @@ namespace GW2LIB
         void BeSelf();
 
         Character GetCharacter() const;
+        Player GetPlayer() const;
         Gadget GetGadget() const;
         AttackTarget GetAttackTarget() const;
 
@@ -265,8 +288,27 @@ namespace GW2LIB
         GW2::Attitude GetAttitude() const;
 
         std::string GetName() const;
-    
+
         GameData::CharacterData *m_ptr;
+    };
+    class Player {
+    public:
+        Player();
+        Player(const Player &);
+        Player &operator= (const Player &);
+        bool operator== (const Player &);
+
+        bool IsValid() const;
+
+        bool BeNext();
+
+        Agent GetAgent() const;
+        Character GetCharacter() const;
+
+        int GetCurrency(GW2::Currency type);
+        std::string GetName() const;
+
+        GameData::PlayerData *m_ptr;
     };
     // represents a gadget
     class Gadget {
@@ -482,6 +524,11 @@ namespace GW2LIB
         uintptr_t charName = 0x188;
 
         uintptr_t playerName = 0x68;
+        uintptr_t playerVtGetWallet = 0x188;
+        uintptr_t playerChar = 0x20;
+
+        uintptr_t currVtGetCurrency = 0x0;
+
         uintptr_t statsGender = 0x35;
         uintptr_t statsStats = 0xac;
         uintptr_t statsLevel = 0x1ec;
@@ -730,12 +777,16 @@ namespace GW2LIB
         // CharClient::CPlayer
         // char* m_name
         uintptr_t playerName = 0x48;
+        uintptr_t playerVtGetWallet = 0xc4;
+        uintptr_t playerChar = 0x18;
         /*
         Represents a player.
 
         The name is very easy to find by just comparing to your name.
         "TextValidateLiteral(m_name.Ptr())"
         */
+
+        uintptr_t currVtGetCurrency = 0x0;
 
         // CharClient::CCoreStats
         // gender

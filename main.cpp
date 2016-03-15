@@ -392,22 +392,42 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                     pCharData->currentEnergy = toInt ? prof.get<int>(m_pubmems.profEnergy) : prof.get<float>(m_pubmems.profEnergy);
                     pCharData->maxEnergy = toInt ? prof.get<int>(m_pubmems.profEnergyMax) : prof.get<float>(m_pubmems.profEnergyMax);
                 }
-
-
-                char *name = player.get<char*>(m_pubmems.playerName);
-                int i = 0;
-                pCharData->name = "";
-                while (name[i]) {
-                    pCharData->name += name[i];
-                    i += 2;
-                }
             }
         }
-
-    } __except (EXCEPTION_EXECUTE_HANDLER) {
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataCharacter] access violation\n");
     }
 }
+
+void Gw2HackMain::RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::ForeignClass player) {
+    __try {
+
+        pPlayerData->pPlayer = player;
+
+        hl::ForeignClass wallet = player.call<void*>(m_pubmems.playerVtGetWallet);
+        if (wallet) {
+            pPlayerData->pWallet = wallet;
+
+            for (uint32_t i = 0; i < GW2LIB::GW2::CURRENCY_END; i++) {
+                int curr = wallet.call<int>(m_pubmems.currVtGetCurrency, i);
+                pPlayerData->wallet[i] = curr;
+            }
+        }
+
+
+        char *name = player.get<char*>(m_pubmems.playerName);
+        int i = 0;
+        pPlayerData->name = "";
+        while (name[i]) {
+            pPlayerData->name += name[i];
+            i += 2;
+        }
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+        HL_LOG_ERR("[RefreshDataPlayer] access violation\n");
+    }
+}
+
 
 void Gw2HackMain::RefreshDataCompass(GameData::CompassData *pCompData, hl::ForeignClass comp) {
     __try {
@@ -519,8 +539,9 @@ void Gw2HackMain::GameHook()
             {
                 auto charArray = charctx.get<GW2::ANet::Array<void*>>(m_pubmems.charctxCharArray);
                 auto agentArray = avctx.get<GW2::ANet::Array<void*>>(m_pubmems.avctxAgentArray);
+                auto playerArray = charctx.get<GW2::ANet::Array<void*>>(m_pubmems.charctxPlayerArray);
 
-                if (charArray.IsValid() && agentArray.IsValid())
+                if (charArray.IsValid() && agentArray.IsValid() && playerArray.IsValid())
                 {
                     // add agents from game array to own array and update data
                     uint32_t sizeAgentArray = agentArray.Count();
@@ -657,9 +678,7 @@ void Gw2HackMain::GameHook()
                                 if (pCharData->pAgentData->pAgent) {
                                     hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
                                     if (transform) {
-                                        if (pCharData->isPlayer) {
-                                            pCharData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
-                                        } else {
+                                        if (transform) {
                                             pCharData->pAgentData->speed = transform.get<float>(m_pubmems.npc_agtransSpeed);
                                         }
                                     }
@@ -676,6 +695,50 @@ void Gw2HackMain::GameHook()
                             if (pCharacter == charctx.get<void*>(m_pubmems.charctxControlled)) {
                                 m_gameData.objData.ownCharacter = pCharData;
                                 bOwnCharFound = true;
+                            }
+                        }
+                    }
+
+
+                    m_gameData.objData.playerDataList.clear();
+                    uint32_t sizePlayerArray = playerArray.Count();
+                    for (uint32_t i = 0; i < sizePlayerArray; i++) {
+                        hl::ForeignClass pPlayer = playerArray[i];
+
+                        if (pPlayer) {
+                            hl::ForeignClass pChar = pPlayer.get<void*>(m_pubmems.playerChar);
+                            if (pChar) {
+                                int agentId = pChar.call<int>(m_pubmems.charVtGetAgentId);
+
+                                m_gameData.objData.playerDataList.push_back(std::make_unique<GameData::PlayerData>());
+                                GameData::PlayerData *pPlayerData = m_gameData.objData.playerDataList.rbegin()->get();
+                                pPlayerData->pChar = pChar;
+
+                                // update values
+                                RefreshDataPlayer(pPlayerData, pPlayer);
+
+                                bool playerDataFound = false;
+
+                                // link agentdata of corresponding agent
+                                if (m_gameData.objData.agentDataList[agentId]) {
+                                    pPlayerData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
+                                    pPlayerData->pCharData = pPlayerData->pAgentData->pCharData;
+                                    pPlayerData->pAgentData->pPlayerData = pPlayerData;
+
+                                    if (pPlayerData->pAgentData->pAgent) {
+                                        hl::ForeignClass transform = pPlayerData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
+                                        if (transform) {
+                                            pPlayerData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
+                                        }
+                                    }
+
+                                    playerDataFound = true;
+                                }
+
+                                if (!playerDataFound) {
+                                    pPlayerData->pAgentData = nullptr;
+                                    pPlayerData->pCharData = nullptr;
+                                }
                             }
                         }
                     }

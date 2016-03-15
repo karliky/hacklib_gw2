@@ -73,6 +73,14 @@ Character Agent::GetCharacter() const
     return chr;
 }
 
+Player Agent::GetPlayer() const
+{
+    Player player;
+    if (m_ptr)
+        player.m_ptr = m_ptr->pPlayerData;
+    return player;
+}
+
 Gadget Agent::GetGadget() const
 {
     Gadget gd;

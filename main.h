@@ -57,6 +57,7 @@ public:
 private:
     void RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent);
     void RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character);
+    void RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::ForeignClass player);
     void RefreshDataCompass(GameData::CompassData *pCompData, hl::ForeignClass comp);
     void RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::ForeignClass gd);
     void RefreshDataAttackTarget(GameData::AttackTargetData *pGadgetTgtData, hl::ForeignClass gd);

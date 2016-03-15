@@ -51,6 +51,7 @@ void cbESP()
     while (ag.BeNext())
     {
         Character chr = ag.GetCharacter();
+        Player player = ag.GetPlayer();
         Vector3 pos = ag.GetPos();
 
         if (dist(mypos, pos) > 2000.0f)
@@ -137,11 +138,16 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
-                if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "playerPtr: %p", chr.m_ptr->pPlayer);
-                if (chr.GetStance()) font.Draw(x, y + OFFSETY, fontColor, "stance: %s", strStance[chr.GetStance()].c_str());
-                if (chr.IsPlayer()) font.Draw(x, y + OFFSETY, fontColor, "energy: %.1f / %.1f", chr.GetCurrentEnergy(), chr.GetMaxEnergy());
-                font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
+            }
+
+            if (player.IsValid()) {
+                if (player.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, player.GetName());
+                if (chr.GetStance()) font.Draw(x, y + OFFSETY, fontColor, "stance: %s", strStance[chr.GetStance()].c_str());
+                font.Draw(x, y + OFFSETY, fontColor, "energy: %.1f / %.1f", chr.GetCurrentEnergy(), chr.GetMaxEnergy());
+                font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
+                font.Draw(x, y + OFFSETY, fontColor, "playerPtr: %p", player.m_ptr->pPlayer);
+                font.Draw(x, y + OFFSETY, fontColor, "coins: %i", player.GetCurrency(GW2::CURRENCY_COIN));
             }
         }
     }

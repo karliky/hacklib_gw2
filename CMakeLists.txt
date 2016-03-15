@@ -5,6 +5,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC
     General.cpp
     Agent.cpp
     Character.cpp
+    Player.cpp
     EspDraw.cpp
     Gadget.cpp
     AttackTarget.cpp
