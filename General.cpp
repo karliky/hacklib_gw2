@@ -110,6 +110,6 @@ bool GW2LIB::IsMapOpen() {
 }
 
 bool GW2LIB::IsInCutscene() {
-    return !!GetMain()->GetGameData()->asCtxMode;
+    return GetMain()->GetGameData()->asCtxMode == 1;
 }
 
