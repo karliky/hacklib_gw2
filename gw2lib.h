@@ -399,6 +399,7 @@ namespace GW2LIB
     int GetFPS();
     bool IsInterfaceHidden();
     bool IsMapOpen();
+    bool IsInCutscene();
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -544,6 +545,7 @@ namespace GW2LIB
         uintptr_t asctxHover = 0xf8;
         uintptr_t asctxLocked = 0x230;
         uintptr_t asctxStoW = 0x26c;
+        uintptr_t asctxCtxMode = 0x70;
         uintptr_t wvctxVtGetMetrics = 0x78;
         uintptr_t wvctxStatus = 0x58;
 
@@ -831,12 +833,14 @@ namespace GW2LIB
         uintptr_t asctxLocked = 0x120;
         // D3DXVECTOR3 m_screenToWorld;
         uintptr_t asctxStoW = 0x13c;
+        uintptr_t asctxCtxMode = 0x3c;
         /*
         The offsets can be found in a function containing lots of asserts for them. Strings in order:
         "!m_autoSelection"
         "!m_hoverSelection"
         "!m_lockedSelection"
         screenToWorld is easy to find by just moving the cursor around.
+        "m_contextMode == CONTEXT_MODE_NULL"
         */
 
         // WorldView::CContext

@@ -109,3 +109,7 @@ bool GW2LIB::IsMapOpen() {
     return !!GetMain()->GetGameData()->mapOpen;
 }
 
+bool GW2LIB::IsInCutscene() {
+    return !!GetMain()->GetGameData()->asCtxMode;
+}
+

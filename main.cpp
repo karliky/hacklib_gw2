@@ -758,6 +758,7 @@ void Gw2HackMain::GameHook()
         m_gameData.objData.lockedSelection = nullptr;
 
     m_gameData.mouseInWorld = asctx.get<D3DXVECTOR3>(m_pubmems.asctxStoW);
+    m_gameData.asCtxMode = asctx.get<int>(m_pubmems.asctxCtxMode);
 
     m_gameData.mapId = *m_mems.pMapId;
     m_gameData.ping = *m_mems.pPing;

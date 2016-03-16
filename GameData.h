@@ -169,6 +169,7 @@ namespace GameData
         int fps = 0;
         int ifHide = 0;
         int mapOpen = 0;
+        int asCtxMode = 0;
         GW2LIB::GW2::UiIntefaceSize uiIntSize = GW2LIB::GW2::UI_IF_NORMAL;
     };
 

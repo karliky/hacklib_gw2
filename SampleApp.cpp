@@ -35,6 +35,7 @@ void cbESP()
     Character chrLocked = agLocked.GetCharacter();
 
     font.Draw(10, 25, fontColor, "%s", chat.c_str());
+    font.Draw(10, 40, fontColor, "IsInCutscene: %i", IsInCutscene());
     font.Draw(25, 100, fontColor, "MapId: %i", GetCurrentMapId());
     font.Draw(25, 125, fontColor, "Mouse: %.1f %.1f %.1f", GetMouseInWorld().x, GetMouseInWorld().y, GetMouseInWorld().z);
     if (agAuto.m_ptr)
