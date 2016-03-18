@@ -87,8 +87,8 @@ Character Player::GetCharacter() const
 
 int Player::GetCurrency(GW2::Currency type) {
     if (type >= GW2::CURRENCY_END) return 0;
-    if (m_ptr) {
-        return m_ptr->wallet[type];
+    if (m_ptr && m_ptr->pWallet) {
+        return m_ptr->pWallet.call<int>(gw2Offsets.currVtGetCurrency, type);
     }
     return 0;
 }
