@@ -238,7 +238,7 @@ namespace GW2LIB
         uint64_t GetSequence() const;
         float GetSpeed() const;
 
-        GameData::AgentData *m_ptr;
+        GameData::AgentData *m_ptr = nullptr;
         size_t iterator = 0;
     };
     // represents advanced game objects like players and monsters
@@ -289,7 +289,7 @@ namespace GW2LIB
 
         std::string GetName() const;
 
-        GameData::CharacterData *m_ptr;
+        GameData::CharacterData *m_ptr = nullptr;
     };
     class Player {
     public:
@@ -309,7 +309,7 @@ namespace GW2LIB
         int GetCurrency(GW2::Currency type);
         std::string GetName() const;
 
-        GameData::PlayerData *m_ptr;
+        GameData::PlayerData *m_ptr = nullptr;
     };
     // represents a gadget
     class Gadget {
@@ -326,7 +326,7 @@ namespace GW2LIB
         ResourceNode GetResourceNode() const;
         int GetWvwTeamId() const;
 
-        GameData::GadgetData *m_ptr;
+        GameData::GadgetData *m_ptr = nullptr;
     };
     // represents a gadget attack target
     class AttackTarget {
@@ -340,7 +340,7 @@ namespace GW2LIB
         float GetCurrentHealth() const;
         float GetMaxHealth() const;
 
-        GameData::AttackTargetData *m_ptr;
+        GameData::AttackTargetData *m_ptr = nullptr;
     };
     // resource nodes
     class ResourceNode {
@@ -354,7 +354,7 @@ namespace GW2LIB
         GW2::ResourceNodeType GetType() const;
         bool IsGatherable() const;
 
-        GameData::ResourceNodeData *m_ptr;
+        GameData::ResourceNodeData *m_ptr = nullptr;
     };
     // profession specific data
     class Profession {
@@ -376,7 +376,7 @@ namespace GW2LIB
         bool  GetRotation() const;
         bool  GetPosition() const;
 
-        GameData::CompassData *m_ptr;
+        GameData::CompassData *m_ptr = nullptr;
     };
 
 

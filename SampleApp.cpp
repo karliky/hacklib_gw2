@@ -113,18 +113,23 @@ void cbESP()
             font.Draw(x, y + OFFSETY, fontColor, "agentId: %i / 0x%04X", ag.GetAgentId(), ag.GetAgentId());
             font.Draw(x, y + OFFSETY, fontColor, "category: %i, type: %i", ag.GetCategory(), ag.GetType());
 
-            if (ag.IsValid())
-            {
+            if (ag.IsValid()) {
                 font.Draw(x, y + OFFSETY, fontColor, "agentptr: %p", *(void**)ag.m_ptr);
 
                 if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
                     Gadget gd = ag.GetGadget();
-                    if (gd.m_ptr) {
-                        font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - teamid: %i - type: %i", *(void**)gd.m_ptr, gd.GetWvwTeamId(), gd.GetType());
-                    }
-                    if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
-                        ResourceNode node = gd.GetResourceNode();
-                        if (node.m_ptr) font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i - depleted: %i", *(void**)node.m_ptr, node.GetType(), !node.IsGatherable());
+                    if (gd.IsValid()) {
+                        font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", *(void**)gd.m_ptr, gd.GetType());
+                        font.Draw(x, y + OFFSETY, fontColor, "gadget teamId: %i", gd.GetWvwTeamId());
+
+                        if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
+                            ResourceNode node = gd.GetResourceNode();
+                            if (node.IsValid()) {
+                                font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i", *(void**)node.m_ptr, node.GetType());
+                                font.Draw(x, y + OFFSETY, fontColor, "rnode depleted: %i", !node.IsGatherable());
+
+                            }
+                        }
                     }
                 }
 
@@ -134,8 +139,7 @@ void cbESP()
                 }
             }
 
-            if (chr.IsValid())
-            {
+            if (chr.IsValid()) {
                 font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
@@ -143,7 +147,6 @@ void cbESP()
             }
 
             if (player.IsValid()) {
-                if (player.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, player.GetName());
                 if (chr.GetStance()) font.Draw(x, y + OFFSETY, fontColor, "stance: %s", strStance[chr.GetStance()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "energy: %.1f / %.1f", chr.GetCurrentEnergy(), chr.GetMaxEnergy());
                 font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());

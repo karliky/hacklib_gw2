@@ -254,8 +254,11 @@ GW2::Attitude Character::GetAttitude() const
 
 std::string Character::GetName() const
 {
-    if (m_ptr)
+    if (m_ptr) {
+        if (IsPlayer())
+            return m_ptr->pAgentData->pPlayerData->name;
         return m_ptr->name;
+    }
     return "";
 }
 
