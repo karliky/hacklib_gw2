@@ -113,8 +113,8 @@ void hkDmgLog(hl::CpuContext *ctx)
     uintptr_t *pTgt = (uintptr_t*)(ctx->R9);
 #else
     int hit = *(int*)(ctx->EBP + 0x10);
-    uintptr_t *agSrc = *(uintptr_t**)(ctx->EBP + 0xC);
-    uintptr_t *agTgt = *(uintptr_t**)(ctx->EBP + 0x8);
+    uintptr_t *pSrc = *(uintptr_t**)(ctx->EBP + 0xC);
+    uintptr_t *pTgt = *(uintptr_t**)(ctx->EBP + 0x8);
 #endif
 
     GW2LIB::Agent agSrc(pSrc);
@@ -132,7 +132,7 @@ void hkCombatLog(hl::CpuContext *ctx)
 #else
     GW2LIB::CombatLogType type = *(GW2LIB::CombatLogType*)(ctx->EBP + 0xC);
     int hit = *(int*)(ctx->EBP + 0x18);
-    uintptr_t *agTgt = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x34);
+    uintptr_t *pTgt = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x34);
 #endif
 
     GW2LIB::Agent agTgt(pTgt);
