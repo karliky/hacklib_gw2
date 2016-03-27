@@ -32,6 +32,14 @@ namespace GW2LIB {
         CL_UNKNOWN_12,
         CL_UNKNOWN_13
     };
+
+    class Agent;
+    class Character;
+    class Player;
+    class Compass;
+    class Gadget;
+    class AttackTarget;
+    class ResourceNode;
 };
 
 
@@ -40,8 +48,8 @@ struct Gw2Hooks {
     bool(*MouseMoveHook)(int x, int y, int modkeys) = nullptr;
     bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
     bool(*MouseWheelHook)(int delta, int modkeys) = nullptr;
-    void(*DmgLogHook)(uintptr_t*, uintptr_t*, int) = nullptr;
-    void(*CombatLogHook)(GW2LIB::CombatLogType, int) = nullptr;
+    void(*DmgLogHook)(GW2LIB::Agent, GW2LIB::Agent, int) = nullptr;
+    void(*CombatLogHook)(GW2LIB::CombatLogType, int, GW2LIB::Agent) = nullptr;
     void(*AllocatorHook)(int, size_t, int, int, char*) = nullptr;
 };
 

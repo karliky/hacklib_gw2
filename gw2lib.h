@@ -214,6 +214,7 @@ namespace GW2LIB
     public:
         Agent();
         Agent(const Agent &);
+        Agent(uintptr_t*);
         Agent &operator= (const Agent &);
         bool operator== (const Agent &);
         bool operator!= (const Agent &);
@@ -521,6 +522,8 @@ namespace GW2LIB
         uintptr_t charEndurance = 0x2d0;
         uintptr_t charHealth = 0x2d8;
         uintptr_t charInventory = 0x2e0;
+        uintptr_t charVtGetCmbtnt = 0xf8;
+        uintptr_t cmbtntBuffBar = 0x88;
         uintptr_t charGliderPercent = 0x130;
         uintptr_t charProfession = 0x368;
         uintptr_t charName = 0x188;
@@ -733,6 +736,9 @@ namespace GW2LIB
         uintptr_t charHealth = 0x1c4;
         // CharClient::CInventory* m_inventory;
         uintptr_t charInventory = 0x1c8;
+
+        uintptr_t charVtGetCmbtnt = 0x7c;
+        uintptr_t cmbtntBuffBar = 0x54;
 
         // CharClient::CSkillBar* m_skillBar;
         uintptr_t charSkillbar = 0x220;

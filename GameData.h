@@ -52,6 +52,8 @@ namespace GameData
     {
         hl::ForeignClass pCharacter = nullptr;
         hl::ForeignClass pPlayer = nullptr;
+        hl::ForeignClass pCombatant = nullptr;
+        hl::ForeignClass pBuffBar = nullptr;
         AgentData *pAgentData = nullptr;
         bool isAlive = false;
         bool isDowned = false;

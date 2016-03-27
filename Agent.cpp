@@ -9,6 +9,22 @@ Agent::Agent()
     m_ptr = nullptr;
 }
 
+Agent::Agent(uintptr_t* pAgent)
+{
+    const auto& agents = GetMain()->GetGameData()->objData.agentDataList;
+
+    size_t idx = agents.size();
+    while (idx--) {
+        if (agents[idx] && agents[idx].get()->pAgent && agents[idx].get()->pAgent.data() == pAgent) {
+            m_ptr = agents[idx].get();
+            return;
+        }
+    }
+
+    m_ptr = nullptr;
+}
+
+
 Agent::Agent(const Agent &ag)
 {
     m_ptr = ag.m_ptr;

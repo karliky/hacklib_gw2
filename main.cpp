@@ -375,6 +375,15 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             }
         }
 
+        hl::ForeignClass combatant = character.call<void*>(m_pubmems.charVtGetCmbtnt);
+        if (combatant) {
+            pCharData->pCombatant = combatant;
+            hl::ForeignClass buffBar = combatant.get<void*>(m_pubmems.cmbtntBuffBar);
+            if (buffBar) {
+                pCharData->pBuffBar = buffBar;
+            }
+        }
+
         if (pCharData->isPlayer)
         {
             hl::ForeignClass player = character.call<void*>(m_pubmems.charVtGetPlayer);

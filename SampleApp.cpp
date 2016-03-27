@@ -120,7 +120,7 @@ void cbESP()
                     Gadget gd = ag.GetGadget();
                     if (gd.IsValid()) {
                         font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", *(void**)gd.m_ptr, gd.GetType());
-                        font.Draw(x, y + OFFSETY, fontColor, "gadget teamId: %i", gd.GetWvwTeamId());
+                        font.Draw(x, y + OFFSETY, fontColor, "wvw teamId: %i", gd.GetWvwTeamId());
 
                         if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
                             ResourceNode node = gd.GetResourceNode();
@@ -143,6 +143,7 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
+                font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
             }
 

@@ -109,14 +109,16 @@ void hkDmgLog(hl::CpuContext *ctx)
 {
 #ifdef ARCH_64BIT
     int hit = (int)ctx->R9;
-    uintptr_t *agSrc = (uintptr_t*)(ctx->R8);
-    uintptr_t *agTgt = (uintptr_t*)(ctx->R9);
+    uintptr_t *pSrc = (uintptr_t*)(ctx->R8);
+    uintptr_t *pTgt = (uintptr_t*)(ctx->R9);
 #else
     int hit = *(int*)(ctx->EBP + 0x10);
     uintptr_t *agSrc = *(uintptr_t**)(ctx->EBP + 0xC);
     uintptr_t *agTgt = *(uintptr_t**)(ctx->EBP + 0x8);
 #endif
 
+    GW2LIB::Agent agSrc(pSrc);
+    GW2LIB::Agent agTgt(pTgt);
     Gw2Hooks* list = get_hook_list();
     if (list->DmgLogHook) list->DmgLogHook(agSrc, agTgt, hit);
 }
@@ -126,13 +128,16 @@ void hkCombatLog(hl::CpuContext *ctx)
 #ifdef ARCH_64BIT
     GW2LIB::CombatLogType type = (GW2LIB::CombatLogType)(ctx->R8);
     int hit = *(int*)(ctx->RSP + 0x4c);
+    uintptr_t *pTgt = *(uintptr_t**)(ctx->RDI + 0x58);
 #else
     GW2LIB::CombatLogType type = *(GW2LIB::CombatLogType*)(ctx->EBP + 0xC);
     int hit = *(int*)(ctx->EBP + 0x18);
+    uintptr_t *agTgt = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x34);
 #endif
 
+    GW2LIB::Agent agTgt(pTgt);
     Gw2Hooks* list = get_hook_list();
-    if (list->CombatLogHook) list->CombatLogHook(type, hit);
+    if (list->CombatLogHook) list->CombatLogHook(type, hit, agTgt);
 }
 
 void hkAllocator(hl::CpuContext *ctx) {
