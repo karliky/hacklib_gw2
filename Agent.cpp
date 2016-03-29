@@ -15,7 +15,7 @@ Agent::Agent(uintptr_t* pAgent)
 
     size_t idx = agents.size();
     while (idx--) {
-        if (agents[idx] && agents[idx].get()->pAgent && agents[idx].get()->pAgent.data() == pAgent) {
+        if (agents[idx] && agents[idx].get()->pAgent && agents[idx].get()->pAgent == pAgent) {
             m_ptr = agents[idx].get();
             return;
         }
@@ -175,4 +175,10 @@ float Agent::GetSpeed() const
     if (m_ptr)
         return m_ptr->speed;
     return 0;
+}
+
+bool Agent::IsSelectable() const {
+    if (m_ptr)
+        return m_ptr->selectable;
+    return false;
 }

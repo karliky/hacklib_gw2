@@ -577,6 +577,8 @@ void Gw2HackMain::GameHook()
                                 // update values
                                 RefreshDataAgent(pAgentData, pAgent);
 
+                                pAgentData->selectable = asctx.call<bool>(m_pubmems.asctxVtAgCanSel, pAgent);
+
                                 // gadget update
                                 if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
                                     hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);

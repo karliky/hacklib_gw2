@@ -238,6 +238,7 @@ namespace GW2LIB
         uint64_t GetToken() const;
         uint64_t GetSequence() const;
         float GetSpeed() const;
+        bool IsSelectable() const;
 
         GameData::AgentData *m_ptr = nullptr;
         size_t iterator = 0;
@@ -549,6 +550,7 @@ namespace GW2LIB
         uintptr_t asctxLocked = 0x230;
         uintptr_t asctxStoW = 0x26c;
         uintptr_t asctxCtxMode = 0x70;
+        uintptr_t asctxVtAgCanSel = 0x8;
         uintptr_t wvctxVtGetMetrics = 0x78;
         uintptr_t wvctxStatus = 0x58;
 
@@ -840,6 +842,7 @@ namespace GW2LIB
         // D3DXVECTOR3 m_screenToWorld;
         uintptr_t asctxStoW = 0x13c;
         uintptr_t asctxCtxMode = 0x3c;
+        uintptr_t asctxVtAgCanSel = 0x4;
         /*
         The offsets can be found in a function containing lots of asserts for them. Strings in order:
         "!m_autoSelection"
@@ -847,6 +850,7 @@ namespace GW2LIB
         "!m_lockedSelection"
         screenToWorld is easy to find by just moving the cursor around.
         "m_contextMode == CONTEXT_MODE_NULL"
+        "!agent || AgentCanBeSelection(agent)"
         */
 
         // WorldView::CContext

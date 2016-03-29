@@ -39,11 +39,11 @@ void cbESP()
     font.Draw(25, 100, fontColor, "MapId: %i", GetCurrentMapId());
     font.Draw(25, 125, fontColor, "Mouse: %.1f %.1f %.1f", GetMouseInWorld().x, GetMouseInWorld().y, GetMouseInWorld().z);
     if (agAuto.m_ptr)
-        font.Draw(25, 150, fontColor, "AutoSelection: agptr %p chrptr %p", *(void**)agAuto.m_ptr, chrAuto.m_ptr ? *(void**)chrAuto.m_ptr : nullptr);
+        font.Draw(25, 150, fontColor, "AutoSelection: agptr %p chrptr %p", agAuto.m_ptr->pAgent, chrAuto.m_ptr ? chrAuto.m_ptr->pCharacter : nullptr);
     if (agHover.m_ptr)
-        font.Draw(25, 175, fontColor, "HoverSelection: agptr %p chrptr %p", *(void**)agHover.m_ptr, chrHover.m_ptr ? *(void**)chrHover.m_ptr : nullptr);
+        font.Draw(25, 175, fontColor, "HoverSelection: agptr %p chrptr %p", agHover.m_ptr->pAgent, chrHover.m_ptr ? chrHover.m_ptr->pCharacter : nullptr);
     if (agLocked.m_ptr)
-        font.Draw(25, 200, fontColor, "LockedSelection: agptr %p chrptr %p", *(void**)agLocked.m_ptr, chrLocked.m_ptr ? *(void**)chrLocked.m_ptr : nullptr);
+        font.Draw(25, 200, fontColor, "LockedSelection: agptr %p chrptr %p", agLocked.m_ptr->pAgent, chrLocked.m_ptr ? chrLocked.m_ptr->pCharacter : nullptr);
 
     Character me = GetOwnCharacter();
     Vector3 mypos = me.GetAgent().GetPos();
@@ -114,22 +114,31 @@ void cbESP()
             font.Draw(x, y + OFFSETY, fontColor, "category: %i, type: %i", ag.GetCategory(), ag.GetType());
 
             if (ag.IsValid()) {
-                font.Draw(x, y + OFFSETY, fontColor, "agentptr: %p", *(void**)ag.m_ptr);
+                font.Draw(x, y + OFFSETY, fontColor, "agentptr: %p", ag.m_ptr->pAgent);
+                font.Draw(x, y + OFFSETY, fontColor, "selectable: %i", ag.IsSelectable());
 
                 if (ag.GetType() == GW2::AGENT_TYPE_GADGET) {
                     Gadget gd = ag.GetGadget();
                     if (gd.IsValid()) {
-                        font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", *(void**)gd.m_ptr, gd.GetType());
+                        font.Draw(x, y + OFFSETY, fontColor, "gadget: %p - type: %i", gd.m_ptr->pGadget, gd.GetType());
                         font.Draw(x, y + OFFSETY, fontColor, "wvw teamId: %i", gd.GetWvwTeamId());
 
                         if (gd.GetType() == GW2::GADGET_TYPE_RESOURCE_NODE) {
                             ResourceNode node = gd.GetResourceNode();
                             if (node.IsValid()) {
-                                font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i", *(void**)node.m_ptr, node.GetType());
+                                font.Draw(x, y + OFFSETY, fontColor, "resource: %p - type: %i", node.m_ptr->pResourceNode, node.GetType());
                                 font.Draw(x, y + OFFSETY, fontColor, "rnode depleted: %i", !node.IsGatherable());
 
                             }
                         }
+                    }
+                }
+
+                if (ag.GetType() == GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
+                    AttackTarget tgt = ag.GetAttackTarget();
+                    if (tgt.IsValid()) {
+                        font.Draw(x, y + OFFSETY, fontColor, "atk tgt: %p", tgt.m_ptr->pAttackTgt);
+                        font.Draw(x, y + OFFSETY, fontColor, "atk hp %.0f / %.0f", tgt.GetCurrentHealth(), tgt.GetMaxHealth());
                     }
                 }
 
@@ -142,7 +151,7 @@ void cbESP()
             if (chr.IsValid()) {
                 font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
                 if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
-                font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", *(void**)chr.m_ptr, strProf[chr.GetProfession()].c_str());
+                font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", chr.m_ptr->pCharacter, strProf[chr.GetProfession()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
             }
