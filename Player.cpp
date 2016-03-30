@@ -22,15 +22,12 @@ Player &Player::operator= (const Player &player)
     return *this;
 }
 
-bool Player::operator== (const Player &player)
-{
-    if (player.m_ptr == this->m_ptr) return true;
-    return false;
+bool Player::operator== (const Player &player) {
+    return player.m_ptr == this->m_ptr;
 }
 
 
-bool Player::IsValid() const
-{
+bool Player::IsValid() const {
     return m_ptr && GameData::GetPlayerData(m_ptr->pPlayer);
 }
 
@@ -94,9 +91,6 @@ int Player::GetCurrency(GW2::Currency type) {
 }
 
 
-std::string Player::GetName() const
-{
-    if (m_ptr)
-        return m_ptr->name;
-    return "";
+std::string Player::GetName() const {
+    return m_ptr ? m_ptr->name : "";
 }

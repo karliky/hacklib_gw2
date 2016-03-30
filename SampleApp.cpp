@@ -9,6 +9,7 @@
 float offsety = 0;
 #define OFFSETY (offsety-=12)
 
+std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 GW2LIB::Font font;
 static const DWORD fontColor = 0xffffffff;
 std::string chat;
@@ -167,8 +168,7 @@ void cbESP()
     }
 }
 
-void sample_chat_hook(wchar_t *wtxt) {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+void sample_chat_cb(wchar_t *wtxt) {
     chat = converter.to_bytes(wtxt);
 }
 
@@ -181,7 +181,7 @@ void GW2LIB::gw2lib_main()
         return;
     }
 
-    SetGameHook(ChatHook, sample_chat_hook);
+    SetGameHook(ChatHook, sample_chat_cb);
 
     while (GetAsyncKeyState(VK_HOME) >= 0)
         std::this_thread::sleep_for(std::chrono::milliseconds(25));

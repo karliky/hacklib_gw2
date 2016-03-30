@@ -22,15 +22,12 @@ Character &Character::operator= (const Character &ch)
     return *this;
 }
 
-bool Character::operator== (const Character &ch)
-{
-    if (ch.m_ptr == this->m_ptr) return true;
-    return false;
+bool Character::operator== (const Character &ch) {
+    return ch.m_ptr == this->m_ptr;
 }
 
 
-bool Character::IsValid() const
-{
+bool Character::IsValid() const {
     return m_ptr && GameData::GetCharData(m_ptr->pCharacter);
 }
 
@@ -74,192 +71,110 @@ Agent Character::GetAgent() const
 }
 
 
-bool Character::IsAlive() const
-{
-    if (m_ptr)
-        return m_ptr->isAlive;
-    return false;
+bool Character::IsAlive() const {
+    return m_ptr && m_ptr->isAlive;
 }
 
-bool Character::IsDowned() const
-{
-    if (m_ptr)
-        return m_ptr->isDowned;
-    return false;
+bool Character::IsDowned() const {
+    return m_ptr && m_ptr->isDowned;
 }
 
-bool Character::IsControlled() const
-{
-    if (m_ptr)
-        return m_ptr->isControlled;
-    return false;
+bool Character::IsControlled() const {
+    return m_ptr && m_ptr->isControlled;
 }
 
-bool Character::IsPlayer() const
-{
-    if (m_ptr)
-        return m_ptr->isPlayer;
-    return false;
+bool Character::IsPlayer() const {
+    return m_ptr && m_ptr->isPlayer;
 }
 
-bool Character::IsInWater() const
-{
-    if (m_ptr)
-        return m_ptr->isInWater;
-    return false;
+bool Character::IsInWater() const {
+    return m_ptr && m_ptr->isInWater;
 }
 
-bool Character::IsMonster() const
-{
-    if (m_ptr)
-        return m_ptr->isMonster;
-    return false;
+bool Character::IsMonster() const {
+    return m_ptr && m_ptr->isMonster;
 }
 
-bool Character::IsMonsterPlayerClone() const
-{
-    if (m_ptr)
-        return m_ptr->isMonsterPlayerClone;
-    return false;
+bool Character::IsMonsterPlayerClone() const {
+    return m_ptr && m_ptr->isMonsterPlayerClone;
 }
 
-bool Character::IsRangerPet() const
-{
-    if (m_ptr)
-        return m_ptr->isRangerPet;
-    return false;
+bool Character::IsRangerPet() const {
+    return m_ptr && m_ptr->isRangerPet;
 }
 
 
-int Character::GetLevel() const
-{
-    if (m_ptr)
-        return m_ptr->level;
-    return 0;
+int Character::GetLevel() const {
+    return m_ptr ? m_ptr->level : 0;
 }
 
-int Character::GetScaledLevel() const
-{
-    if (m_ptr)
-        return m_ptr->scaledLevel;
-    return 0;
+int Character::GetScaledLevel() const {
+    return m_ptr ? m_ptr->scaledLevel : 0;
 }
 
-GW2::CharacterGender Character::GetGender() const
-{
-    if (m_ptr)
-        return m_ptr->gender;
-    return GW2::CHAR_GENDER_NONE;
+GW2::CharacterGender Character::GetGender() const {
+    return m_ptr ? m_ptr->gender : GW2::CHAR_GENDER_NONE;
 }
 
-GW2::CharacterStats Character::GetStats() const
-{
-    if (m_ptr)
-        return m_ptr->stats;
+GW2::CharacterStats Character::GetStats() const {
     GW2::CharacterStats dummy;
-    return dummy;
+    return m_ptr ? m_ptr->stats : dummy;
 }
 
-int Character::GetWvwSupply() const
-{
-    if (m_ptr)
-        return m_ptr->wvwsupply;
-    return 0;
+int Character::GetWvwSupply() const {
+    return m_ptr ? m_ptr->wvwsupply : 0;
 }
 
 float Character::GetCurrentEnergy() const {
-    if (m_ptr)
-        return m_ptr->currentEnergy;
-    return 0;
+    return m_ptr ? m_ptr->currentEnergy : 0;
 }
 
 float Character::GetMaxEnergy() const {
-    if (m_ptr)
-        return m_ptr->maxEnergy;
-    return 0;
+    return m_ptr ? m_ptr->maxEnergy : 0;
 }
 
-
-float Character::GetCurrentHealth() const
-{
-    if (m_ptr)
-        return m_ptr->currentHealth;
-    return 0;
+float Character::GetCurrentHealth() const {
+    return m_ptr ? m_ptr->currentHealth : 0;
 }
 
-float Character::GetMaxHealth() const
-{
-    if (m_ptr)
-        return m_ptr->maxHealth;
-    return 0;
+float Character::GetMaxHealth() const {
+    return m_ptr ? m_ptr->maxHealth : 0;
 }
 
-float Character::GetCurrentEndurance() const
-{
-    if (m_ptr)
-        return m_ptr->currentEndurance;
-    return 0;
+float Character::GetCurrentEndurance() const {
+    return m_ptr ? m_ptr->currentEndurance : 0;
 }
 
-float Character::GetMaxEndurance() const
-{
-    if (m_ptr)
-        return m_ptr->maxEndurance;
-    return 0;
+float Character::GetMaxEndurance() const {
+    return m_ptr ? m_ptr->maxEndurance : 0;
 }
 
-float Character::GetGliderPercent() const
-{
-    if (m_ptr)
-        return m_ptr->gliderPercent;
-    return 0;
+float Character::GetGliderPercent() const {
+    return m_ptr ? m_ptr->gliderPercent : 0;
 }
 
-float Character::GetBreakbarPercent() const
-{
-    if (m_ptr)
-        return m_ptr->breakbarPercent;
-    return 0;
+float Character::GetBreakbarPercent() const {
+    return m_ptr ? m_ptr->breakbarPercent : 0;
 }
 
-
-GW2::BreakbarState Character::GetBreakbarState() const
-{
-    if (m_ptr)
-        return m_ptr->breakbarState;
-    return GW2::BREAKBAR_STATE_NONE;
+GW2::BreakbarState Character::GetBreakbarState() const {
+    return m_ptr ? m_ptr->breakbarState : GW2::BREAKBAR_STATE_NONE;
 }
 
-GW2::Profession Character::GetProfession() const
-{
-    if (m_ptr)
-        return m_ptr->profession;
-    return GW2::PROFESSION_NONE;
+GW2::Profession Character::GetProfession() const {
+    return m_ptr ? m_ptr->profession : GW2::PROFESSION_NONE;
 }
 
-GW2::ProfessionStance Character::GetStance() const
-{
-    if (m_ptr)
-        return m_ptr->stance;
-    return GW2::STANCE_NONE;
+GW2::ProfessionStance Character::GetStance() const {
+    return m_ptr ? m_ptr->stance : GW2::STANCE_NONE;
 }
 
-GW2::Attitude Character::GetAttitude() const
-{
-    if (m_ptr)
-        return m_ptr->attitude;
-    return GW2::ATTITUDE_FRIENDLY;
+GW2::Attitude Character::GetAttitude() const {
+    return m_ptr ? m_ptr->attitude : GW2::ATTITUDE_FRIENDLY;
 }
 
-
-std::string Character::GetName() const
-{
-    if (m_ptr) {
-        if (IsPlayer())
-            return m_ptr->pAgentData->pPlayerData->name;
-        return m_ptr->name;
-    }
-    return "";
+std::string Character::GetName() const {
+    return m_ptr ? (IsPlayer() ? m_ptr->pAgentData->pPlayerData->name : m_ptr->name) : "";
 }
 
 bool Character::SetSpeed(float speed) {

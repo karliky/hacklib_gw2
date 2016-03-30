@@ -114,25 +114,16 @@ AttackTarget Agent::GetAttackTarget() const
 }
 
 
-GW2::AgentCategory Agent::GetCategory() const
-{
-    if (m_ptr)
-        return m_ptr->category;
-    return GW2::AGENT_CATEGORY_CHAR;
+GW2::AgentCategory Agent::GetCategory() const {
+    return m_ptr ? m_ptr->category : GW2::AGENT_CATEGORY_CHAR;
 }
 
-GW2::AgentType Agent::GetType() const
-{
-    if (m_ptr)
-        return m_ptr->type;
-    return GW2::AGENT_TYPE_CHAR;
+GW2::AgentType Agent::GetType() const {
+    return m_ptr ? m_ptr->type : GW2::AGENT_TYPE_CHAR;
 }
 
-int Agent::GetAgentId() const
-{
-    if (m_ptr)
-        return m_ptr->agentId;
-    return 0;
+int Agent::GetAgentId() const {
+    return m_ptr ? m_ptr->agentId : 0;
 }
 
 
@@ -149,43 +140,26 @@ Vector3 Agent::GetPos() const
     return pos;
 }
 
-float Agent::GetRot() const
-{
-    if (m_ptr)
-        return m_ptr->rot;
-    return 0;
+float Agent::GetRot() const {
+    return m_ptr ? m_ptr->rot : 0;
 }
 
-uint64_t Agent::GetToken() const
-{
-    if (m_ptr)
-        return m_ptr->token;
-    return 0;
+uint64_t Agent::GetToken() const {
+    return m_ptr ? m_ptr->token : 0;
 }
 
-uint64_t Agent::GetSequence() const
-{
-    if (m_ptr)
-        return m_ptr->seq;
-    return 0;
+uint64_t Agent::GetSequence() const {
+    return m_ptr ? m_ptr->seq : 0;
 }
 
-float Agent::GetSpeed() const
-{
-    if (m_ptr)
-        return m_ptr->speed;
-    return 0;
+float Agent::GetSpeed() const {
+    return m_ptr ? m_ptr->speed : 0;
 }
 
-float Agent::GetMaxSpeed() const
-{
-    if (m_ptr)
-        return m_ptr->maxSpeed;
-    return 0;
+float Agent::GetMaxSpeed() const {
+    return m_ptr ? m_ptr->maxSpeed : 0;
 }
 
 bool Agent::IsSelectable() const {
-    if (m_ptr)
-        return m_ptr->selectable;
-    return false;
+    return m_ptr && m_ptr->selectable;
 }

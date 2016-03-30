@@ -685,9 +685,7 @@ void Gw2HackMain::GameHook()
                                 if (pCharData->pAgentData->pAgent) {
                                     hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
                                     if (transform) {
-                                        if (transform) {
-                                            pCharData->pAgentData->speed = transform.get<float>(m_pubmems.npc_agtransSpeed);
-                                        }
+                                        pCharData->pAgentData->speed = transform.get<float>(m_pubmems.npc_agtransSpeed);
                                     }
                                 }
 
