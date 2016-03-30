@@ -444,8 +444,9 @@ void Gw2HackMain::RefreshDataCompass(GameData::CompassData *pCompData, hl::Forei
         pCompData->maxHeight = comp.get<float>(m_pubmems.compMaxHeight);
 
         DWORD flags = comp.get<DWORD>(m_pubmems.compFlags);
-        pCompData->flags.rotation = !!(flags & GameData::COMP_ROTATION);
-        pCompData->flags.position = !!(flags & GameData::COMP_POSITION);
+        pCompData->flags.rotation  = !!(flags & GameData::COMP_ROTATION);
+        pCompData->flags.position  = !!(flags & GameData::COMP_POSITION);
+        pCompData->flags.mouseOver = !!(flags & GameData::COMP_MOUSE_OVER);
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataCompass] access violation\n");
@@ -580,7 +581,7 @@ void Gw2HackMain::GameHook()
                                 pAgentData->selectable = asctx.call<bool>(m_pubmems.asctxVtAgCanSel, pAgent);
 
                                 // gadget update
-                                if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
+                                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
                                     hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);
                                     if (!pAgentData->gadgetData) pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
                                     GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
@@ -588,7 +589,7 @@ void Gw2HackMain::GameHook()
                                     pGadgetData->pAgentData = pAgentData;
 
                                     // resource node update
-                                    if (pGadgetData && pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
+                                    if (pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
                                         hl::ForeignClass pRNode = pGadget.call<void*>(m_pubmems.gdVtGetRNode);
                                         if (!pGadgetData->rNodeData) pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
                                         GameData::ResourceNodeData *pRNodeData = pGadgetData->rNodeData.get();
@@ -598,7 +599,7 @@ void Gw2HackMain::GameHook()
                                 }
 
                                 // gadget attack target update
-                                if (pAgentData && pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
+                                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
                                     hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
                                     if (!pAgentData->attackTgtData) pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
                                     GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
@@ -735,6 +736,7 @@ void Gw2HackMain::GameHook()
                                         hl::ForeignClass transform = pPlayerData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
                                         if (transform) {
                                             pPlayerData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
+                                            pPlayerData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.agtransMaxSpeed);
                                         }
                                     }
 

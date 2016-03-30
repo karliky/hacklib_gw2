@@ -238,6 +238,7 @@ namespace GW2LIB
         uint64_t GetToken() const;
         uint64_t GetSequence() const;
         float GetSpeed() const;
+        float GetMaxSpeed() const;
         bool IsSelectable() const;
 
         GameData::AgentData *m_ptr = nullptr;
@@ -500,7 +501,8 @@ namespace GW2LIB
         uintptr_t agtransToken = 0xf0;
         uintptr_t agtransSeq = 0xf8;
         uintptr_t npc_agtransSpeed = 0x148;
-        uintptr_t agtransSpeed = 0x204;
+        uintptr_t agtransSpeed = 0x200;
+        uintptr_t agtransMaxSpeed = 0x204;
 
         uintptr_t charctxCharArray = 0x58;
         uintptr_t charctxPlayerArray = 0x78;
@@ -681,7 +683,8 @@ namespace GW2LIB
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
         uintptr_t npc_agtransSpeed = 0x100;
-        uintptr_t agtransSpeed = 0x1b4;
+        uintptr_t agtransSpeed = 0x1b0;
+        uintptr_t agtransMaxSpeed = 0x1b4;
         //uintptr_t transVtGetSeq = 0x88; // void GetSeq(_out_ UINT64 &buf);
         /*
         Holds metric information about an agent.

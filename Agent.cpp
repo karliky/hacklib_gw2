@@ -177,6 +177,13 @@ float Agent::GetSpeed() const
     return 0;
 }
 
+float Agent::GetMaxSpeed() const
+{
+    if (m_ptr)
+        return m_ptr->maxSpeed;
+    return 0;
+}
+
 bool Agent::IsSelectable() const {
     if (m_ptr)
         return m_ptr->selectable;

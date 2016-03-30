@@ -46,6 +46,7 @@ namespace GameData
         uint64_t token = 0;
         uint64_t seq = 0;
         float speed = 0;
+        float maxSpeed = 0;
         bool selectable = false;
     };
 
@@ -135,7 +136,8 @@ namespace GameData
         float maxHeight = 0;
         int zoom = 0;
         struct {
-            unsigned int : 29; // unknown
+            unsigned int : 28; // unknown
+            bool mouseOver : 1; // true when hovering mouse over minimap
             bool position : 1; // position of compass on screen (top = 1/bottom = 0)
             bool : 1; // unknown (possibly bottom position width snap to skillbar)
             bool rotation : 1; // rotation lock (true if map rotation is enabled)
