@@ -38,6 +38,7 @@ bool Character::BeNext()
 
     for (const auto& ch : GetMain()->GetGameData()->objData.charDataList)
     {
+        if (!ch) continue;
         if (!bFound) {
             if (!m_ptr) {
                 bFound = true;
