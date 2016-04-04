@@ -526,10 +526,15 @@ namespace GW2LIB
         uintptr_t charHealth = 0x2d8;
         uintptr_t charInventory = 0x2e0;
         uintptr_t charVtGetCmbtnt = 0xf8;
-        uintptr_t cmbtntBuffBar = 0x88;
         uintptr_t charGliderPercent = 0x130;
         uintptr_t charProfession = 0x368;
         uintptr_t charName = 0x188;
+
+        uintptr_t cmbtntBuffBar = 0x88;
+        uintptr_t buffbarBuffArr = 0x10;
+        uintptr_t buffEfType = 0x8;
+        uintptr_t buffBuffId = 0x18;
+        uintptr_t buffSrcAg = 0x28;
 
         uintptr_t playerName = 0x68;
         uintptr_t playerVtGetWallet = 0x188;

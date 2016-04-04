@@ -156,8 +156,9 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
 
-                for (const auto& b : chr.m_ptr->buffList) {
-                    GameData::BuffData *buff = b.second.get();
+                for (uint32_t i = 0; i < chr.m_ptr->buffDataList.capacity(); i++) {
+                    if(!chr.m_ptr->buffDataList[i]) continue;
+                    GameData::BuffData *buff = chr.m_ptr->buffDataList[i].get();
                     font.Draw(x, y + OFFSETY, fontColor, "effect: %i", buff->effectType);
                 }
             }

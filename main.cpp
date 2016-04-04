@@ -417,23 +417,40 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 
                 if (buffs.IsValid()) {
                     uint32_t sizeBuffsArray = buffs.Capacity();
+                    if (sizeBuffsArray != pCharData->buffDataList.size()) {
+                        pCharData->buffDataList.resize(sizeBuffsArray);
+                    }
+
                     for (uint32_t i = 0; i < sizeBuffsArray; i++) {
                         GameData::BuffEntry be = buffs[i];
-                        if (be.buffId && be.pBuff) {
-                            uint32_t buffId = be.buffId;
-                            hl::ForeignClass pBuff = be.pBuff;
+                        size_t buffId = be.buffId;
+                        hl::ForeignClass pBuff = be.pBuff;
+
+                        if (buffId && pBuff) {
                             GameData::BuffData *pBuffData = nullptr;
 
-                            if (!pCharData->buffList[buffId] || pCharData->buffList[buffId]->pBuff != pBuff) {
-                                [pCharData, buffId]() -> void {
-                                    pCharData->buffList[buffId] = std::make_unique<GameData::BuffData>();
+                            if (!pCharData->buffDataList[i] || pCharData->buffDataList[i]->pBuff != pBuff) {
+                                [pCharData, i]() -> void {
+                                    pCharData->buffDataList[i] = std::make_unique<GameData::BuffData>();
                                 } ();
                             }
 
-                            pBuffData = pCharData->buffList[buffId].get();
+                            pBuffData = pCharData->buffDataList[i].get();
                             RefreshDataCharBuff(pBuffData, pBuff);
                         }
+
+                        // remove invalid buffs from our array
+                        if (buffId) {
+                            if (!pCharData->buffDataList[i]) {
+                                continue;
+                            }
+
+                            if (i >= sizeBuffsArray || !pBuff || pBuff != pCharData->buffDataList[i]->pBuff) {
+                                pCharData->buffDataList[i] = nullptr;
+                            }
+                        }
                     }
+
                 }
             }
         }
@@ -702,31 +719,26 @@ void Gw2HackMain::GameHook()
                     }
 
                     // remove non valid agents from list
-                    for (size_t i = 0; i < m_gameData.objData.agentDataList.size(); i++) {
+                    for (uint32_t i = 0; i < m_gameData.objData.agentDataList.size(); i++) {
                         if (!m_gameData.objData.agentDataList[i]) {
                             continue;
                         }
 
                         // check if agent in our array is in game data
-                        bool bFound = false;
-                        hl::ForeignClass avAgent = agentArray[(uint32_t)i];
+                        hl::ForeignClass avAgent = agentArray[i];
 
-                        if (i < sizeAgentArray && avAgent) {
-                            if (avAgent.call<void*>(m_pubmems.avagVtGetAgent) == m_gameData.objData.agentDataList[i]->pAgent) {
-                                // agent was found in game. everything is fine
-                                bFound = true;
-                            }
-                        }
-
-                        if (!bFound) {
+                        if (i >= sizeAgentArray || !avAgent || avAgent.call<void*>(m_pubmems.avagVtGetAgent) != m_gameData.objData.agentDataList[i]->pAgent) {
                             // agent was not found in game. remove from our array
                             m_gameData.objData.agentDataList[i] = nullptr;
                         }
                     }
 
                     // add characters from game array to own array and update data
-                    m_gameData.objData.charDataList.clear();
                     uint32_t sizeCharArray = charArray.Count();
+                    if (sizeCharArray != m_gameData.objData.charDataList.size()) {
+                        m_gameData.objData.charDataList.resize(sizeCharArray);
+                    }
+
                     for (uint32_t i = 0; i < sizeCharArray; i++)
                     {
                         hl::ForeignClass pCharacter = charArray[i];
@@ -734,8 +746,11 @@ void Gw2HackMain::GameHook()
                         if (pCharacter) {
                             int agentId = pCharacter.call<int>(m_pubmems.charVtGetAgentId);
 
-                            m_gameData.objData.charDataList.push_back(std::make_unique<GameData::CharacterData>());
-                            GameData::CharacterData *pCharData = m_gameData.objData.charDataList.rbegin()->get();
+                            if (!m_gameData.objData.charDataList[i] || m_gameData.objData.charDataList[i]->pCharacter != pCharacter) {
+                                m_gameData.objData.charDataList[i] = std::make_unique<GameData::CharacterData>();
+                            }
+
+                            GameData::CharacterData *pCharData = m_gameData.objData.charDataList[i].get();
 
                             // update values
                             RefreshDataCharacter(pCharData, pCharacter);
@@ -769,9 +784,25 @@ void Gw2HackMain::GameHook()
                         }
                     }
 
+                    // remove non valid chars from list
+                    for (uint32_t i = 0; i < m_gameData.objData.charDataList.size(); i++) {
+                        if (!m_gameData.objData.charDataList[i]) {
+                            continue;
+                        }
 
-                    m_gameData.objData.playerDataList.clear();
+                        hl::ForeignClass pChar = charArray[i];
+
+                        if (i >= sizeCharArray || !pChar || pChar != m_gameData.objData.charDataList[i]->pCharacter) {
+                            m_gameData.objData.charDataList[i] = nullptr;
+                        }
+                    }
+
+
                     uint32_t sizePlayerArray = playerArray.Count();
+                    if (sizePlayerArray != m_gameData.objData.playerDataList.size()) {
+                        m_gameData.objData.playerDataList.resize(sizePlayerArray);
+                    }
+
                     for (uint32_t i = 0; i < sizePlayerArray; i++) {
                         hl::ForeignClass pPlayer = playerArray[i];
 
@@ -780,8 +811,12 @@ void Gw2HackMain::GameHook()
                             if (pChar) {
                                 int agentId = pChar.call<int>(m_pubmems.charVtGetAgentId);
 
-                                m_gameData.objData.playerDataList.push_back(std::make_unique<GameData::PlayerData>());
-                                GameData::PlayerData *pPlayerData = m_gameData.objData.playerDataList.rbegin()->get();
+                                if (!m_gameData.objData.playerDataList[i] || m_gameData.objData.playerDataList[i]->pPlayer != pPlayer) {
+                                    m_gameData.objData.playerDataList[i] = std::make_unique<GameData::PlayerData>();
+                                }
+
+                                GameData::PlayerData *pPlayerData = m_gameData.objData.playerDataList[i].get();
+
                                 pPlayerData->pChar = pChar;
 
                                 // update values
@@ -813,6 +848,20 @@ void Gw2HackMain::GameHook()
                             }
                         }
                     }
+
+                    // remove non valid players from list
+                    for (uint32_t i = 0; i < m_gameData.objData.playerDataList.size(); i++) {
+                        if (!m_gameData.objData.playerDataList[i]) {
+                            continue;
+                        }
+
+                        hl::ForeignClass pPlayer = playerArray[i];
+
+                        if (i >= sizePlayerArray || !pPlayer || pPlayer != m_gameData.objData.playerDataList[i]->pPlayer) {
+                            m_gameData.objData.playerDataList[i] = nullptr;
+                        }
+                    }
+
                 }
             }
         }
