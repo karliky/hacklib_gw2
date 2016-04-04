@@ -62,6 +62,7 @@ private:
     void RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::ForeignClass gd);
     void RefreshDataAttackTarget(GameData::AttackTargetData *pGadgetTgtData, hl::ForeignClass gd);
     void RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData, hl::ForeignClass res);
+    void RefreshDataCharBuff(GameData::BuffData *pBuffData, hl::ForeignClass buff);
 
 private:
     hl::ConsoleEx m_con;

@@ -155,6 +155,11 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", chr.m_ptr->pCharacter, strProf[chr.GetProfession()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
+
+                for (const auto& b : chr.m_ptr->buffList) {
+                    GameData::BuffData *buff = b.second.get();
+                    font.Draw(x, y + OFFSETY, fontColor, "effect: %i", buff->effectType);
+                }
             }
 
             if (player.IsValid()) {
@@ -181,7 +186,7 @@ void GW2LIB::gw2lib_main()
         return;
     }
 
-    SetGameHook(ChatHook, sample_chat_cb);
+    SetGameHook(HOOK_CHAT, sample_chat_cb);
 
     while (GetAsyncKeyState(VK_HOME) >= 0)
         std::this_thread::sleep_for(std::chrono::milliseconds(25));

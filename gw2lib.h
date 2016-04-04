@@ -122,15 +122,15 @@ namespace GW2LIB
             GADGET_TYPE_CRAFT = 4,       // crafting station
             GADGET_TYPE_DOOR = 5,        // pvp base gate, interactive door
             GADGET_TYPE_INTERACT = 9,    // SW chest, AB exalted portal
-            GADGET_TYPE_PLAYER_SPECIFIC = 10, // LA karka hatchling, VB floating airship cargo
-            GADGET_TYPE_ATK_TARGET = 11, // world boss, SW fort wall
-            GADGET_TYPE_TELEPORT = 12,   // map border portal
-            GADGET_TYPE_WAYPOINT = 13,   // waypoint
-            GADGET_TYPE_RESOURCE_NODE = 14,  // gathering node, AB mask, strongbox, chest
-            GADGET_TYPE_PROP = 15,       // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
+            GADGET_TYPE_PLAYER_SPECIFIC, // LA karka hatchling, VB floating airship cargo
+            GADGET_TYPE_ATK_TARGET,      // world boss, SW fort wall
+            GADGET_TYPE_TELEPORT,        // map border portal
+            GADGET_TYPE_WAYPOINT,        // waypoint
+            GADGET_TYPE_RESOURCE_NODE,   // gathering node, AB mask, strongbox, chest
+            GADGET_TYPE_PROP,            // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
             GADGET_TYPE_PLAYER_CREATED = 18, // turret, wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
-            GADGET_TYPE_VISTA = 19,      // vista
-            GADGET_TYPE_BUILD_SITE = 20, // wvw build site
+            GADGET_TYPE_VISTA,           // vista
+            GADGET_TYPE_BUILD_SITE,      // wvw build site
             GADGET_TYPE_NONE
         };
 
@@ -743,20 +743,7 @@ namespace GW2LIB
         uintptr_t charInventory = 0x1c8;
 
         uintptr_t charVtGetCmbtnt = 0x7c;
-        uintptr_t cmbtntBuffBar = 0x54;
-
-        // CharClient::CSkillBar* m_skillBar;
         uintptr_t charSkillbar = 0x220;
-        uintptr_t skillbarSkillsArray = 0xcc;
-        uintptr_t skillbarPressedSkill = 0x40;
-        uintptr_t skillbarHoveredSkill = 0x5c;
-
-        // CharClient::CSkill* m_skillDef
-        uintptr_t pSkillInfo = 0x48;
-        uintptr_t skillRadius = 0x44;
-        uintptr_t skillRechargeMs = 0x68;
-        uintptr_t skillMaxRange = 0x7c;
-
         uintptr_t charGliderPercent = 0xb8;
         uintptr_t charProfession = 0x218;
         uintptr_t charName = 0x100;
@@ -799,6 +786,27 @@ namespace GW2LIB
         The name is very easy to find by just comparing to your name.
         "TextValidateLiteral(m_name.Ptr())"
         */
+
+        uintptr_t cmbtntBuffBar = 0x54;
+
+        // buff bar struct
+        uintptr_t buffbarBuffArr = 0x8;
+
+        // buff struct
+        uintptr_t buffEfType = 0x4;
+        uintptr_t buffBuffId = 0xC;
+        uintptr_t buffSrcAg = 0x14;
+
+        // CharClient::CSkillBar* m_skillBar;
+        uintptr_t skillbarSkillsArray = 0xcc;
+        uintptr_t skillbarPressedSkill = 0x40;
+        uintptr_t skillbarHoveredSkill = 0x5c;
+
+        // CharClient::CSkill* m_skillDef
+        uintptr_t pSkillInfo = 0x48;
+        uintptr_t skillRadius = 0x44;
+        uintptr_t skillRechargeMs = 0x68;
+        uintptr_t skillMaxRange = 0x7c;
 
         uintptr_t currVtGetCurrency = 0x0;
 
@@ -844,7 +852,7 @@ namespace GW2LIB
         uintptr_t asctxLocked = 0x120;
         // D3DXVECTOR3 m_screenToWorld;
         uintptr_t asctxStoW = 0x13c;
-        uintptr_t asctxCtxMode = 0x3c;
+        uintptr_t asctxCtxMode = 0x3c; // enum
         uintptr_t asctxVtAgCanSel = 0x4;
         /*
         The offsets can be found in a function containing lots of asserts for them. Strings in order:

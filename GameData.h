@@ -8,6 +8,7 @@
 #include "d3dx9.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 
 
@@ -20,6 +21,8 @@ namespace GameData
     struct AttackTargetData;
     struct ResourceNodeData;
     struct CompassData;
+    struct BuffEntry;
+    struct BuffData;
 
     enum CompassFlags {
         COMP_ROTATION = 0x1,
@@ -82,6 +85,7 @@ namespace GameData
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::ATTITUDE_FRIENDLY;
         GW2LIB::GW2::CharacterGender gender = GW2LIB::GW2::CHAR_GENDER_NONE;
         GW2LIB::GW2::CharacterStats stats;
+        std::unordered_map<uint32_t, std::unique_ptr<BuffData>> buffList;
         std::string name;
     };
 
@@ -142,6 +146,18 @@ namespace GameData
             bool : 1; // unknown (possibly bottom position width snap to skillbar)
             bool rotation : 1; // rotation lock (true if map rotation is enabled)
         } flags;
+    };
+
+    struct BuffData {
+        hl::ForeignClass pBuff = nullptr;
+        uint32_t effectType = 0;
+        uint32_t buffId = 0;
+    };
+
+    struct BuffEntry {
+        uint32_t buffId;
+        uintptr_t *pBuff;
+        uint32_t hash;
     };
 
     struct GameData

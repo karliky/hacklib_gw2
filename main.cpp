@@ -60,6 +60,38 @@ namespace GW2
             uint32_t m_capacity;
             uint32_t m_count;
         };
+
+        template <typename T>
+        class Dictionary {
+        public:
+            Dictionary<T> &operator= (const Dictionary<T> &a) {
+                if (this != &a) {
+                    m_capacity = a.m_capacity;
+                    m_count = a.m_count;
+                    m_basePtr = a.m_basePtr;
+                }
+                return *this;
+            }
+            T &operator[] (uint32_t index) {
+                if (index < Capacity()) {
+                    return m_basePtr[index];
+                }
+                throw 1;
+            }
+            bool IsValid() {
+                return !!m_basePtr;
+            }
+            uint32_t Count() {
+                return m_count;
+            }
+            uint32_t Capacity() {
+                return m_capacity;
+            }
+        private:
+            uint32_t m_capacity;
+            uint32_t m_count;
+            T *m_basePtr;
+        };
     }
 }
 
@@ -381,6 +413,28 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             hl::ForeignClass buffBar = combatant.get<void*>(m_pubmems.cmbtntBuffBar);
             if (buffBar) {
                 pCharData->pBuffBar = buffBar;
+                auto buffs = buffBar.get<GW2::ANet::Dictionary<GameData::BuffEntry>>(m_pubmems.buffbarBuffArr);
+
+                if (buffs.IsValid()) {
+                    uint32_t sizeBuffsArray = buffs.Capacity();
+                    for (uint32_t i = 0; i < sizeBuffsArray; i++) {
+                        GameData::BuffEntry be = buffs[i];
+                        if (be.buffId && be.pBuff) {
+                            uint32_t buffId = be.buffId;
+                            hl::ForeignClass pBuff = be.pBuff;
+                            GameData::BuffData *pBuffData = nullptr;
+
+                            if (!pCharData->buffList[buffId] || pCharData->buffList[buffId]->pBuff != pBuff) {
+                                [pCharData, buffId]() -> void {
+                                    pCharData->buffList[buffId] = std::make_unique<GameData::BuffData>();
+                                } ();
+                            }
+
+                            pBuffData = pCharData->buffList[buffId].get();
+                            RefreshDataCharBuff(pBuffData, pBuff);
+                        }
+                    }
+                }
             }
         }
 
@@ -406,6 +460,17 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataCharacter] access violation\n");
+    }
+}
+
+void Gw2HackMain::RefreshDataCharBuff(GameData::BuffData *pBuffData, hl::ForeignClass buff) {
+    __try {
+
+        pBuffData->pBuff = buff;
+        pBuffData->effectType = buff.get<uint32_t>(m_pubmems.buffEfType);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        HL_LOG_ERR("[RefreshDataCharBuff] access violation\n");
     }
 }
 
@@ -685,7 +750,7 @@ void Gw2HackMain::GameHook()
                                 if (pCharData->pAgentData->pAgent) {
                                     hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
                                     if (transform) {
-                                        pCharData->pAgentData->speed = transform.get<float>(m_pubmems.npc_agtransSpeed);
+                                        pCharData->pAgentData->speed = pCharData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.npc_agtransSpeed);
                                     }
                                 }
 

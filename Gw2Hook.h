@@ -7,13 +7,13 @@
 
 namespace GW2LIB {
     enum Gw2Hook {
-        ChatHook,
-        MouseMoveHook,
-        MouseButtonHook,
-        MouseWheelHook,
-        DamageLogHook,
-        CombatLogHook,
-        AllocatorHook
+        HOOK_CHAT,
+        HOOK_MOUSE_MOVE,
+        HOOK_MOUSE_BUTTON,
+        HOOK_MOUSE_WHEEL,
+        HOOK_DAMAGE_LOG,
+        HOOK_COMBAT_LOG,
+        HOOK_ALLOCATOR
     };
 
     enum CombatLogType {
@@ -80,13 +80,13 @@ namespace GW2LIB {
         Gw2Hooks *list = get_hook_list();
 
         switch (type) {
-        case ChatHook: ASSIGN_HOOK(list->ChatHook, hook); break;
-        case MouseMoveHook: ASSIGN_HOOK(list->MouseMoveHook, hook); break;
-        case MouseButtonHook: ASSIGN_HOOK(list->MouseButtonHook, hook); break;
-        case MouseWheelHook: ASSIGN_HOOK(list->MouseWheelHook, hook); break;
-        case DamageLogHook: ASSIGN_HOOK(list->DmgLogHook, hook); break;
-        case CombatLogHook: ASSIGN_HOOK(list->CombatLogHook, hook); break;
-        case AllocatorHook: ASSIGN_HOOK(list->AllocatorHook, hook); break;
+        case HOOK_CHAT: ASSIGN_HOOK(list->ChatHook, hook); break;
+        case HOOK_MOUSE_MOVE: ASSIGN_HOOK(list->MouseMoveHook, hook); break;
+        case HOOK_MOUSE_BUTTON: ASSIGN_HOOK(list->MouseButtonHook, hook); break;
+        case HOOK_MOUSE_WHEEL: ASSIGN_HOOK(list->MouseWheelHook, hook); break;
+        case HOOK_DAMAGE_LOG: ASSIGN_HOOK(list->DmgLogHook, hook); break;
+        case HOOK_COMBAT_LOG: ASSIGN_HOOK(list->CombatLogHook, hook); break;
+        case HOOK_ALLOCATOR: ASSIGN_HOOK(list->AllocatorHook, hook); break;
         }
     }
 };
