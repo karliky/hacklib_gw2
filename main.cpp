@@ -440,14 +440,12 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                         }
 
                         // remove invalid buffs from our array
-                        if (buffId) {
-                            if (!pCharData->buffDataList[i]) {
-                                continue;
-                            }
+                        if (!pCharData->buffDataList[i]) {
+                            continue;
+                        }
 
-                            if (i >= sizeBuffsArray || !pBuff || pBuff != pCharData->buffDataList[i]->pBuff) {
-                                pCharData->buffDataList[i] = nullptr;
-                            }
+                        if (i >= sizeBuffsArray || !pBuff || pBuff != pCharData->buffDataList[i]->pBuff) {
+                            pCharData->buffDataList[i] = nullptr;
                         }
                     }
 
