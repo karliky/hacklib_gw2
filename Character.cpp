@@ -181,10 +181,18 @@ std::string Character::GetName() const {
 bool Character::SetSpeed(float speed) {
     if (m_ptr && m_ptr->pAgentData && m_ptr->pAgentData->pAgent) {
         hl::ForeignClass transform = m_ptr->pAgentData->pAgent.get<void*>(gw2Offsets.agentTransform);
-        if (IsPlayer()) {
+        if (transform && IsPlayer()) {
             transform.set<float>(gw2Offsets.agtransMaxSpeed, speed);
         }
         return true;
     }
     return false;
+}
+
+Buff Character::GetBuffs() const {
+    Buff buff;
+    if (m_ptr && m_ptr->buffDataList.size()) {
+        buff.buffDataList = &m_ptr->buffDataList;
+    }
+    return buff;
 }

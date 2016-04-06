@@ -156,11 +156,17 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
 
-                for (uint32_t i = 0; i < chr.m_ptr->buffDataList.capacity(); i++) {
+                Buff buff = chr.GetBuffs();
+                while (buff.BeNext()) {
+                    Agent agSrc = buff.GetSource();
+                    font.Draw(x, y + OFFSETY, fontColor, "effect: %i - source: %s", buff.GetEffectType(), agSrc.GetName().c_str());
+                }
+
+                /*for (uint32_t i = 0; i < chr.m_ptr->buffDataList.capacity(); i++) {
                     if(!chr.m_ptr->buffDataList[i]) continue;
                     GameData::BuffData *buff = chr.m_ptr->buffDataList[i].get();
                     font.Draw(x, y + OFFSETY, fontColor, "effect: %i", buff->effectType);
-                }
+                }*/
             }
 
             if (player.IsValid()) {

@@ -27,6 +27,7 @@ namespace GameData {
     struct AttackTargetData;
     struct CompassData;
     struct ResourceNodeData;
+    struct BuffData;
 }
 
 namespace GW2LIB
@@ -41,6 +42,7 @@ namespace GW2LIB
     class Gadget;
     class AttackTarget;
     class ResourceNode;
+    class Buff;
 
     struct Vector3 {
         Vector3() { }
@@ -220,6 +222,7 @@ namespace GW2LIB
         bool operator!= (const Agent &);
 
         bool IsValid() const;
+        operator bool() const;
 
         bool BeNext();
         void BeSelf();
@@ -240,6 +243,7 @@ namespace GW2LIB
         float GetSpeed() const;
         float GetMaxSpeed() const;
         bool IsSelectable() const;
+        std::string GetName() const;
 
         GameData::AgentData *m_ptr = nullptr;
         size_t iterator = 0;
@@ -291,9 +295,28 @@ namespace GW2LIB
         GW2::Attitude GetAttitude() const;
 
         std::string GetName() const;
+        Buff GetBuffs() const;
 
         GameData::CharacterData *m_ptr = nullptr;
     };
+
+    class Buff {
+    public:
+        Buff();
+        Buff(const Buff &);
+        Buff &operator= (const Buff &);
+        bool operator== (const Buff &);
+
+        bool IsValid() const;
+        bool BeNext();
+
+        Agent GetSource();
+        uint32_t GetEffectType();
+
+        std::vector<std::unique_ptr<GameData::BuffData>> *buffDataList = nullptr;
+        GameData::BuffData *m_ptr = nullptr;
+    };
+
     class Player {
     public:
         Player();

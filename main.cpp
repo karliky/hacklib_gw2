@@ -427,16 +427,16 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                         hl::ForeignClass pBuff = be.pBuff;
 
                         if (buffId && pBuff) {
-                            GameData::BuffData *pBuffData = nullptr;
-
                             if (!pCharData->buffDataList[i] || pCharData->buffDataList[i]->pBuff != pBuff) {
                                 [pCharData, i]() -> void {
                                     pCharData->buffDataList[i] = std::make_unique<GameData::BuffData>();
                                 } ();
                             }
 
-                            pBuffData = pCharData->buffDataList[i].get();
-                            RefreshDataCharBuff(pBuffData, pBuff);
+                            GameData::BuffData *pBuffData = pCharData->buffDataList[i].get();
+                            RefreshDataBuff(pBuffData, pBuff);
+
+                            pBuffData->pCharData = pCharData;
                         }
 
                         // remove invalid buffs from our array
@@ -478,14 +478,19 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
     }
 }
 
-void Gw2HackMain::RefreshDataCharBuff(GameData::BuffData *pBuffData, hl::ForeignClass buff) {
+void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClass buff) {
     __try {
-
         pBuffData->pBuff = buff;
+        pBuffData->buffId = buff.get<uint32_t>(m_pubmems.buffBuffId);
         pBuffData->effectType = buff.get<uint32_t>(m_pubmems.buffEfType);
+
+        hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
+        if (srcAg) {
+            pBuffData->pSrcAgent = GameData::GetAgentData(srcAg);
+        }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataCharBuff] access violation\n");
+        HL_LOG_ERR("[RefreshDataBuff] access violation\n");
     }
 }
 

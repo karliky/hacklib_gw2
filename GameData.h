@@ -149,6 +149,8 @@ namespace GameData
 
     struct BuffData {
         hl::ForeignClass pBuff = nullptr;
+        CharacterData *pCharData = nullptr;
+        AgentData *pSrcAgent = nullptr;
         uint32_t effectType = 0;
         uint32_t buffId = 0;
     };
@@ -192,6 +194,7 @@ namespace GameData
         GW2LIB::GW2::UiIntefaceSize uiIntSize = GW2LIB::GW2::UI_IF_NORMAL;
     };
 
+    AgentData *GetAgentData(hl::ForeignClass pAgent);
     CharacterData *GetCharData(hl::ForeignClass pChar);
     PlayerData *GetPlayerData(hl::ForeignClass pPlayer);
 }

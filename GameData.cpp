@@ -1,6 +1,15 @@
 #include "GameData.h"
 #include "main.h"
 
+GameData::AgentData *GameData::GetAgentData(hl::ForeignClass pAgent)
+{
+    for (const auto& ag : GetMain()->GetGameData()->objData.agentDataList) {
+        if (ag && pAgent == ag->pAgent) {
+            return ag.get();
+        }
+    }
+    return NULL;
+}
 
 GameData::CharacterData *GameData::GetCharData(hl::ForeignClass pChar)
 {
