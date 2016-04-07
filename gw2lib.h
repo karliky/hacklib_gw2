@@ -578,7 +578,7 @@ namespace GW2LIB
         uintptr_t asctxAuto = 0x50;
         uintptr_t asctxHover = 0xf8;
         uintptr_t asctxLocked = 0x230;
-        uintptr_t asctxStoW = 0x26c;
+        uintptr_t asctxStoW = 0x298;
         uintptr_t asctxCtxMode = 0x70;
         uintptr_t asctxVtAgCanSel = 0x8;
         uintptr_t wvctxVtGetMetrics = 0x78;

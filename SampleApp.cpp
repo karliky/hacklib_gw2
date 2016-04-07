@@ -151,7 +151,7 @@ void cbESP()
 
             if (chr.IsValid()) {
                 font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
-                if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, chr.GetName());
+                if (chr.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, "%s", chr.GetName().c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", chr.m_ptr->pCharacter, strProf[chr.GetProfession()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());

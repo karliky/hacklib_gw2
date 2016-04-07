@@ -250,7 +250,7 @@ void Gw2HackMain::SetRenderCallback(void(*cbRender)())
 DWORD ExceptFilter(DWORD code, EXCEPTION_POINTERS *ep) {
     EXCEPTION_RECORD *er = ep->ExceptionRecord;
     CONTEXT *ctx = ep->ContextRecord;
-    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - pc: 0x%p - addr: 0x%p\n", code, ctx->Eip, er->ExceptionAddress);
+    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p\n", code, er->ExceptionAddress);
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
