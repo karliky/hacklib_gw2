@@ -882,7 +882,7 @@ namespace GW2LIB
         // Agent::CAgentBase* m_lockedSelection;
         uintptr_t asctxLocked = 0x120;
         // D3DXVECTOR3 m_screenToWorld;
-        uintptr_t asctxStoW = 0x13c;
+        uintptr_t asctxStoW = 0x15c;
         uintptr_t asctxCtxMode = 0x3c; // enum
         uintptr_t asctxVtAgCanSel = 0x4;
         /*
@@ -890,7 +890,7 @@ namespace GW2LIB
         "!m_autoSelection"
         "!m_hoverSelection"
         "!m_lockedSelection"
-        screenToWorld is easy to find by just moving the cursor around.
+        screenToWorld is easy to find by just moving the cursor around. It's the first vector, because updated more frequently and correct z.
         "m_contextMode == CONTEXT_MODE_NULL"
         "!agent || AgentCanBeSelection(agent)"
         */
