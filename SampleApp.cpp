@@ -161,12 +161,6 @@ void cbESP()
                     Agent agSrc = buff.GetSource();
                     font.Draw(x, y + OFFSETY, fontColor, "effect: %i - source: %s", buff.GetEffectType(), agSrc.GetName().c_str());
                 }
-
-                /*for (uint32_t i = 0; i < chr.m_ptr->buffDataList.capacity(); i++) {
-                    if(!chr.m_ptr->buffDataList[i]) continue;
-                    GameData::BuffData *buff = chr.m_ptr->buffDataList[i].get();
-                    font.Draw(x, y + OFFSETY, fontColor, "effect: %i", buff->effectType);
-                }*/
             }
 
             if (player.IsValid()) {

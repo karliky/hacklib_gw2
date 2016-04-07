@@ -60,7 +60,7 @@ bool Buff::BeNext()
 Agent Buff::GetSource() {
     Agent ag;
     if (m_ptr)
-        ag.m_ptr = m_ptr->pSrcAgent;
+        ag.m_ptr = m_ptr->pSrcAgData;
     return ag;
 }
 

@@ -47,7 +47,7 @@ namespace GW2
         };
 
         template <typename T, bool IsArray = true>
-        class Vector : public std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
+        class Vector : private std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
         public:
             Vector<T> &operator= (const Vector<T> &a) {
                 if (this != &a) {
@@ -247,6 +247,13 @@ void Gw2HackMain::SetRenderCallback(void(*cbRender)())
     m_cbRender = cbRender;
 }
 
+DWORD ExceptFilter(DWORD code, EXCEPTION_POINTERS *ep) {
+    EXCEPTION_RECORD *er = ep->ExceptionRecord;
+    CONTEXT *ctx = ep->ContextRecord;
+    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - pc: 0x%p - addr: 0x%p\n", code, ctx->Eip, er->ExceptionAddress);
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
 void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
 {
     if (!m_drawer.GetDevice())
@@ -288,8 +295,8 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
             {
                 __try {
                     m_cbRender();
-                } __except (EXCEPTION_EXECUTE_HANDLER) {
-                    HL_LOG_ERR("[ESP callback] Exception in ESP code\n");
+                } __except (ExceptFilter(GetExceptionCode(), GetExceptionInformation())) {
+                    ;// HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p\n", GetExceptionCode());
                 }
             }();
 
@@ -406,10 +413,9 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 
                     for (uint32_t i = 0; i < sizeBuffsArray; i++) {
                         GameData::BuffEntry be = buffs[i];
-                        size_t buffId = be.buffId;
                         hl::ForeignClass pBuff = be.pBuff;
 
-                        if (buffId && pBuff) {
+                        if (pBuff) {
                             if (!pCharData->buffDataList[i] || pCharData->buffDataList[i]->pBuff != pBuff) {
                                 [pCharData, i]() -> void {
                                     pCharData->buffDataList[i] = std::make_unique<GameData::BuffData>();
@@ -423,11 +429,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                         }
 
                         // remove invalid buffs from our array
-                        if (!pCharData->buffDataList[i]) {
-                            continue;
-                        }
-
-                        if (i >= sizeBuffsArray || !pBuff || pBuff != pCharData->buffDataList[i]->pBuff) {
+                        if (pCharData->buffDataList[i] && !pBuff) {
                             pCharData->buffDataList[i] = nullptr;
                         }
                     }
@@ -469,7 +471,7 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
 
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
         if (srcAg) {
-            pBuffData->pSrcAgent = GameData::GetAgentData(srcAg);
+            pBuffData->pSrcAgData = GameData::GetAgentData(srcAg);
         }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
@@ -486,7 +488,6 @@ void Gw2HackMain::RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::Forei
         if (wallet) {
             pPlayerData->pWallet = wallet;
         }
-
 
         char *name = player.get<char*>(m_pubmems.playerName);
         int i = 0;

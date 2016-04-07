@@ -85,7 +85,7 @@ namespace GameData
         GW2LIB::GW2::CharacterGender gender = GW2LIB::GW2::CHAR_GENDER_NONE;
         GW2LIB::GW2::CharacterStats stats;
         std::vector<std::unique_ptr<BuffData>> buffDataList;
-        std::string name;
+        std::string name = "";
     };
 
     struct PlayerData {
@@ -95,7 +95,7 @@ namespace GameData
         AgentData *pAgentData = nullptr;
         CharacterData *pCharData = nullptr;
 
-        std::string name;
+        std::string name = "";
     };
 
     struct GadgetData
@@ -150,7 +150,7 @@ namespace GameData
     struct BuffData {
         hl::ForeignClass pBuff = nullptr;
         CharacterData *pCharData = nullptr;
-        AgentData *pSrcAgent = nullptr;
+        AgentData *pSrcAgData = nullptr;
         uint32_t effectType = 0;
         uint32_t buffId = 0;
     };

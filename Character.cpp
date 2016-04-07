@@ -175,7 +175,17 @@ GW2::Attitude Character::GetAttitude() const {
 }
 
 std::string Character::GetName() const {
-    return m_ptr ? (IsPlayer() ? m_ptr->pAgentData->pPlayerData->name : m_ptr->name) : "";
+    Player player;
+
+    if (m_ptr) {
+        if (IsPlayer() && m_ptr->pAgentData && m_ptr->pAgentData->pPlayerData) {
+            player.m_ptr = m_ptr->pAgentData->pPlayerData;
+            return player.GetName();
+        }
+        return m_ptr->name;
+    }
+
+    return "";
 }
 
 bool Character::SetSpeed(float speed) {
@@ -191,7 +201,7 @@ bool Character::SetSpeed(float speed) {
 
 Buff Character::GetBuffs() const {
     Buff buff;
-    if (m_ptr && m_ptr->buffDataList.size()) {
+    if (m_ptr) {
         buff.buffDataList = &m_ptr->buffDataList;
     }
     return buff;
