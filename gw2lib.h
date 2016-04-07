@@ -819,11 +819,14 @@ namespace GW2LIB
 
         // buff bar struct
         uintptr_t buffbarBuffArr = 0x8;
+        uintptr_t buffbarBuffStatArr = 0x44;
 
         // buff struct
         uintptr_t buffEfType = 0x4;
-        uintptr_t buffBuffId = 0xC;
+        uintptr_t buffSkillDef = 0x8;
+        uintptr_t buffBuffId = 0xc;
         uintptr_t buffSrcAg = 0x14;
+        uintptr_t buffActive = 0x2c;
 
         // CharClient::CSkillBar* m_skillBar;
         uintptr_t skillbarSkillsArray = 0xcc;

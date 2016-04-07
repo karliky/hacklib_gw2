@@ -33,47 +33,34 @@ namespace GW2
     namespace ANet
     {
         template <typename T>
-        class Array {
-        public:
-            Array<T> &operator= (const Array<T> &a) {
-                if (this != &a) {
-                    m_basePtr = a.m_basePtr;
-                    m_capacity = a.m_capacity;
-                    m_count = a.m_count;
-                }
-                return *this;
-            }
-            T &operator[] (uint32_t index) {
-                if (index < Count()) {
-                    return m_basePtr[index];
-                }
-                throw 1;
-            }
-            bool IsValid() {
-                return !!m_basePtr;
-            }
-            uint32_t Count() {
-                return m_count;
-            }
-        private:
+        struct Array {
             T *m_basePtr;
             uint32_t m_capacity;
             uint32_t m_count;
         };
 
         template <typename T>
-        class Dictionary {
+        struct Dictionary {
+            uint32_t m_capacity;
+            uint32_t m_count;
+            T *m_basePtr;
+        };
+
+        template <typename T, bool IsArray = true>
+        class Vector : public std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
         public:
-            Dictionary<T> &operator= (const Dictionary<T> &a) {
+            Vector<T> &operator= (const Vector<T> &a) {
                 if (this != &a) {
+                    m_basePtr = a.m_basePtr;
                     m_capacity = a.m_capacity;
                     m_count = a.m_count;
-                    m_basePtr = a.m_basePtr;
                 }
                 return *this;
             }
             T &operator[] (uint32_t index) {
-                if (index < Capacity()) {
+                if (IsArray && index < Count()) {
+                    return m_basePtr[index];
+                } else if (index < Capacity()) {
                     return m_basePtr[index];
                 }
                 throw 1;
@@ -87,10 +74,6 @@ namespace GW2
             uint32_t Capacity() {
                 return m_capacity;
             }
-        private:
-            uint32_t m_capacity;
-            uint32_t m_count;
-            T *m_basePtr;
         };
     }
 }
@@ -413,7 +396,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             hl::ForeignClass buffBar = combatant.get<void*>(m_pubmems.cmbtntBuffBar);
             if (buffBar) {
                 pCharData->pBuffBar = buffBar;
-                auto buffs = buffBar.get<GW2::ANet::Dictionary<GameData::BuffEntry>>(m_pubmems.buffbarBuffArr);
+                auto buffs = buffBar.get<GW2::ANet::Vector<GameData::BuffEntry, false>>(m_pubmems.buffbarBuffArr);
 
                 if (buffs.IsValid()) {
                     uint32_t sizeBuffsArray = buffs.Capacity();
@@ -627,9 +610,9 @@ void Gw2HackMain::GameHook()
             hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
             if (gdctx && charctx && avctx && asctx)
             {
-                auto charArray = charctx.get<GW2::ANet::Array<void*>>(m_pubmems.charctxCharArray);
-                auto agentArray = avctx.get<GW2::ANet::Array<void*>>(m_pubmems.avctxAgentArray);
-                auto playerArray = charctx.get<GW2::ANet::Array<void*>>(m_pubmems.charctxPlayerArray);
+                auto charArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxCharArray);
+                auto agentArray = avctx.get<GW2::ANet::Vector<void*>>(m_pubmems.avctxAgentArray);
+                auto playerArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxPlayerArray);
 
                 if (charArray.IsValid() && agentArray.IsValid() && playerArray.IsValid())
                 {
