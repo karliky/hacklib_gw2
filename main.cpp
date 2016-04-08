@@ -569,6 +569,307 @@ void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData
     }
 }
 
+bool Gw2HackMain::SetupCamData() {
+    // get cam data
+    m_gameData.camData.valid = false;
+    if (m_mems.ppWorldViewContext)
+    {
+        hl::ForeignClass wvctx = *m_mems.ppWorldViewContext;
+        if (wvctx && wvctx.get<int>(m_pubmems.wvctxStatus) == 1)
+        {
+            D3DXVECTOR3 lookAt, upVec;
+            wvctx.call<void>(m_pubmems.wvctxVtGetMetrics, 1, &m_gameData.camData.camPos, &lookAt, &upVec, &m_gameData.camData.fovy);
+            D3DXVec3Normalize(&m_gameData.camData.viewVec, &(lookAt - m_gameData.camData.camPos));
+            m_gameData.camData.valid = true;
+        }
+    }
+
+    return true;
+}
+
+bool Gw2HackMain::SetupAgentArray() {
+    hl::ForeignClass ctx = m_mems.pCtx;
+    hl::ForeignClass avctx = m_mems.pAgentViewCtx;
+    hl::ForeignClass asctx = m_mems.pAgentSelectionCtx;
+    if (!ctx || !avctx || !asctx) return false;
+
+    hl::ForeignClass gdctx = ctx.get<void*>(m_pubmems.contextGadget);
+    if (!gdctx) return false;
+
+    auto agentArray = avctx.get<GW2::ANet::Vector<void*>>(m_pubmems.avctxAgentArray);
+    if (!agentArray.IsValid()) return false;
+
+    bool bOwnAgentFound = false;
+    bool bAutoSelectionFound = false;
+    bool bHoverSelectionFound = false;
+    bool bLockedSelectionFound = false;
+
+    // add agents from game array to own array and update data
+    uint32_t sizeAgentArray = agentArray.Count();
+    if (sizeAgentArray != m_gameData.objData.agentDataList.size()) {
+        m_gameData.objData.agentDataList.resize(sizeAgentArray);
+    }
+
+    for (uint32_t i = 0; i < sizeAgentArray; i++)
+    {
+        hl::ForeignClass avAgent = agentArray[i];
+
+        if (avAgent) {
+            hl::ForeignClass pAgent = avAgent.call<void*>(m_pubmems.avagVtGetAgent);
+
+            // check if agent is already in our array
+            if (pAgent) {
+
+                // agent is not in our array. add and fix ptr
+                if (!m_gameData.objData.agentDataList[i] || m_gameData.objData.agentDataList[i]->pAgent != pAgent) {
+                    m_gameData.objData.agentDataList[i] = std::make_unique<GameData::AgentData>();
+                }
+
+                GameData::AgentData *pAgentData = m_gameData.objData.agentDataList[i].get();
+
+                // update values
+                RefreshDataAgent(pAgentData, pAgent);
+
+                pAgentData->selectable = asctx.call<bool>(m_pubmems.asctxVtAgCanSel, pAgent);
+
+                // gadget update
+                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
+                    hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);
+                    if (!pAgentData->gadgetData) pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
+                    GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
+                    RefreshDataGadget(pGadgetData, pGadget);
+                    pGadgetData->pAgentData = pAgentData;
+
+                    // resource node update
+                    if (pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
+                        hl::ForeignClass pRNode = pGadget.call<void*>(m_pubmems.gdVtGetRNode);
+                        if (!pGadgetData->rNodeData) pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
+                        GameData::ResourceNodeData *pRNodeData = pGadgetData->rNodeData.get();
+                        RefreshDataResourceNode(pRNodeData, pRNode);
+                        pRNodeData->pAgentData = pAgentData;
+                    }
+                }
+
+                // gadget attack target update
+                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
+                    hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
+                    if (!pAgentData->attackTgtData) pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
+                    GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
+                    RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
+                    pAttackTgtData->pAgentData = pAgentData;
+                }
+
+                pAgentData->pCharData = nullptr;
+
+                // set own agent
+                if (m_gameData.objData.ownCharacter && m_gameData.objData.ownCharacter->pAgentData == pAgentData) {
+                    m_gameData.objData.ownAgent = pAgentData;
+                    bOwnAgentFound = true;
+                }
+
+                // set selection agents
+                if (pAgent == asctx.get<void*>(m_pubmems.asctxAuto)) {
+                    m_gameData.objData.autoSelection = pAgentData;
+                    bAutoSelectionFound = true;
+                }
+                if (pAgent == asctx.get<void*>(m_pubmems.asctxHover)) {
+                    m_gameData.objData.hoverSelection = pAgentData;
+                    bHoverSelectionFound = true;
+                }
+                if (pAgent == asctx.get<void*>(m_pubmems.asctxLocked)) {
+                    m_gameData.objData.lockedSelection = pAgentData;
+                    bLockedSelectionFound = true;
+                }
+            }
+        }
+    }
+
+    // remove non valid agents from list
+    for (uint32_t i = 0; i < m_gameData.objData.agentDataList.size(); i++) {
+        if (!m_gameData.objData.agentDataList[i]) {
+            continue;
+        }
+
+        // check if agent in our array is in game data
+        hl::ForeignClass avAgent = agentArray[i];
+
+        if (i >= sizeAgentArray || !avAgent || avAgent.call<void*>(m_pubmems.avagVtGetAgent) != m_gameData.objData.agentDataList[i]->pAgent) {
+            // agent was not found in game. remove from our array
+            m_gameData.objData.agentDataList[i] = nullptr;
+        }
+    }
+
+    if (!bOwnAgentFound)
+        m_gameData.objData.ownAgent = nullptr;
+    if (!bAutoSelectionFound)
+        m_gameData.objData.autoSelection = nullptr;
+    if (!bHoverSelectionFound)
+        m_gameData.objData.hoverSelection = nullptr;
+    if (!bLockedSelectionFound)
+        m_gameData.objData.lockedSelection = nullptr;
+
+    return true;
+}
+
+bool Gw2HackMain::SetupCharacterArray() {
+    hl::ForeignClass ctx = m_mems.pCtx;
+    if (!ctx) return false;
+
+    hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
+    if (!charctx) return false;
+
+    auto charArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxCharArray);
+    if (!charArray.IsValid()) return false;
+
+    bool bOwnCharFound = false;
+
+    // add characters from game array to own array and update data
+    uint32_t sizeCharArray = charArray.Count();
+    if (sizeCharArray != m_gameData.objData.charDataList.size()) {
+        m_gameData.objData.charDataList.resize(sizeCharArray);
+    }
+
+    for (uint32_t i = 0; i < sizeCharArray; i++)
+    {
+        hl::ForeignClass pCharacter = charArray[i];
+
+        if (pCharacter) {
+            int agentId = pCharacter.call<int>(m_pubmems.charVtGetAgentId);
+
+            if (!m_gameData.objData.charDataList[i] || m_gameData.objData.charDataList[i]->pCharacter != pCharacter) {
+                m_gameData.objData.charDataList[i] = std::make_unique<GameData::CharacterData>();
+            }
+
+            GameData::CharacterData *pCharData = m_gameData.objData.charDataList[i].get();
+
+            // update values
+            RefreshDataCharacter(pCharData, pCharacter);
+
+            bool bAgentDataFound = false;
+
+            // link agentdata of corresponding agent
+            if (m_gameData.objData.agentDataList[agentId]) {
+                pCharData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
+                pCharData->pAgentData->pCharData = pCharData;
+
+                if (pCharData->pAgentData->pAgent) {
+                    hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
+                    if (transform) {
+                        pCharData->pAgentData->speed = pCharData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.npc_agtransSpeed);
+                    }
+                }
+
+                bAgentDataFound = true;
+            }
+
+            if (!bAgentDataFound) {
+                pCharData->pAgentData = nullptr;
+            }
+
+            // set own character
+            if (pCharacter == charctx.get<void*>(m_pubmems.charctxControlled)) {
+                m_gameData.objData.ownCharacter = pCharData;
+                bOwnCharFound = true;
+            }
+        }
+    }
+
+    // remove non valid chars from list
+    for (uint32_t i = 0; i < m_gameData.objData.charDataList.size(); i++) {
+        if (!m_gameData.objData.charDataList[i]) {
+            continue;
+        }
+
+        hl::ForeignClass pChar = charArray[i];
+
+        if (i >= sizeCharArray || !pChar || pChar != m_gameData.objData.charDataList[i]->pCharacter) {
+            m_gameData.objData.charDataList[i] = nullptr;
+        }
+    }
+
+    if (!bOwnCharFound)
+        m_gameData.objData.ownCharacter = nullptr;
+
+    return true;
+}
+
+bool Gw2HackMain::SetupPlayerArray() {
+    hl::ForeignClass ctx = m_mems.pCtx;
+    if (!ctx) return false;
+
+    hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
+    if (!charctx) return false;
+
+    auto playerArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxPlayerArray);
+    if (!playerArray.IsValid()) return false;
+
+    uint32_t sizePlayerArray = playerArray.Count();
+    if (sizePlayerArray != m_gameData.objData.playerDataList.size()) {
+        m_gameData.objData.playerDataList.resize(sizePlayerArray);
+    }
+
+    for (uint32_t i = 0; i < sizePlayerArray; i++) {
+        hl::ForeignClass pPlayer = playerArray[i];
+
+        if (pPlayer) {
+            hl::ForeignClass pChar = pPlayer.get<void*>(m_pubmems.playerChar);
+            if (pChar) {
+                int agentId = pChar.call<int>(m_pubmems.charVtGetAgentId);
+
+                if (!m_gameData.objData.playerDataList[i] || m_gameData.objData.playerDataList[i]->pPlayer != pPlayer) {
+                    m_gameData.objData.playerDataList[i] = std::make_unique<GameData::PlayerData>();
+                }
+
+                GameData::PlayerData *pPlayerData = m_gameData.objData.playerDataList[i].get();
+
+                pPlayerData->pChar = pChar;
+
+                // update values
+                RefreshDataPlayer(pPlayerData, pPlayer);
+
+                bool playerDataFound = false;
+
+                // link agentdata of corresponding agent
+                if (m_gameData.objData.agentDataList[agentId]) {
+                    pPlayerData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
+                    pPlayerData->pCharData = pPlayerData->pAgentData->pCharData;
+                    pPlayerData->pAgentData->pPlayerData = pPlayerData;
+
+                    if (pPlayerData->pAgentData->pAgent) {
+                        hl::ForeignClass transform = pPlayerData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
+                        if (transform) {
+                            pPlayerData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
+                            pPlayerData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.agtransMaxSpeed);
+                        }
+                    }
+
+                    playerDataFound = true;
+                }
+
+                if (!playerDataFound) {
+                    pPlayerData->pAgentData = nullptr;
+                    pPlayerData->pCharData = nullptr;
+                }
+            }
+        }
+    }
+
+    // remove non valid players from list
+    for (uint32_t i = 0; i < m_gameData.objData.playerDataList.size(); i++) {
+        if (!m_gameData.objData.playerDataList[i]) {
+            continue;
+        }
+
+        hl::ForeignClass pPlayer = playerArray[i];
+
+        if (i >= sizePlayerArray || !pPlayer || pPlayer != m_gameData.objData.playerDataList[i]->pPlayer) {
+            m_gameData.objData.playerDataList[i] = nullptr;
+        }
+    }
+
+    return true;
+}
+
 void Gw2HackMain::GameHook()
 {
     void ***pLocalStorage;
@@ -579,291 +880,16 @@ void Gw2HackMain::GameHook()
 #endif
     m_mems.pCtx = pLocalStorage[0][1];
 
-    // get cam data
-    m_gameData.camData.valid = false;
-    if (m_mems.ppWorldViewContext)
+    SetupCamData();
+
+    if (m_gameData.camData.valid)
     {
-        hl::ForeignClass wvctx = *m_mems.ppWorldViewContext;
-        if (wvctx && wvctx.get<int>(m_pubmems.wvctxStatus) == 1)
-        {
-            D3DXVECTOR3 lookAt, upVec;
-            wvctx.call<void>(m_pubmems.wvctxVtGetMetrics, 1, &m_gameData.camData.camPos, &lookAt, &upVec, &m_gameData.camData.fovy);
-            D3DXVec3Normalize(&m_gameData.camData.viewVec, &(lookAt-m_gameData.camData.camPos));
-            m_gameData.camData.valid = true;
-        }
+        SetupAgentArray();
+        SetupCharacterArray();
+        SetupPlayerArray();
     }
 
-    bool bOwnCharFound = false;
-    bool bOwnAgentFound = false;
-    bool bAutoSelectionFound = false;
-    bool bHoverSelectionFound = false;
-    bool bLockedSelectionFound = false;
-
-    hl::ForeignClass avctx = m_mems.pAgentViewCtx;
     hl::ForeignClass asctx = m_mems.pAgentSelectionCtx;
-
-    if (m_gameData.camData.valid && m_mems.pCtx)
-    {
-        hl::ForeignClass ctx = m_mems.pCtx;
-        if (ctx)
-        {
-            hl::ForeignClass gdctx = ctx.get<void*>(m_pubmems.contextGadget);
-            hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
-            if (gdctx && charctx && avctx && asctx)
-            {
-                auto charArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxCharArray);
-                auto agentArray = avctx.get<GW2::ANet::Vector<void*>>(m_pubmems.avctxAgentArray);
-                auto playerArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxPlayerArray);
-
-                if (charArray.IsValid() && agentArray.IsValid() && playerArray.IsValid())
-                {
-                    // add agents from game array to own array and update data
-                    uint32_t sizeAgentArray = agentArray.Count();
-                    if (sizeAgentArray != m_gameData.objData.agentDataList.size()) {
-                        m_gameData.objData.agentDataList.resize(sizeAgentArray);
-                    }
-                    for (uint32_t i = 0; i < sizeAgentArray; i++)
-                    {
-                        hl::ForeignClass avAgent = agentArray[i];
-
-                        if (avAgent) {
-                            hl::ForeignClass pAgent = avAgent.call<void*>(m_pubmems.avagVtGetAgent);
-
-                            if (pAgent) {
-                                // check if agent is already in our array
-                                GameData::AgentData *pAgentData = nullptr;
-
-                                if (m_gameData.objData.agentDataList[i] && m_gameData.objData.agentDataList[i]->pAgent == pAgent) {
-                                    // agent is already in our array. fix ptr
-                                    pAgentData = m_gameData.objData.agentDataList[i].get();
-                                }
-
-                                if (!pAgentData) {
-                                    // agent is not in our array. add and fix ptr
-                                    m_gameData.objData.agentDataList[i] = std::make_unique<GameData::AgentData>();
-                                    pAgentData = m_gameData.objData.agentDataList[i].get();
-                                }
-
-                                // update values
-                                RefreshDataAgent(pAgentData, pAgent);
-
-                                pAgentData->selectable = asctx.call<bool>(m_pubmems.asctxVtAgCanSel, pAgent);
-
-                                // gadget update
-                                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
-                                    hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);
-                                    if (!pAgentData->gadgetData) pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
-                                    GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
-                                    RefreshDataGadget(pGadgetData, pGadget);
-                                    pGadgetData->pAgentData = pAgentData;
-
-                                    // resource node update
-                                    if (pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
-                                        hl::ForeignClass pRNode = pGadget.call<void*>(m_pubmems.gdVtGetRNode);
-                                        if (!pGadgetData->rNodeData) pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
-                                        GameData::ResourceNodeData *pRNodeData = pGadgetData->rNodeData.get();
-                                        RefreshDataResourceNode(pRNodeData, pRNode);
-                                        pRNodeData->pAgentData = pAgentData;
-                                    }
-                                }
-
-                                // gadget attack target update
-                                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
-                                    hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
-                                    if (!pAgentData->attackTgtData) pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
-                                    GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
-                                    RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
-                                    pAttackTgtData->pAgentData = pAgentData;
-                                }
-
-                                bool bCharDataFound = false;
-
-                                if (!bCharDataFound) {
-                                    pAgentData->pCharData = nullptr;
-                                }
-
-                                // set own agent
-                                if (m_gameData.objData.ownCharacter && m_gameData.objData.ownCharacter->pAgentData == pAgentData) {
-                                    m_gameData.objData.ownAgent = pAgentData;
-                                    bOwnAgentFound = true;
-                                }
-
-                                // set selection agents
-                                if (pAgent == asctx.get<void*>(m_pubmems.asctxAuto)) {
-                                    m_gameData.objData.autoSelection = pAgentData;
-                                    bAutoSelectionFound = true;
-                                }
-                                if (pAgent == asctx.get<void*>(m_pubmems.asctxHover)) {
-                                    m_gameData.objData.hoverSelection = pAgentData;
-                                    bHoverSelectionFound = true;
-                                }
-                                if (pAgent == asctx.get<void*>(m_pubmems.asctxLocked)) {
-                                    m_gameData.objData.lockedSelection = pAgentData;
-                                    bLockedSelectionFound = true;
-                                }
-                            }
-                        }
-                    }
-
-                    // remove non valid agents from list
-                    for (uint32_t i = 0; i < m_gameData.objData.agentDataList.size(); i++) {
-                        if (!m_gameData.objData.agentDataList[i]) {
-                            continue;
-                        }
-
-                        // check if agent in our array is in game data
-                        hl::ForeignClass avAgent = agentArray[i];
-
-                        if (i >= sizeAgentArray || !avAgent || avAgent.call<void*>(m_pubmems.avagVtGetAgent) != m_gameData.objData.agentDataList[i]->pAgent) {
-                            // agent was not found in game. remove from our array
-                            m_gameData.objData.agentDataList[i] = nullptr;
-                        }
-                    }
-
-                    // add characters from game array to own array and update data
-                    uint32_t sizeCharArray = charArray.Count();
-                    if (sizeCharArray != m_gameData.objData.charDataList.size()) {
-                        m_gameData.objData.charDataList.resize(sizeCharArray);
-                    }
-
-                    for (uint32_t i = 0; i < sizeCharArray; i++)
-                    {
-                        hl::ForeignClass pCharacter = charArray[i];
-
-                        if (pCharacter) {
-                            int agentId = pCharacter.call<int>(m_pubmems.charVtGetAgentId);
-
-                            if (!m_gameData.objData.charDataList[i] || m_gameData.objData.charDataList[i]->pCharacter != pCharacter) {
-                                m_gameData.objData.charDataList[i] = std::make_unique<GameData::CharacterData>();
-                            }
-
-                            GameData::CharacterData *pCharData = m_gameData.objData.charDataList[i].get();
-
-                            // update values
-                            RefreshDataCharacter(pCharData, pCharacter);
-
-                            bool bAgentDataFound = false;
-
-                            // link agentdata of corresponding agent
-                            if (m_gameData.objData.agentDataList[agentId]) {
-                                pCharData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
-                                pCharData->pAgentData->pCharData = pCharData;
-
-                                if (pCharData->pAgentData->pAgent) {
-                                    hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
-                                    if (transform) {
-                                        pCharData->pAgentData->speed = pCharData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.npc_agtransSpeed);
-                                    }
-                                }
-
-                                bAgentDataFound = true;
-                            }
-
-                            if (!bAgentDataFound) {
-                                pCharData->pAgentData = nullptr;
-                            }
-
-                            // set own character
-                            if (pCharacter == charctx.get<void*>(m_pubmems.charctxControlled)) {
-                                m_gameData.objData.ownCharacter = pCharData;
-                                bOwnCharFound = true;
-                            }
-                        }
-                    }
-
-                    // remove non valid chars from list
-                    for (uint32_t i = 0; i < m_gameData.objData.charDataList.size(); i++) {
-                        if (!m_gameData.objData.charDataList[i]) {
-                            continue;
-                        }
-
-                        hl::ForeignClass pChar = charArray[i];
-
-                        if (i >= sizeCharArray || !pChar || pChar != m_gameData.objData.charDataList[i]->pCharacter) {
-                            m_gameData.objData.charDataList[i] = nullptr;
-                        }
-                    }
-
-
-                    uint32_t sizePlayerArray = playerArray.Count();
-                    if (sizePlayerArray != m_gameData.objData.playerDataList.size()) {
-                        m_gameData.objData.playerDataList.resize(sizePlayerArray);
-                    }
-
-                    for (uint32_t i = 0; i < sizePlayerArray; i++) {
-                        hl::ForeignClass pPlayer = playerArray[i];
-
-                        if (pPlayer) {
-                            hl::ForeignClass pChar = pPlayer.get<void*>(m_pubmems.playerChar);
-                            if (pChar) {
-                                int agentId = pChar.call<int>(m_pubmems.charVtGetAgentId);
-
-                                if (!m_gameData.objData.playerDataList[i] || m_gameData.objData.playerDataList[i]->pPlayer != pPlayer) {
-                                    m_gameData.objData.playerDataList[i] = std::make_unique<GameData::PlayerData>();
-                                }
-
-                                GameData::PlayerData *pPlayerData = m_gameData.objData.playerDataList[i].get();
-
-                                pPlayerData->pChar = pChar;
-
-                                // update values
-                                RefreshDataPlayer(pPlayerData, pPlayer);
-
-                                bool playerDataFound = false;
-
-                                // link agentdata of corresponding agent
-                                if (m_gameData.objData.agentDataList[agentId]) {
-                                    pPlayerData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
-                                    pPlayerData->pCharData = pPlayerData->pAgentData->pCharData;
-                                    pPlayerData->pAgentData->pPlayerData = pPlayerData;
-
-                                    if (pPlayerData->pAgentData->pAgent) {
-                                        hl::ForeignClass transform = pPlayerData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
-                                        if (transform) {
-                                            pPlayerData->pAgentData->speed = transform.get<float>(m_pubmems.agtransSpeed);
-                                            pPlayerData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.agtransMaxSpeed);
-                                        }
-                                    }
-
-                                    playerDataFound = true;
-                                }
-
-                                if (!playerDataFound) {
-                                    pPlayerData->pAgentData = nullptr;
-                                    pPlayerData->pCharData = nullptr;
-                                }
-                            }
-                        }
-                    }
-
-                    // remove non valid players from list
-                    for (uint32_t i = 0; i < m_gameData.objData.playerDataList.size(); i++) {
-                        if (!m_gameData.objData.playerDataList[i]) {
-                            continue;
-                        }
-
-                        hl::ForeignClass pPlayer = playerArray[i];
-
-                        if (i >= sizePlayerArray || !pPlayer || pPlayer != m_gameData.objData.playerDataList[i]->pPlayer) {
-                            m_gameData.objData.playerDataList[i] = nullptr;
-                        }
-                    }
-
-                }
-            }
-        }
-    }
-
-    if (!bOwnCharFound)
-        m_gameData.objData.ownCharacter = nullptr;
-    if (!bOwnAgentFound)
-        m_gameData.objData.ownAgent = nullptr;
-    if (!bAutoSelectionFound)
-        m_gameData.objData.autoSelection = nullptr;
-    if (!bHoverSelectionFound)
-        m_gameData.objData.hoverSelection = nullptr;
-    if (!bLockedSelectionFound)
-        m_gameData.objData.lockedSelection = nullptr;
 
     m_gameData.mouseInWorld = asctx.get<D3DXVECTOR3>(m_pubmems.asctxStoW);
     m_gameData.asCtxMode = asctx.get<int>(m_pubmems.asctxCtxMode);

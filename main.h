@@ -64,6 +64,11 @@ private:
     void RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData, hl::ForeignClass res);
     void RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClass buff);
 
+    bool SetupCamData();
+    bool SetupAgentArray();
+    bool SetupCharacterArray();
+    bool SetupPlayerArray();
+
 private:
     hl::ConsoleEx m_con;
     hl::Hooker m_hooker;
