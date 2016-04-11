@@ -47,9 +47,9 @@ namespace GW2
         };
 
         template <typename T, bool IsArray = true>
-        class Vector : private std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
+        class Collection : private std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
         public:
-            Vector<T> &operator= (const Vector<T> &a) {
+            Collection<T> &operator= (const Collection<T> &a) {
                 if (this != &a) {
                     m_basePtr = a.m_basePtr;
                     m_capacity = a.m_capacity;
@@ -403,7 +403,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             hl::ForeignClass buffBar = combatant.get<void*>(m_pubmems.cmbtntBuffBar);
             if (buffBar) {
                 pCharData->pBuffBar = buffBar;
-                auto buffs = buffBar.get<GW2::ANet::Vector<GameData::BuffEntry, false>>(m_pubmems.buffbarBuffArr);
+                auto buffs = buffBar.get<GW2::ANet::Collection<GameData::BuffEntry, false>>(m_pubmems.buffbarBuffArr);
 
                 if (buffs.IsValid()) {
                     uint32_t sizeBuffsArray = buffs.Capacity();
@@ -596,7 +596,7 @@ bool Gw2HackMain::SetupAgentArray() {
     hl::ForeignClass gdctx = ctx.get<void*>(m_pubmems.contextGadget);
     if (!gdctx) return false;
 
-    auto agentArray = avctx.get<GW2::ANet::Vector<void*>>(m_pubmems.avctxAgentArray);
+    auto agentArray = avctx.get<GW2::ANet::Collection<void*>>(m_pubmems.avctxAgentArray);
     if (!agentArray.IsValid()) return false;
 
     bool bOwnAgentFound = false;
@@ -718,7 +718,7 @@ bool Gw2HackMain::SetupCharacterArray() {
     hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
     if (!charctx) return false;
 
-    auto charArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxCharArray);
+    auto charArray = charctx.get<GW2::ANet::Collection<void*>>(m_pubmems.charctxCharArray);
     if (!charArray.IsValid()) return false;
 
     bool bOwnCharFound = false;
@@ -800,7 +800,7 @@ bool Gw2HackMain::SetupPlayerArray() {
     hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
     if (!charctx) return false;
 
-    auto playerArray = charctx.get<GW2::ANet::Vector<void*>>(m_pubmems.charctxPlayerArray);
+    auto playerArray = charctx.get<GW2::ANet::Collection<void*>>(m_pubmems.charctxPlayerArray);
     if (!playerArray.IsValid()) return false;
 
     uint32_t sizePlayerArray = playerArray.Count();
