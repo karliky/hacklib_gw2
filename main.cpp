@@ -192,7 +192,7 @@ bool Gw2HackMain::init()
         return false;
     }
 
-    if (![&](){
+    if (![this](){
         __try {
             m_gw2Hook.init_hooks();
         } __except (EXCEPTION_EXECUTE_HANDLER) {

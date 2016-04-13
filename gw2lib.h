@@ -473,7 +473,7 @@ namespace GW2LIB
     class Font {
     public:
         Font();
-        bool Init(int size, std::string name);
+        bool Init(int size, std::string name, bool bold = true);
         void Draw(float x, float y, DWORD color, std::string format, va_list vl) const;
         void Draw(float x, float y, DWORD color, std::string format, ...) const;
     private:

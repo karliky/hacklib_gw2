@@ -225,11 +225,11 @@ GW2LIB::Font::Font()
     m_ptr = nullptr;
 }
 
-bool GW2LIB::Font::Init(int size, std::string name)
+bool GW2LIB::Font::Init(int size, std::string name, bool bold)
 {
     auto pDrawer = GetMain()->GetDrawer(false);
     if (pDrawer) {
-        m_ptr = reinterpret_cast<const void*>(pDrawer->AllocFont(name, size));
+        m_ptr = reinterpret_cast<const void*>(pDrawer->AllocFont(name, size, bold));
         if (m_ptr)
             return true;
     }
