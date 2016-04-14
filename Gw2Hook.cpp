@@ -5,10 +5,20 @@ void hkProcessText(hl::CpuContext*);
 void hkDmgLog(hl::CpuContext*);
 void hkCombatLog(hl::CpuContext*);
 void hkAllocator(hl::CpuContext*);
+void hkLogger(hl::CpuContext*);
+void hkLogger2(hl::CpuContext*);
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam);
 
 
 bool Gw2GameHook::init_hooks() {
+#ifdef ARCH_64BIT
+    uintptr_t pResLogger  = hl::FindPattern("48 89 5C 24 08 57 48 83 EC 20 4D 8B 09 48 8B DA 48 8B F9 E8");
+    uintptr_t pResLogger2 = hl::FindPattern("5F C3 CC CC CC CC CC CC CC 48 89 5C 24 08 57 48 83 EC 20 4D 8B 09 48 8B DA 48 8B F9 E8");
+#else
+    uintptr_t pResLogger  = hl::FindPattern("55 8B EC 8B 45 0C 53 56 57 FF 30 8B FA 8B D9 FF 75 08 57 53 E8");
+    uintptr_t pResLogger2 = hl::FindPattern("5D C2 08 00 CC CC CC CC CC CC CC CC CC CC CC 55 8B EC 8B 45 0C 53 56 57 FF 30 8B FA 8B D9 FF 75 08 57 53 E8");
+#endif
+
     hl::PatternScanner scanner;
     auto results = scanner.find({
         "codedProcessedText",
@@ -21,17 +31,23 @@ bool Gw2GameHook::init_hooks() {
     uintptr_t pDmgLog = NULL;
     uintptr_t pCombatLog = NULL;
     uintptr_t pAllocator = NULL;
+    uintptr_t pLogger = NULL;
+    uintptr_t pLogger2 = NULL;
 
 #ifdef ARCH_64BIT
     pProcessText = (results[0] - 0x49);
     pDmgLog = (results[1] - 0x2a);
     pCombatLog = (results[2] - 0x20);
     pAllocator = (results[3] - 0x4d);
+    pLogger  = (pResLogger + 0x4c);
+    pLogger2 = (pResLogger2 + 0x55);
 
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 17, hkProcessText);
     m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 15, hkDmgLog);
     m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 16, hkCombatLog);
     m_hkAllocator = m_hooker.hookDetour(pAllocator, 14, hkAllocator);
+    m_hkLogger  = m_hooker.hookDetour(pLogger, 14, hkLogger);
+    m_hkLogger2 = m_hooker.hookDetour(pLogger2, 14, hkLogger2);
 #else
 
 
@@ -39,11 +55,15 @@ bool Gw2GameHook::init_hooks() {
     pDmgLog = (results[1] - 0x10);
     pCombatLog = (results[2] - 0x14);
     pAllocator = (results[3] - 0x21);
+    pLogger  = (pResLogger + 0x19);
+    pLogger2 = (pResLogger2 + 0x28);
 
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 6, hkProcessText);
     m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 6, hkDmgLog);
     m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 7, hkCombatLog);
     m_hkAllocator = m_hooker.hookDetour(pAllocator, 5, hkAllocator);
+    m_hkLogger  = m_hooker.hookDetour(pLogger, 5, hkLogger);
+    m_hkLogger2 = m_hooker.hookDetour(pLogger2, 5, hkLogger2);
 #endif
 
     if (!m_hkProcessText) {
@@ -58,6 +78,16 @@ bool Gw2GameHook::init_hooks() {
 
     if (!m_hkCombatLog) {
         HL_LOG_ERR("[Hook::Init] Hooking combat log failed\n");
+        return false;
+    }
+
+    if (!m_hkLogger) {
+        HL_LOG_ERR("[Hook::Init] Hooking game logger failed\n");
+        return false;
+    }
+
+    if (!m_hkLogger2) {
+        HL_LOG_ERR("[Hook::Init] Hooking game logger 2 failed\n");
         return false;
     }
 
@@ -82,6 +112,8 @@ void Gw2GameHook::cleanup() {
     if (m_hkDmgLog) m_hooker.unhook(m_hkDmgLog);
     if (m_hkCombatLog) m_hooker.unhook(m_hkCombatLog);
     if (m_hkAllocator) m_hooker.unhook(m_hkAllocator);
+    if (m_hkLogger) m_hooker.unhook(m_hkLogger);
+    if (m_hkLogger2) m_hooker.unhook(m_hkLogger2);
 
     if (m_hhkGetMessage != NULL)
     {
@@ -144,19 +176,43 @@ void hkAllocator(hl::CpuContext *ctx) {
 #ifdef ARCH_64BIT
     int type = (int)(ctx->RCX);
     size_t size = ctx->RDX;
-    int src = *(int*)(ctx->RSP + 0x38);
+    int cat = *(int*)(ctx->RSP + 0x38);
     int line = *(int*)(ctx->RSP + 0x30);
     char* file = *(char**)(ctx->RSP + 0x28);
 #else
     int type = ctx->ECX;
     size_t size = ctx->EDX;
-    int src = *(int*)(ctx->EBP + 0x18);
+    int cat = *(int*)(ctx->EBP + 0x18);
     int line = *(int*)(ctx->EBP + 0x14);
     char* file = *(char**)(ctx->EBP + 0x10);
 #endif
 
     Gw2Hooks* list = get_hook_list();
-    if (list->AllocatorHook) list->AllocatorHook(type, size, src, line, file);
+    if (list->AllocatorHook) list->AllocatorHook(type, size, cat, line, file);
+}
+
+void hkLogger(hl::CpuContext *ctx) {
+#ifdef ARCH_64BIT
+    char* txt = (char*)(ctx->RDI);
+#else
+    char* txt = (char*)(ctx->EBX);
+#endif
+
+    Gw2Hooks* list = get_hook_list();
+    if (list->LoggerHook) list->LoggerHook(txt);
+}
+
+void hkLogger2(hl::CpuContext *ctx) {
+#ifdef ARCH_64BIT
+    wchar_t* wtxt = (wchar_t*)(ctx->RDI);
+#else
+    wchar_t* wtxt = (wchar_t*)(ctx->EBX);
+#endif
+
+    std::string txt = get_hook()->converter.to_bytes(wtxt);
+
+    Gw2Hooks* list = get_hook_list();
+    if (list->LoggerHook) list->LoggerHook((char*)txt.c_str());
 }
 
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam)

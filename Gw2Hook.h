@@ -3,6 +3,9 @@
 #include "hacklib/Logging.h"
 #include "hacklib/Hooker.h"
 
+#include <codecvt>
+#include <locale>
+
 #define ASSIGN_HOOK(h, c) if (typeid(h) == typeid(c)) h = decltype(h)((uintptr_t)c);
 
 namespace GW2LIB {
@@ -13,7 +16,8 @@ namespace GW2LIB {
         HOOK_MOUSE_WHEEL,
         HOOK_DAMAGE_LOG,
         HOOK_COMBAT_LOG,
-        HOOK_ALLOCATOR
+        HOOK_ALLOCATOR,
+        HOOK_LOGGER
     };
 
     enum CombatLogType {
@@ -51,6 +55,7 @@ struct Gw2Hooks {
     void(*DmgLogHook)(GW2LIB::Agent, GW2LIB::Agent, int) = nullptr;
     void(*CombatLogHook)(GW2LIB::CombatLogType, int, GW2LIB::Agent) = nullptr;
     void(*AllocatorHook)(int, size_t, int, int, char*) = nullptr;
+    void(*LoggerHook)(char*) = nullptr;
 };
 
 class Gw2GameHook {
@@ -62,9 +67,12 @@ public:
     const hl::IHook *m_hkDmgLog = nullptr;
     const hl::IHook *m_hkCombatLog = nullptr;
     const hl::IHook *m_hkAllocator = nullptr;
+    const hl::IHook *m_hkLogger = nullptr;
+    const hl::IHook *m_hkLogger2 = nullptr;
 
     HHOOK m_hhkGetMessage = NULL;
     Gw2Hooks m_hookList;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 
 private:
     hl::Hooker m_hooker;
@@ -87,6 +95,7 @@ namespace GW2LIB {
         case HOOK_DAMAGE_LOG: ASSIGN_HOOK(list->DmgLogHook, cb); break;
         case HOOK_COMBAT_LOG: ASSIGN_HOOK(list->CombatLogHook, cb); break;
         case HOOK_ALLOCATOR: ASSIGN_HOOK(list->AllocatorHook, cb); break;
+        case HOOK_LOGGER: ASSIGN_HOOK(list->LoggerHook, cb); break;
         }
     }
 };

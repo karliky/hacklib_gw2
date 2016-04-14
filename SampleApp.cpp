@@ -178,6 +178,10 @@ void sample_chat_cb(wchar_t *wtxt) {
     chat = converter.to_bytes(wtxt);
 }
 
+void sample_log_cb(char *txt) {
+    HL_LOG_DBG("log: %s\n", txt);
+}
+
 void GW2LIB::gw2lib_main()
 {
     EnableEsp(cbESP);
@@ -188,6 +192,7 @@ void GW2LIB::gw2lib_main()
     }
 
     SetGameHook(HOOK_CHAT, sample_chat_cb);
+    SetGameHook(HOOK_LOGGER, sample_log_cb);
 
     while (GetAsyncKeyState(VK_HOME) >= 0)
         std::this_thread::sleep_for(std::chrono::milliseconds(25));
