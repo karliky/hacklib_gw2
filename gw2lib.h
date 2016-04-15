@@ -44,6 +44,11 @@ namespace GW2LIB
     class ResourceNode;
     class Buff;
 
+    struct Vector2 {
+        Vector2() { }
+        Vector2(float x, float y) : x(x), y(y) { }
+        float x, y;
+    };
     struct Vector3 {
         Vector3() { }
         Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
@@ -476,6 +481,7 @@ namespace GW2LIB
         bool Init(int size, std::string name, bool bold = true);
         void Draw(float x, float y, DWORD color, std::string format, va_list vl) const;
         void Draw(float x, float y, DWORD color, std::string format, ...) const;
+        Vector2 TextInfo(std::string str) const;
     private:
         Font(const Font &f) { }
         Font &operator= (const Font &f) { }

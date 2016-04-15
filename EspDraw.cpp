@@ -251,6 +251,15 @@ void GW2LIB::Font::Draw(float x, float y, DWORD color, std::string format, ...) 
     va_end(vl);
 }
 
+GW2LIB::Vector2 GW2LIB::Font::TextInfo(std::string str) const {
+    D3DXVECTOR2 vec = { 0, 0 };
+    const auto pDrawer = GetMain()->GetDrawer(true);
+    if (pDrawer && m_ptr)
+        vec = pDrawer->TextInfo(reinterpret_cast<const hl::Font*>(m_ptr), str);
+
+    return { vec.x, vec.y };
+}
+
 
 struct PrimitiveDiffuseMesh {
     const hl::VertexBuffer *vertBuffer;
