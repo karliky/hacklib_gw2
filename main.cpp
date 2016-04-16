@@ -207,6 +207,8 @@ bool Gw2HackMain::init()
 
     HL_LOG_DBG("Init ESP data\n");
 
+    m_drawer.SetDevice(pDevice);
+
     extern bool InitEsp();
     bool result = InitEsp();
 #ifndef NOD3DHOOK

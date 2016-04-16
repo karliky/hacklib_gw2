@@ -8,16 +8,6 @@ static const hl::VertexBuffer *vbRect;
 
 bool InitEsp()
 {
-    int c = 0;
-    auto pDrawer = GetMain()->GetDrawer(false);
-    while (!pDrawer) {
-        if (c++ > 100) {
-            //g_pCon->printf("[GW2LIB::EnableEsp] waiting for drawer timed out\n");
-            return false;
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        pDrawer = GetMain()->GetDrawer(false);
-    }
 
     std::vector<hl::VERTEX_3D_COL> rectVerts = {
         { -1, -1, 0 },
