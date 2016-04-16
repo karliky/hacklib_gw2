@@ -8,6 +8,8 @@ static const hl::VertexBuffer *vbRect;
 
 bool InitEsp()
 {
+    auto pDrawer = GetMain()->GetDrawer(false);
+    if (!pDrawer) return false;
 
     std::vector<hl::VERTEX_3D_COL> rectVerts = {
         { -1, -1, 0 },
