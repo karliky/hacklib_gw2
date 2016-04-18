@@ -31,29 +31,20 @@ bool Buff::IsValid() const {
 }
 
 
-bool Buff::BeNext()
-{
+bool Buff::BeNext() {
     if (!buffDataList) return false;
-    bool bFound = false;
+    const auto& buffs = *buffDataList;
 
-    for (const auto& buff : *buffDataList)
-    {
-        if (!buff) continue;
-        if (!bFound) {
-            if (!m_ptr) {
-                bFound = true;
-            } else if (buff->pBuff == m_ptr->pBuff) {
-                bFound = true;
-                continue;
-            }
-        }
-
-        if (bFound) {
-            m_ptr = buff.get();
+    iterator++;
+    while (iterator < buffs.size()) {
+        if (buffs[iterator]) {
+            m_ptr = buffs[iterator].get();
             return true;
         }
+        iterator++;
     }
 
+    m_ptr = nullptr;
     return false;
 }
 

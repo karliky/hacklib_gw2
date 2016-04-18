@@ -34,26 +34,18 @@ bool Player::IsValid() const {
 
 bool Player::BeNext()
 {
-    bool bFound = false;
+    const auto& players = GetMain()->GetGameData()->objData.playerDataList;
 
-    for (const auto& player : GetMain()->GetGameData()->objData.playerDataList)
-    {
-        if (!player) continue;
-        if (!bFound) {
-            if (!m_ptr) {
-                bFound = true;
-            } else if (player->pPlayer == m_ptr->pPlayer) {
-                bFound = true;
-                continue;
-            }
-        }
-
-        if (bFound) {
-            m_ptr = player.get();
+    iterator++;
+    while (iterator < players.size()) {
+        if (players[iterator]) {
+            m_ptr = players[iterator].get();
             return true;
         }
+        iterator++;
     }
 
+    m_ptr = nullptr;
     return false;
 }
 

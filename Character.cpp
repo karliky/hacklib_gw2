@@ -34,26 +34,18 @@ bool Character::IsValid() const {
 
 bool Character::BeNext()
 {
-    bool bFound = false;
+    const auto& chars = GetMain()->GetGameData()->objData.charDataList;
 
-    for (const auto& ch : GetMain()->GetGameData()->objData.charDataList)
-    {
-        if (!ch) continue;
-        if (!bFound) {
-            if (!m_ptr) {
-                bFound = true;
-            } else if (ch->pCharacter == m_ptr->pCharacter) {
-                bFound = true;
-                continue;
-            }
-        }
-
-        if (bFound) {
-            m_ptr = ch.get();
+    iterator++;
+    while (iterator < chars.size()) {
+        if (chars[iterator]) {
+            m_ptr = chars[iterator].get();
             return true;
         }
+        iterator++;
     }
 
+    m_ptr = nullptr;
     return false;
 }
 

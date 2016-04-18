@@ -303,6 +303,7 @@ namespace GW2LIB
         Buff GetBuffs() const;
 
         GameData::CharacterData *m_ptr = nullptr;
+        size_t iterator = 0;
     };
 
     class Buff {
@@ -320,6 +321,7 @@ namespace GW2LIB
 
         std::vector<std::unique_ptr<GameData::BuffData>> *buffDataList = nullptr;
         GameData::BuffData *m_ptr = nullptr;
+        size_t iterator = 0;
     };
 
     class Player {
@@ -341,6 +343,7 @@ namespace GW2LIB
         std::string GetName() const;
 
         GameData::PlayerData *m_ptr = nullptr;
+        size_t iterator = 0;
     };
     // represents a gadget
     class Gadget {
