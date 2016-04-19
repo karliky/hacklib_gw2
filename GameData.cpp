@@ -30,3 +30,19 @@ GameData::PlayerData *GameData::GetPlayerData(hl::ForeignClass pPlayer)
     }
     return NULL;
 }
+
+void GameData::AgentList::UpdateList() {
+
+}
+
+void GameData::CharacterList::UpdateList() {
+
+}
+
+void GameData::PlayerList::UpdateList() {
+
+}
+
+void GameData::BuffList::UpdateList() {
+
+}

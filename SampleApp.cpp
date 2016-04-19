@@ -179,7 +179,7 @@ void sample_chat_cb(wchar_t *wtxt) {
 }
 
 void sample_log_cb(char *txt) {
-    HL_LOG_DBG("log: %s\n", txt);
+    //HL_LOG_DBG("log: %s\n", txt);
 }
 
 void GW2LIB::gw2lib_main()

@@ -28,57 +28,6 @@ Gw2HackMain *GetMain()
 }
 
 
-namespace GW2
-{
-    namespace ANet
-    {
-        template <typename T>
-        struct Array {
-            T *m_basePtr;
-            uint32_t m_capacity;
-            uint32_t m_count;
-        };
-
-        template <typename T>
-        struct Dictionary {
-            uint32_t m_capacity;
-            uint32_t m_count;
-            T *m_basePtr;
-        };
-
-        template <typename T, bool IsArray = true>
-        class Collection : private std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
-        public:
-            Collection<T> &operator= (const Collection<T> &a) {
-                if (this != &a) {
-                    m_basePtr = a.m_basePtr;
-                    m_capacity = a.m_capacity;
-                    m_count = a.m_count;
-                }
-                return *this;
-            }
-            T &operator[] (uint32_t index) {
-                if (IsArray && index < Count()) {
-                    return m_basePtr[index];
-                } else if (index < Capacity()) {
-                    return m_basePtr[index];
-                }
-                throw 1;
-            }
-            bool IsValid() {
-                return !!m_basePtr;
-            }
-            uint32_t Count() {
-                return m_count;
-            }
-            uint32_t Capacity() {
-                return m_capacity;
-            }
-        };
-    }
-}
-
-
 bool Gw2HackMain::init()
 {
     m_con.create("Gw2lib Console");
@@ -252,7 +201,7 @@ void Gw2HackMain::SetRenderCallback(void(*cbRender)())
 DWORD ExceptFilter(DWORD code, EXCEPTION_POINTERS *ep) {
     EXCEPTION_RECORD *er = ep->ExceptionRecord;
     CONTEXT *ctx = ep->ContextRecord;
-    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p\n", code, er->ExceptionAddress);
+    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p - ecx: 0x%p\n", code, er->ExceptionAddress, ctx->Ecx);
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
@@ -405,7 +354,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             hl::ForeignClass buffBar = combatant.get<void*>(m_pubmems.cmbtntBuffBar);
             if (buffBar) {
                 pCharData->pBuffBar = buffBar;
-                auto buffs = buffBar.get<GW2::ANet::Collection<GameData::BuffEntry, false>>(m_pubmems.buffbarBuffArr);
+                auto buffs = buffBar.get<GameData::ANet::Collection<GameData::BuffEntry, false>>(m_pubmems.buffbarBuffArr);
 
                 if (buffs.IsValid()) {
                     uint32_t sizeBuffsArray = buffs.Capacity();
@@ -432,6 +381,8 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 
                         // remove invalid buffs from our array
                         if (pCharData->buffDataList[i] && !pBuff) {
+                            GameData::BuffData *b = pCharData->buffDataList[i].get();
+                            b->pSrcAgData = nullptr;
                             pCharData->buffDataList[i] = nullptr;
                         }
                     }
@@ -598,7 +549,7 @@ bool Gw2HackMain::SetupAgentArray() {
     hl::ForeignClass gdctx = ctx.get<void*>(m_pubmems.contextGadget);
     if (!gdctx) return false;
 
-    auto agentArray = avctx.get<GW2::ANet::Collection<void*>>(m_pubmems.avctxAgentArray);
+    auto agentArray = avctx.get<GameData::ANet::Collection<void*>>(m_pubmems.avctxAgentArray);
     if (!agentArray.IsValid()) return false;
 
     bool bOwnAgentFound = false;
@@ -609,80 +560,77 @@ bool Gw2HackMain::SetupAgentArray() {
     // add agents from game array to own array and update data
     uint32_t sizeAgentArray = agentArray.Count();
     if (sizeAgentArray != m_gameData.objData.agentDataList.size()) {
+        HL_LOG_DBG("resize agent array from: %i to %i\n", m_gameData.objData.agentDataList.size(), sizeAgentArray);
         m_gameData.objData.agentDataList.resize(sizeAgentArray);
     }
 
     for (uint32_t i = 0; i < sizeAgentArray; i++)
     {
         hl::ForeignClass avAgent = agentArray[i];
+        if (!avAgent) continue;
 
-        if (avAgent) {
-            hl::ForeignClass pAgent = avAgent.call<void*>(m_pubmems.avagVtGetAgent);
+        hl::ForeignClass pAgent = avAgent.call<void*>(m_pubmems.avagVtGetAgent);
+        if (!pAgent) continue;
 
-            // check if agent is already in our array
-            if (pAgent) {
+        // agent is not in our array. add and fix ptr
+        if (!m_gameData.objData.agentDataList[i] || m_gameData.objData.agentDataList[i]->pAgent != pAgent) {
+            m_gameData.objData.agentDataList[i] = std::make_unique<GameData::AgentData>();
+        }
 
-                // agent is not in our array. add and fix ptr
-                if (!m_gameData.objData.agentDataList[i] || m_gameData.objData.agentDataList[i]->pAgent != pAgent) {
-                    m_gameData.objData.agentDataList[i] = std::make_unique<GameData::AgentData>();
-                }
+        GameData::AgentData *pAgentData = m_gameData.objData.agentDataList[i].get();
 
-                GameData::AgentData *pAgentData = m_gameData.objData.agentDataList[i].get();
+        // update values
+        RefreshDataAgent(pAgentData, pAgent);
 
-                // update values
-                RefreshDataAgent(pAgentData, pAgent);
+        pAgentData->selectable = asctx.call<bool>(m_pubmems.asctxVtAgCanSel, pAgent);
 
-                pAgentData->selectable = asctx.call<bool>(m_pubmems.asctxVtAgCanSel, pAgent);
+        // gadget update
+        if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
+            hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);
+            if (!pAgentData->gadgetData) pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
+            GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
+            RefreshDataGadget(pGadgetData, pGadget);
+            pGadgetData->pAgentData = pAgentData;
 
-                // gadget update
-                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET) {
-                    hl::ForeignClass pGadget = gdctx.call<void*>(m_pubmems.ctxgdVtGetGadget, pAgentData->agentId);
-                    if (!pAgentData->gadgetData) pAgentData->gadgetData = std::make_unique<GameData::GadgetData>();
-                    GameData::GadgetData *pGadgetData = pAgentData->gadgetData.get();
-                    RefreshDataGadget(pGadgetData, pGadget);
-                    pGadgetData->pAgentData = pAgentData;
-
-                    // resource node update
-                    if (pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
-                        hl::ForeignClass pRNode = pGadget.call<void*>(m_pubmems.gdVtGetRNode);
-                        if (!pGadgetData->rNodeData) pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
-                        GameData::ResourceNodeData *pRNodeData = pGadgetData->rNodeData.get();
-                        RefreshDataResourceNode(pRNodeData, pRNode);
-                        pRNodeData->pAgentData = pAgentData;
-                    }
-                }
-
-                // gadget attack target update
-                if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
-                    hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
-                    if (!pAgentData->attackTgtData) pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
-                    GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
-                    RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
-                    pAttackTgtData->pAgentData = pAgentData;
-                }
-
-                pAgentData->pCharData = nullptr;
-
-                // set own agent
-                if (m_gameData.objData.ownCharacter && m_gameData.objData.ownCharacter->pAgentData == pAgentData) {
-                    m_gameData.objData.ownAgent = pAgentData;
-                    bOwnAgentFound = true;
-                }
-
-                // set selection agents
-                if (pAgent == asctx.get<void*>(m_pubmems.asctxAuto)) {
-                    m_gameData.objData.autoSelection = pAgentData;
-                    bAutoSelectionFound = true;
-                }
-                if (pAgent == asctx.get<void*>(m_pubmems.asctxHover)) {
-                    m_gameData.objData.hoverSelection = pAgentData;
-                    bHoverSelectionFound = true;
-                }
-                if (pAgent == asctx.get<void*>(m_pubmems.asctxLocked)) {
-                    m_gameData.objData.lockedSelection = pAgentData;
-                    bLockedSelectionFound = true;
-                }
+            // resource node update
+            if (pGadgetData->type == GW2LIB::GW2::GADGET_TYPE_RESOURCE_NODE) {
+                hl::ForeignClass pRNode = pGadget.call<void*>(m_pubmems.gdVtGetRNode);
+                if (!pGadgetData->rNodeData) pGadgetData->rNodeData = std::make_unique<GameData::ResourceNodeData>();
+                GameData::ResourceNodeData *pRNodeData = pGadgetData->rNodeData.get();
+                RefreshDataResourceNode(pRNodeData, pRNode);
+                pRNodeData->pAgentData = pAgentData;
             }
+        }
+
+        // gadget attack target update
+        if (pAgentData->type == GW2LIB::GW2::AGENT_TYPE_GADGET_ATTACK_TARGET) {
+            hl::ForeignClass pAttackTgt = gdctx.call<void*>(m_pubmems.ctxgdVtGetAtkTgt, pAgentData->agentId);
+            if (!pAgentData->attackTgtData) pAgentData->attackTgtData = std::make_unique<GameData::AttackTargetData>();
+            GameData::AttackTargetData *pAttackTgtData = pAgentData->attackTgtData.get();
+            RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
+            pAttackTgtData->pAgentData = pAgentData;
+        }
+
+        //pAgentData->pCharData = nullptr;
+
+        // set own agent
+        if (m_gameData.objData.ownCharacter && m_gameData.objData.ownCharacter->pAgentData == pAgentData) {
+            m_gameData.objData.ownAgent = pAgentData;
+            bOwnAgentFound = true;
+        }
+
+        // set selection agents
+        if (pAgent == asctx.get<void*>(m_pubmems.asctxAuto)) {
+            m_gameData.objData.autoSelection = pAgentData;
+            bAutoSelectionFound = true;
+        }
+        if (pAgent == asctx.get<void*>(m_pubmems.asctxHover)) {
+            m_gameData.objData.hoverSelection = pAgentData;
+            bHoverSelectionFound = true;
+        }
+        if (pAgent == asctx.get<void*>(m_pubmems.asctxLocked)) {
+            m_gameData.objData.lockedSelection = pAgentData;
+            bLockedSelectionFound = true;
         }
     }
 
@@ -696,7 +644,10 @@ bool Gw2HackMain::SetupAgentArray() {
         hl::ForeignClass avAgent = agentArray[i];
 
         if (i >= sizeAgentArray || !avAgent || avAgent.call<void*>(m_pubmems.avagVtGetAgent) != m_gameData.objData.agentDataList[i]->pAgent) {
-            // agent was not found in game. remove from our array
+            // agent was not found in game. remove from our array and unlink corresponding data objects
+            GameData::AgentData *a = m_gameData.objData.agentDataList[i].get();
+            a->pCharData = nullptr;
+            a->pPlayerData = nullptr;
             m_gameData.objData.agentDataList[i] = nullptr;
         }
     }
@@ -720,7 +671,7 @@ bool Gw2HackMain::SetupCharacterArray() {
     hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
     if (!charctx) return false;
 
-    auto charArray = charctx.get<GW2::ANet::Collection<void*>>(m_pubmems.charctxCharArray);
+    auto charArray = charctx.get<GameData::ANet::Collection<void*>>(m_pubmems.charctxCharArray);
     if (!charArray.IsValid()) return false;
 
     bool bOwnCharFound = false;
@@ -785,6 +736,8 @@ bool Gw2HackMain::SetupCharacterArray() {
         hl::ForeignClass pChar = charArray[i];
 
         if (i >= sizeCharArray || !pChar || pChar != m_gameData.objData.charDataList[i]->pCharacter) {
+            GameData::CharacterData *c = m_gameData.objData.charDataList[i].get();
+            c->pAgentData = nullptr;
             m_gameData.objData.charDataList[i] = nullptr;
         }
     }
@@ -802,7 +755,7 @@ bool Gw2HackMain::SetupPlayerArray() {
     hl::ForeignClass charctx = ctx.get<void*>(m_pubmems.contextChar);
     if (!charctx) return false;
 
-    auto playerArray = charctx.get<GW2::ANet::Collection<void*>>(m_pubmems.charctxPlayerArray);
+    auto playerArray = charctx.get<GameData::ANet::Collection<void*>>(m_pubmems.charctxPlayerArray);
     if (!playerArray.IsValid()) return false;
 
     uint32_t sizePlayerArray = playerArray.Count();
@@ -865,6 +818,9 @@ bool Gw2HackMain::SetupPlayerArray() {
         hl::ForeignClass pPlayer = playerArray[i];
 
         if (i >= sizePlayerArray || !pPlayer || pPlayer != m_gameData.objData.playerDataList[i]->pPlayer) {
+            GameData::PlayerData *p = m_gameData.objData.playerDataList[i].get();
+            p->pAgentData = nullptr;
+            p->pCharData = nullptr;
             m_gameData.objData.playerDataList[i] = nullptr;
         }
     }
