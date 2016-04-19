@@ -20,14 +20,14 @@ http://www.gamerevision.com/showthread.php?3691-Gw2lib&p=45709
 
 struct PrimitiveDiffuseMesh;
 namespace GameData {
-    struct PlayerData;
-    struct CharacterData;
-    struct AgentData;
-    struct GadgetData;
-    struct AttackTargetData;
-    struct CompassData;
-    struct ResourceNodeData;
-    struct BuffData;
+    class PlayerData;
+    class CharacterData;
+    class AgentData;
+    class GadgetData;
+    class AttackTargetData;
+    class CompassData;
+    class ResourceNodeData;
+    class BuffData;
 }
 
 namespace GW2LIB

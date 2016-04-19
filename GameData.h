@@ -13,15 +13,15 @@
 
 namespace GameData
 {
-    struct PlayerData;
-    struct CharacterData;
-    struct AgentData;
-    struct GadgetData;
-    struct AttackTargetData;
-    struct ResourceNodeData;
-    struct CompassData;
+    class PlayerData;
+    class CharacterData;
+    class AgentData;
+    class GadgetData;
+    class AttackTargetData;
+    class ResourceNodeData;
+    class CompassData;
+    class BuffData;
     struct BuffEntry;
-    struct BuffData;
 
     enum CompassFlags {
         COMP_ROTATION = 0x1,
@@ -33,8 +33,14 @@ namespace GameData
         RNODE_FLAG_DEPLETED = 0x2
     };
 
-    struct AgentData
+    class ObjectData {
+    public:
+        virtual void UpdateData() = 0;
+    };
+
+    class AgentData : public ObjectData
     {
+    public:
         hl::ForeignClass pAgent = nullptr;
         CharacterData *pCharData = nullptr;
         PlayerData *pPlayerData = nullptr;
@@ -50,10 +56,13 @@ namespace GameData
         float speed = 0;
         float maxSpeed = 0;
         bool selectable = false;
+
+        void UpdateData() {}
     };
 
-    struct CharacterData
+    class CharacterData : public ObjectData
     {
+    public:
         hl::ForeignClass pCharacter = nullptr;
         hl::ForeignClass pPlayer = nullptr;
         hl::ForeignClass pCombatant = nullptr;
@@ -86,9 +95,12 @@ namespace GameData
         GW2LIB::GW2::CharacterStats stats;
         std::vector<std::unique_ptr<BuffData>> buffDataList;
         std::string name = "";
+
+        void UpdateData() {}
     };
 
-    struct PlayerData {
+    class PlayerData : public ObjectData {
+    public:
         hl::ForeignClass pPlayer = nullptr;
         hl::ForeignClass pChar = nullptr;
         hl::ForeignClass pWallet = nullptr;
@@ -96,10 +108,13 @@ namespace GameData
         CharacterData *pCharData = nullptr;
 
         std::string name = "";
+
+        void UpdateData() {}
     };
 
-    struct GadgetData
+    class GadgetData : public ObjectData
     {
+    public:
         hl::ForeignClass pGadget = nullptr;
         AgentData *pAgentData = nullptr;
         std::unique_ptr<ResourceNodeData> rNodeData = nullptr;
@@ -108,19 +123,25 @@ namespace GameData
         float maxHealth = 0;
         int wvwTeamId = 0;
         GW2LIB::GW2::GadgetType type = GW2LIB::GW2::GADGET_TYPE_NONE;
+
+        void UpdateData() {}
     };
 
-    struct AttackTargetData
+    class AttackTargetData : public ObjectData
     {
+    public:
         hl::ForeignClass pAttackTgt = nullptr;
         AgentData *pAgentData = nullptr;
 
         float currentHealth = 0;
         float maxHealth = 0;
+
+        void UpdateData() {}
     };
 
-    struct ResourceNodeData
+    class ResourceNodeData : public ObjectData
     {
+    public:
         hl::ForeignClass pResourceNode = nullptr;
         AgentData *pAgentData = nullptr;
         GW2LIB::GW2::ResourceNodeType type = GW2LIB::GW2::RNODE_TYPE_NONE;
@@ -129,9 +150,12 @@ namespace GameData
             bool depleted : 1;
             bool : 1;
         } flags;
+
+        void UpdateData() {}
     };
 
-    struct CompassData {
+    class CompassData : public ObjectData {
+    public:
         hl::ForeignClass pComp = nullptr;
         float width = 0;
         float height = 0;
@@ -145,14 +169,19 @@ namespace GameData
             bool : 1; // unknown (possibly bottom position width snap to skillbar)
             bool rotation : 1; // rotation lock (true if map rotation is enabled)
         } flags;
+
+        void UpdateData() {}
     };
 
-    struct BuffData {
+    class BuffData : public ObjectData {
+    public:
         hl::ForeignClass pBuff = nullptr;
         CharacterData *pCharData = nullptr;
         AgentData *pSrcAgData = nullptr;
         uint32_t effectType = 0;
         uint32_t buffId = 0;
+
+        void UpdateData() {}
     };
 
     struct BuffEntry {
@@ -217,7 +246,7 @@ namespace GameData
 
     private:
         std::vector<std::unique_ptr<T>> objectDataList;
-        ANet::Collection<Tc, IsArray> array;
+        ANet::Collection<Tc, IsArray> gameArr;
     };
 
     class AgentList : public ObjectList<AgentData, void*> {
@@ -244,7 +273,7 @@ namespace GameData
 
     struct GameData
     {
-        struct ObjectData
+        struct
         {
             std::vector<std::unique_ptr<CharacterData>> charDataList;
             std::vector<std::unique_ptr<AgentData>> agentDataList;
@@ -261,7 +290,7 @@ namespace GameData
             PlayerList playerList;
         } objData;
 
-        struct CamData
+        struct
         {
             bool valid = false;
             D3DXVECTOR3 camPos = D3DXVECTOR3(0, 0, 0);
