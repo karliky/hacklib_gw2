@@ -280,7 +280,7 @@ namespace GameData
 
     struct GameData
     {
-        struct
+        struct _objData
         {
             std::vector<std::unique_ptr<CharacterData>> charDataList;
             std::vector<std::unique_ptr<AgentData>> agentDataList;
@@ -297,7 +297,7 @@ namespace GameData
             PlayerList playerList;
         } objData;
 
-        struct
+        struct _camData
         {
             bool valid = false;
             D3DXVECTOR3 camPos = D3DXVECTOR3(0, 0, 0);
