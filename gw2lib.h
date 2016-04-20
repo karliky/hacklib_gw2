@@ -607,7 +607,7 @@ namespace GW2LIB
 
         uintptr_t contextGadget = 0x128;
         uintptr_t ctxgdVtGetGadget = 0x10;
-        uintptr_t ctxgdVtGetAtkTgt = 0x18;
+        uintptr_t ctxgdVtGetAtkTgt = 0x20;
 
         uintptr_t atkTgt = 0x58;
         uintptr_t gdHealth = 0x1e8;
@@ -940,7 +940,7 @@ namespace GW2LIB
         // gadget stuff
         uintptr_t contextGadget = 0x94;
         uintptr_t ctxgdVtGetGadget = 0x8;
-        uintptr_t ctxgdVtGetAtkTgt = 0xc;
+        uintptr_t ctxgdVtGetAtkTgt = 0x10;
 
         uintptr_t atkTgt = 0x30;
         uintptr_t gdHealth = 0x18c;
