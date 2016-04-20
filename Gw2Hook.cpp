@@ -142,7 +142,7 @@ void hkDmgLog(hl::CpuContext *ctx)
 #ifdef ARCH_64BIT
     int hit = (int)ctx->R9;
     uintptr_t *pSrc = (uintptr_t*)(ctx->R8);
-    uintptr_t *pTgt = (uintptr_t*)(ctx->R9);
+    uintptr_t *pTgt = (uintptr_t*)(ctx->RDX);
 #else
     int hit = *(int*)(ctx->EBP + 0x10);
     uintptr_t *pSrc = *(uintptr_t**)(ctx->EBP + 0xC);
@@ -160,7 +160,7 @@ void hkCombatLog(hl::CpuContext *ctx)
 #ifdef ARCH_64BIT
     GW2LIB::CombatLogType type = (GW2LIB::CombatLogType)(ctx->R8);
     int hit = *(int*)(ctx->RSP + 0x4c);
-    uintptr_t *pTgt = *(uintptr_t**)(ctx->RDI + 0x58);
+    uintptr_t *pTgt = *(uintptr_t**)(ctx->RBX + 0x58);
 #else
     GW2LIB::CombatLogType type = *(GW2LIB::CombatLogType*)(ctx->EBP + 0xC);
     int hit = *(int*)(ctx->EBP + 0x18);
