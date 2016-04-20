@@ -6,6 +6,8 @@
 #include <codecvt>
 #include <locale>
 
+using namespace GW2LIB;
+
 float offsety = 0;
 #define OFFSETY (offsety-=12)
 
@@ -26,7 +28,6 @@ float dist(GW2LIB::Vector3 p1, GW2LIB::Vector3 p2)
 
 void cbESP()
 {
-    using namespace GW2LIB;
 
     Agent agAuto = GetAutoSelection();
     Agent agHover = GetHoverSelection();
@@ -182,6 +183,10 @@ void sample_log_cb(char *txt) {
     //HL_LOG_DBG("log: %s\n", txt);
 }
 
+void sample_dmg_log(Agent src, Agent tgt, int hit) {
+    //HL_LOG_DBG("src: %p - tgt: %p - hit: %i\n", src.m_ptr->pAgent, tgt.m_ptr->pAgent, hit);
+}
+
 void GW2LIB::gw2lib_main()
 {
     EnableEsp(cbESP);
@@ -193,6 +198,7 @@ void GW2LIB::gw2lib_main()
 
     SetGameHook(HOOK_CHAT, sample_chat_cb);
     SetGameHook(HOOK_LOGGER, sample_log_cb);
+    SetGameHook(HOOK_DAMAGE_LOG, sample_dmg_log);
 
     while (GetAsyncKeyState(VK_HOME) >= 0)
         std::this_thread::sleep_for(std::chrono::milliseconds(25));
