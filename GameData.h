@@ -33,6 +33,91 @@ namespace GameData
         RNODE_FLAG_DEPLETED = 0x2
     };
 
+
+
+
+    namespace ANet
+    {
+        template <typename T>
+        struct Array {
+            T *m_basePtr;
+            uint32_t m_capacity;
+            uint32_t m_count;
+        };
+
+        template <typename T>
+        struct Dictionary {
+            uint32_t m_capacity;
+            uint32_t m_count;
+            T *m_basePtr;
+        };
+
+        template <typename T, bool IsArray = true>
+        class Collection : private std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
+        public:
+            Collection<T> &operator= (const Collection<T> &a) {
+                if (this != &a) {
+                    m_basePtr = a.m_basePtr;
+                    m_capacity = a.m_capacity;
+                    m_count = a.m_count;
+                }
+                return *this;
+            }
+            T &operator[] (uint32_t index) {
+                if (IsArray && index < Count()) {
+                    return m_basePtr[index];
+                } else if (index < Capacity()) {
+                    return m_basePtr[index];
+                }
+                throw 1;
+            }
+            bool IsValid() {
+                return !!m_basePtr;
+            }
+            uint32_t Count() {
+                return m_count;
+            }
+            uint32_t Capacity() {
+                return m_capacity;
+            }
+        };
+    };
+
+
+    template<typename T, typename Tc, bool IsArray = true>
+    class ObjectList {
+    public:
+        virtual bool UpdateList() = 0;
+
+    protected:
+        std::vector<std::unique_ptr<T>> objectDataList;
+        ANet::Collection<Tc, IsArray> gameArr;
+    };
+
+    class AgentList : public ObjectList<AgentData, void*> {
+    public:
+        bool UpdateList();
+    private:
+    };
+
+    class CharacterList : public ObjectList<CharacterData, void*> {
+    public:
+        bool UpdateList();
+    };
+
+    class PlayerList : public ObjectList<PlayerData, void*> {
+    public:
+        bool UpdateList();
+    };
+
+    class BuffList : public ObjectList<BuffData, BuffEntry, false> {
+    public:
+        bool UpdateList();
+    };
+
+
+
+
     class ObjectData {
     public:
         virtual void UpdateData() = 0;
@@ -95,6 +180,8 @@ namespace GameData
         GW2LIB::GW2::CharacterStats stats;
         std::vector<std::unique_ptr<BuffData>> buffDataList;
         std::string name = "";
+
+        BuffList buffList;
 
         void UpdateData() {}
     };
@@ -188,86 +275,6 @@ namespace GameData
         size_t buffId;
         uintptr_t *pBuff;
         size_t hash;
-    };
-
-
-    namespace ANet
-    {
-        template <typename T>
-        struct Array {
-            T *m_basePtr;
-            uint32_t m_capacity;
-            uint32_t m_count;
-        };
-
-        template <typename T>
-        struct Dictionary {
-            uint32_t m_capacity;
-            uint32_t m_count;
-            T *m_basePtr;
-        };
-
-        template <typename T, bool IsArray = true>
-        class Collection : private std::conditional<IsArray, Array<T>, Dictionary<T>>::type {
-        public:
-            Collection<T> &operator= (const Collection<T> &a) {
-                if (this != &a) {
-                    m_basePtr = a.m_basePtr;
-                    m_capacity = a.m_capacity;
-                    m_count = a.m_count;
-                }
-                return *this;
-            }
-            T &operator[] (uint32_t index) {
-                if (IsArray && index < Count()) {
-                    return m_basePtr[index];
-                } else if (index < Capacity()) {
-                    return m_basePtr[index];
-                }
-                throw 1;
-            }
-            bool IsValid() {
-                return !!m_basePtr;
-            }
-            uint32_t Count() {
-                return m_count;
-            }
-            uint32_t Capacity() {
-                return m_capacity;
-            }
-        };
-    };
-
-
-    template<typename T, typename Tc, bool IsArray = true>
-    class ObjectList {
-    public:
-        virtual void UpdateList() = 0;
-
-    private:
-        std::vector<std::unique_ptr<T>> objectDataList;
-        ANet::Collection<Tc, IsArray> gameArr;
-    };
-
-    class AgentList : public ObjectList<AgentData, void*> {
-    public:
-        void UpdateList();
-    private:
-    };
-
-    class CharacterList : public ObjectList<CharacterData, void*> {
-    public:
-        void UpdateList();
-    };
-
-    class PlayerList : public ObjectList<PlayerData, void*> {
-    public:
-        void UpdateList();
-    };
-
-    class BuffList : public ObjectList<BuffData, BuffEntry, false> {
-    public:
-        void UpdateList();
     };
 
 

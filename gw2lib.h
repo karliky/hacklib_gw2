@@ -543,14 +543,14 @@ namespace GW2LIB
         uintptr_t charVtGetAgent = 0x170;
         uintptr_t charVtGetAgentId = 0x178;
         uintptr_t charVtGetPlayer = 0x228;
-        uintptr_t charVtAlive = 0x2a8;
-        uintptr_t charVtControlled = 0x2b0;
-        uintptr_t charVtDowned = 0x2c8;
-        uintptr_t charVtInWater = 0x328;
-        uintptr_t charVtMonster = 0x340;
-        uintptr_t charVtClone = 0x360;
-        uintptr_t charVtPlayer = 0x3a0;
-        uintptr_t charVtRangerPet = 0x398;
+        uintptr_t charVtAlive = 0x2b0;
+        uintptr_t charVtControlled = 0x2b8;
+        uintptr_t charVtDowned = 0x2d0;
+        uintptr_t charVtInWater = 0x330;
+        uintptr_t charVtMonster = 0x348;
+        uintptr_t charVtClone = 0x368;
+        uintptr_t charVtPlayer = 0x3a8;
+        uintptr_t charVtRangerPet = 0x3a0;
         uintptr_t charAttitude = 0xa0;
         uintptr_t charBreakbar = 0xa8;
         uintptr_t charCoreStats = 0x288;
@@ -559,7 +559,7 @@ namespace GW2LIB
         uintptr_t charInventory = 0x2e0;
         uintptr_t charVtGetCmbtnt = 0xf8;
         uintptr_t charGliderPercent = 0x130;
-        uintptr_t charProfession = 0x368;
+        uintptr_t charProfession = 0x378;
         uintptr_t charName = 0x188;
 
         uintptr_t cmbtntBuffBar = 0x88;
@@ -606,7 +606,7 @@ namespace GW2LIB
         uintptr_t uiIntSize = 0x54;
 
         uintptr_t contextGadget = 0x128;
-        uintptr_t ctxgdVtGetGadget = 0x8;
+        uintptr_t ctxgdVtGetGadget = 0x10;
         uintptr_t ctxgdVtGetAtkTgt = 0x18;
 
         uintptr_t atkTgt = 0x58;
@@ -703,6 +703,7 @@ namespace GW2LIB
         "targetAgent && targetAgent->GetAgentId()"
         "m_outOfRangeActivationTargetAgent->GetType() == AGENT_TYPE_GADGET_ATTACK_TARGET"
         GetPos I don't remember, but should be easy to trial and error.
+        "55 8B EC 8B 49 1C FF 75 08 8B 11 FF 52 4C 8B 45 08 5D C2 04 00" = 32-bit agentVtGetPos func def
 
         The agentTransform member is very easy to recognize, because many numbers in it
         move when your character moves (when looking at own agent data). See CAgentTransform.
@@ -751,25 +752,25 @@ namespace GW2LIB
         // CharClient::CPlayer* GetPlayer();
         uintptr_t charVtGetPlayer = 0x114;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x154;
+        uintptr_t charVtAlive = 0x158;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x158;
+        uintptr_t charVtControlled = 0x15c;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x164;
+        uintptr_t charVtDowned = 0x168;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x194;
+        uintptr_t charVtInWater = 0x198;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x1a0;
+        uintptr_t charVtMonster = 0x1a4;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1b0;
+        uintptr_t charVtClone = 0x1b4;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1d0;
+        uintptr_t charVtPlayer = 0x1d4;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1cc;
+        uintptr_t charVtRangerPet = 0x1d0;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x60;
         // CharClient::CBreakBar* m_breakBar;
-        uintptr_t charBreakbar = 0x64;
+        uintptr_t charBreakbar = 0x64; // 0x130?
         // CharClient::CCoreStats* m_coreStats;
         uintptr_t charCoreStats = 0x19c;
         // CharClient::CEndurance* m_endurance;
@@ -780,9 +781,9 @@ namespace GW2LIB
         uintptr_t charInventory = 0x1c8;
 
         uintptr_t charVtGetCmbtnt = 0x7c;
-        uintptr_t charSkillbar = 0x220;
+        uintptr_t charSkillbar = 0x234;
         uintptr_t charGliderPercent = 0xb8;
-        uintptr_t charProfession = 0x218;
+        uintptr_t charProfession = 0x22c;
         uintptr_t charName = 0x100;
         /*
         Represents a character in the game. Generally stuff that can move around like
@@ -938,7 +939,7 @@ namespace GW2LIB
 
         // gadget stuff
         uintptr_t contextGadget = 0x94;
-        uintptr_t ctxgdVtGetGadget = 0x4;
+        uintptr_t ctxgdVtGetGadget = 0x8;
         uintptr_t ctxgdVtGetAtkTgt = 0xc;
 
         uintptr_t atkTgt = 0x30;

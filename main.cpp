@@ -201,7 +201,7 @@ void Gw2HackMain::SetRenderCallback(void(*cbRender)())
 DWORD ExceptFilter(DWORD code, EXCEPTION_POINTERS *ep) {
     EXCEPTION_RECORD *er = ep->ExceptionRecord;
     CONTEXT *ctx = ep->ContextRecord;
-    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p - ecx: 0x%p\n", code, er->ExceptionAddress, ctx->Ecx);
+    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p\n", code, er->ExceptionAddress);
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
@@ -611,7 +611,7 @@ bool Gw2HackMain::SetupAgentArray() {
             pAttackTgtData->pAgentData = pAgentData;
         }
 
-        //pAgentData->pCharData = nullptr;
+        pAgentData->pCharData = nullptr;
 
         // set own agent
         if (m_gameData.objData.ownCharacter && m_gameData.objData.ownCharacter->pAgentData == pAgentData) {
@@ -842,6 +842,7 @@ void Gw2HackMain::GameHook()
 
     if (m_gameData.camData.valid)
     {
+        //m_gameData.objData.agentList.UpdateList();
         SetupAgentArray();
         SetupCharacterArray();
         SetupPlayerArray();
