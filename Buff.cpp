@@ -55,8 +55,8 @@ Agent Buff::GetSource() {
     return ag;
 }
 
-uint32_t Buff::GetEffectType() {
-    return m_ptr ? m_ptr->effectType : 0;
+GW2::EffectType Buff::GetEffectType() {
+    return m_ptr ? m_ptr->effectType : GW2::EFFECT_NONE;
 }
 
 int32_t Buff::GetDuration() {

@@ -183,7 +183,7 @@ namespace GW2LIB
             CHAR_GENDER_NONE
         };
 
-        enum Currency {
+        enum CurrencyType {
             CURRENCY_NONE,
             CURRENCY_COIN,
             CURRENCY_KARMA,
@@ -201,6 +201,50 @@ namespace GW2LIB
             CURRENCY_TRANS_CHARGES = 18,
             CURRENCY_SPIRIT_SHARDS = 23,
             CURRENCY_END
+        };
+
+        enum EffectType {
+            EFFECT_NONE,
+            EFFECT_PROTECTION = 717,
+            EFFECT_REGENERATION = 718,
+            EFFECT_SWIFTNESS = 719,
+            EFFECT_FURY = 725,
+            EFFECT_VIGOR = 726,
+            EFFECT_MIGHT = 740,
+            EFFECT_AEGIS = 743,
+            EFFECT_RETALIATION = 873,
+            EFFECT_STABILITY = 1122,
+            EFFECT_BLEEDING = 736,
+            EFFECT_BLIND = 720,
+            EFFECT_BURNING = 737,
+            EFFECT_CHILLED = 722,
+            EFFECT_CONFUSION = 861,
+            EFFECT_CRIPPLED = 721,
+            EFFECT_FEAR = 791,
+            EFFECT_IMMOBILIZED = 727,
+            EFFECT_POISON = 723,
+            EFFECT_VULNERABILITY = 738,
+            EFFECT_WEAKNESS = 742,
+            EFFECT_BLUR = 10335,
+            EFFECT_DETERMINED = 11641,
+            EFFECT_DISTORTION = 10371,
+            EFFECT_ELIXIRS = 5863,
+            EFFECT_FRENZY = 14456,
+            EFFECT_HASTE = 13067,
+            EFFECT_MISTFORMBUFF1 = 3686,
+            EFFECT_MISTFORMBUFF2 = 5543,
+            EFFECT_PETRIFIED = 15090,
+            EFFECT_QUICKENINGZEPHYR = 12551,
+            EFFECT_RENEWEDFOCUS = 9255,
+            EFFECT_REVEALED = 890,
+            EFFECT_STUN = 872,
+            EFFECT_SVANIRICEBLOCK = 9636,
+            EFFECT_QUICKNESS = 1187,
+            EFFECT_INVULNERABILITY = 848,
+            EFFECT_STEALTH = 13017,
+            EFFECT_TORMENT = 19426,
+            EFFECT_SLOW = 26766,
+            EFFECT_END
         };
     }
 
@@ -317,7 +361,7 @@ namespace GW2LIB
         bool BeNext();
 
         Agent GetSource();
-        uint32_t GetEffectType();
+        GW2::EffectType GetEffectType();
         int32_t GetDuration();
         uint32_t TimeLeft();
 
@@ -341,7 +385,7 @@ namespace GW2LIB
         Agent GetAgent() const;
         Character GetCharacter() const;
 
-        int GetCurrency(GW2::Currency type);
+        int GetCurrency(GW2::CurrencyType type);
         std::string GetName() const;
 
         GameData::PlayerData *m_ptr = nullptr;

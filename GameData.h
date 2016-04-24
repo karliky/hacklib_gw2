@@ -273,7 +273,7 @@ namespace GameData
         hl::ForeignClass pBuff = nullptr;
         CharacterData *pCharData = nullptr;
         AgentData *pSrcAgData = nullptr;
-        uint32_t effectType = 0;
+        GW2LIB::GW2::EffectType effectType = GW2LIB::GW2::EFFECT_NONE;
         uint32_t id = 0;
         int32_t duration = 0;
         int64_t timestamp = 0;

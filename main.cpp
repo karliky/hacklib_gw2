@@ -423,7 +423,7 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
     __try {
         pBuffData->pBuff = buff;
         pBuffData->id = buff.get<uint32_t>(m_pubmems.buffBuffId);
-        pBuffData->effectType = buff.get<uint32_t>(m_pubmems.buffEfType);
+        pBuffData->effectType = buff.get<GW2LIB::GW2::EffectType>(m_pubmems.buffEfType);
         pBuffData->duration = buff.get<int32_t>(m_pubmems.buffDuration);
 
         if (m_gameData.camData.valid && !pBuffData->timestamp)
