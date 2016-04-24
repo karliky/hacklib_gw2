@@ -62,3 +62,12 @@ uint32_t Buff::GetEffectType() {
 uint32_t Buff::GetDuration() {
     return m_ptr ? m_ptr->duration : 0;
 }
+
+uint32_t Buff::TimeLeft() {
+    if (!m_ptr) return 0;
+
+    uint32_t duration = m_ptr->duration;
+    int64_t end = m_ptr->timestamp + duration;
+    int64_t now = GetTimestamp();
+    return (uint32_t)(end - now);
+}

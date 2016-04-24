@@ -162,8 +162,10 @@ void cbESP()
                 while (buff.BeNext()) {
                     Agent agSrc = buff.GetSource();
                     uint32_t duration = buff.GetDuration();
-                    float time = (duration && duration != -1) ? duration / 1000.0f : 0;
-                    font.Draw(x, y + OFFSETY, fontColor, "time: %0.1f - effect: %i - source: %s", time, buff.GetEffectType(), agSrc.GetName().c_str());
+                    uint32_t timeLeft = buff.TimeLeft();
+                    bool bDur = (duration && duration != -1);
+                    float time = bDur ? timeLeft / 1000.0f : 0;
+                    if (bDur) font.Draw(x, y + OFFSETY, fontColor, "time: %0.1f - id: 0x%04x - effect: %i - source: %s", time, buff.m_ptr->id, buff.GetEffectType(), agSrc.GetName().c_str());
                 }
             }
 
