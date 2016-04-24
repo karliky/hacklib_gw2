@@ -161,8 +161,9 @@ void cbESP()
                 Buff buff = chr.GetBuffs();
                 while (buff.BeNext()) {
                     Agent agSrc = buff.GetSource();
-                    float time = (buff.m_ptr->duration && buff.m_ptr->duration != -1) ? buff.m_ptr->duration / 1000.0f : 0;
-                    font.Draw(x, y + OFFSETY, fontColor, "time: %0.1f - id: 0x%04X - effect: %i - source: %s", time, buff.m_ptr->buffId, buff.GetEffectType(), agSrc.GetName().c_str());
+                    uint32_t duration = buff.GetDuration();
+                    float time = (duration && duration != -1) ? duration / 1000.0f : 0;
+                    font.Draw(x, y + OFFSETY, fontColor, "time: %0.1f - effect: %i - source: %s", time, buff.GetEffectType(), agSrc.GetName().c_str());
                 }
             }
 

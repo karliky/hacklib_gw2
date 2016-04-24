@@ -318,6 +318,7 @@ namespace GW2LIB
 
         Agent GetSource();
         uint32_t GetEffectType();
+        uint32_t GetDuration();
 
         std::vector<std::unique_ptr<GameData::BuffData>> *buffDataList = nullptr;
         GameData::BuffData *m_ptr = nullptr;

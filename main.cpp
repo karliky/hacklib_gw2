@@ -27,6 +27,10 @@ Gw2HackMain *GetMain()
     return g_initObj.getMain();
 }
 
+int64_t GetTimestamp() {
+    return std::chrono::system_clock::now().time_since_epoch().count() / 10000;
+}
+
 
 bool Gw2HackMain::init()
 {
@@ -369,6 +373,9 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                                 [pCharData, i]() -> void {
                                     pCharData->buffDataList[i] = std::make_unique<GameData::BuffData>();
                                 } ();
+
+                                GameData::BuffData *pBuffData = pCharData->buffDataList[i].get();
+                                pBuffData->timestamp = GetTimestamp();
                             }
 
                             GameData::BuffData *pBuffData = pCharData->buffDataList[i].get();
@@ -418,7 +425,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClass buff) {
     __try {
         pBuffData->pBuff = buff;
-        pBuffData->buffId = buff.get<uint32_t>(m_pubmems.buffBuffId);
+        pBuffData->id = buff.get<uint32_t>(m_pubmems.buffBuffId);
         pBuffData->effectType = buff.get<uint32_t>(m_pubmems.buffEfType);
         pBuffData->duration = buff.get<uint32_t>(m_pubmems.buffDuration);
 

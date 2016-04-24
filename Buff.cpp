@@ -58,3 +58,7 @@ Agent Buff::GetSource() {
 uint32_t Buff::GetEffectType() {
     return m_ptr ? m_ptr->effectType : 0;
 }
+
+uint32_t Buff::GetDuration() {
+    return m_ptr ? m_ptr->duration : 0;
+}

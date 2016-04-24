@@ -13,7 +13,7 @@
 
 
 class Gw2HackMain *GetMain();
-
+int64_t GetTimestamp();
 
 struct GamePointers
 {
