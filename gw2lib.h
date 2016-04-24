@@ -836,6 +836,7 @@ namespace GW2LIB
         uintptr_t buffSkillDef = 0x8;
         uintptr_t buffBuffId = 0xc;
         uintptr_t buffSrcAg = 0x14;
+        uintptr_t buffDuration = 0x20;
         uintptr_t buffActive = 0x2c;
 
         // CharClient::CSkillBar* m_skillBar;

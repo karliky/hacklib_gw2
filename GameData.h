@@ -275,6 +275,7 @@ namespace GameData
         AgentData *pSrcAgData = nullptr;
         uint32_t effectType = 0;
         uint32_t buffId = 0;
+        uint32_t duration = 0;
 
         void UpdateData() {}
     };

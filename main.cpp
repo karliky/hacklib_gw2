@@ -372,6 +372,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                             }
 
                             GameData::BuffData *pBuffData = pCharData->buffDataList[i].get();
+
                             RefreshDataBuff(pBuffData, pBuff);
 
                             pBuffData->pCharData = pCharData;
@@ -396,7 +397,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             {
                 pCharData->pPlayer = player;
                 hl::ForeignClass prof = character.get<void*>(m_pubmems.charProfession);
-                if (prof) {
+                if (prof && pCharData->profession != GW2LIB::GW2::PROFESSION_ENGINEER) {
                     bool toInt =
                         pCharData->profession == GW2LIB::GW2::PROFESSION_MESMER ||
                         pCharData->profession == GW2LIB::GW2::PROFESSION_WARRIOR ||
@@ -419,6 +420,7 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
         pBuffData->pBuff = buff;
         pBuffData->buffId = buff.get<uint32_t>(m_pubmems.buffBuffId);
         pBuffData->effectType = buff.get<uint32_t>(m_pubmems.buffEfType);
+        pBuffData->duration = buff.get<uint32_t>(m_pubmems.buffDuration);
 
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
         pBuffData->pSrcAgData = srcAg ? GameData::GetAgentData(srcAg) : nullptr;
