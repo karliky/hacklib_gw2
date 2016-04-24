@@ -373,9 +373,6 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                                 [pCharData, i]() -> void {
                                     pCharData->buffDataList[i] = std::make_unique<GameData::BuffData>();
                                 } ();
-
-                                GameData::BuffData *pBuffData = pCharData->buffDataList[i].get();
-                                pBuffData->timestamp = GetTimestamp();
                             }
 
                             GameData::BuffData *pBuffData = pCharData->buffDataList[i].get();
@@ -427,7 +424,10 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
         pBuffData->pBuff = buff;
         pBuffData->id = buff.get<uint32_t>(m_pubmems.buffBuffId);
         pBuffData->effectType = buff.get<uint32_t>(m_pubmems.buffEfType);
-        pBuffData->duration = buff.get<uint32_t>(m_pubmems.buffDuration);
+        pBuffData->duration = buff.get<int32_t>(m_pubmems.buffDuration);
+
+        if (m_gameData.camData.valid && !pBuffData->timestamp)
+            pBuffData->timestamp = GetTimestamp();
 
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
         pBuffData->pSrcAgData = srcAg ? GameData::GetAgentData(srcAg) : nullptr;

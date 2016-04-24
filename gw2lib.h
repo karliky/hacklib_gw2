@@ -318,7 +318,7 @@ namespace GW2LIB
 
         Agent GetSource();
         uint32_t GetEffectType();
-        uint32_t GetDuration();
+        int32_t GetDuration();
         uint32_t TimeLeft();
 
         std::vector<std::unique_ptr<GameData::BuffData>> *buffDataList = nullptr;
@@ -566,9 +566,16 @@ namespace GW2LIB
 
         uintptr_t cmbtntBuffBar = 0x88;
         uintptr_t buffbarBuffArr = 0x10;
+
         uintptr_t buffEfType = 0x8;
+        uintptr_t buffSkillDef = 0x10;
         uintptr_t buffBuffId = 0x18;
         uintptr_t buffSrcAg = 0x28;
+        uintptr_t buffDuration = 0x40;
+        uintptr_t buffActive = 0x4c;
+
+        uintptr_t pSkillInfo = 0x60;
+        uintptr_t skillStackType = 0xc;
 
         uintptr_t playerName = 0x68;
         uintptr_t playerVtGetWallet = 0x188;
@@ -848,6 +855,7 @@ namespace GW2LIB
 
         // CharClient::CSkill* m_skillDef
         uintptr_t pSkillInfo = 0x48;
+        uintptr_t skillStackType = 0xc;
         uintptr_t skillRadius = 0x44;
         uintptr_t skillRechargeMs = 0x68;
         uintptr_t skillMaxRange = 0x7c;
