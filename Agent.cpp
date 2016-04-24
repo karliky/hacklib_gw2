@@ -169,9 +169,8 @@ bool Agent::IsSelectable() const {
 }
 
 std::string Agent::GetName() const {
-    Character ch;
-
     if (m_ptr && m_ptr->pCharData && m_ptr->category == GW2::AGENT_CATEGORY_CHAR) {
+        Character ch;
         ch.m_ptr = m_ptr->pCharData;
         return ch.GetName();
     }

@@ -38,6 +38,7 @@ public:
     void shutdown() override;
 
     const GamePointers *GetGamePointers() const { return &m_mems; }
+    const GW2LIB::Mems *GetGameOffsets() const { return &m_pubmems; }
 
     hl::Drawer *GetDrawer(bool bUsedToRender);
     const GameData::GameData *GetGameData() const;
@@ -69,7 +70,6 @@ private:
     bool SetupCharacterArray();
     bool SetupPlayerArray();
 
-private:
     hl::ConsoleEx m_con;
     hl::Hooker m_hooker;
     hl::Drawer m_drawer;

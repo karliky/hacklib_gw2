@@ -8,6 +8,7 @@
 #include "d3dx9.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 
 
@@ -69,7 +70,7 @@ namespace GameData
                 } else if (index < Capacity()) {
                     return m_basePtr[index];
                 }
-                throw 1;
+                throw STATUS_ARRAY_BOUNDS_EXCEEDED;
             }
             bool IsValid() {
                 return !!m_basePtr;
@@ -84,35 +85,37 @@ namespace GameData
     };
 
 
+
+
     template<typename T, typename Tc, bool IsArray = true>
     class ObjectList {
     public:
-        virtual bool UpdateList() = 0;
+        virtual bool Update() = 0;
+        //virtual T* Find(void* idx);
 
     protected:
-        std::vector<std::unique_ptr<T>> objectDataList;
-        ANet::Collection<Tc, IsArray> gameArr;
+        std::unordered_map<void*, std::unique_ptr<T>> objectDataList;
+        //ANet::Collection<Tc, IsArray> gameArr;
     };
 
     class AgentList : public ObjectList<AgentData, void*> {
     public:
-        bool UpdateList();
-    private:
+        bool Update();
     };
 
     class CharacterList : public ObjectList<CharacterData, void*> {
     public:
-        bool UpdateList();
+        bool Update();
     };
 
     class PlayerList : public ObjectList<PlayerData, void*> {
     public:
-        bool UpdateList();
+        bool Update();
     };
 
     class BuffList : public ObjectList<BuffData, BuffEntry, false> {
     public:
-        bool UpdateList();
+        bool Update();
     };
 
 
@@ -121,12 +124,17 @@ namespace GameData
     class ObjectData {
     public:
         virtual void UpdateData() = 0;
+    protected:
+        hl::ForeignClass m_ptr = nullptr;
     };
+
+
 
     class AgentData : public ObjectData
     {
     public:
         hl::ForeignClass pAgent = nullptr;
+        hl::ForeignClass wmAgent = nullptr;
         CharacterData *pCharData = nullptr;
         PlayerData *pPlayerData = nullptr;
         std::unique_ptr<GadgetData> gadgetData = nullptr;
@@ -282,8 +290,8 @@ namespace GameData
     {
         struct _objData
         {
-            std::vector<std::unique_ptr<CharacterData>> charDataList;
             std::vector<std::unique_ptr<AgentData>> agentDataList;
+            std::vector<std::unique_ptr<CharacterData>> charDataList;
             std::vector<std::unique_ptr<PlayerData>> playerDataList;
             std::unique_ptr<CompassData> compData = nullptr;
             CharacterData *ownCharacter = nullptr;

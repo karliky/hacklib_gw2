@@ -69,6 +69,7 @@ public:
     const hl::IHook *m_hkAllocator = nullptr;
     const hl::IHook *m_hkLogger = nullptr;
     const hl::IHook *m_hkLogger2 = nullptr;
+    const hl::IHook *m_hkFrTxt = nullptr;
 
     HHOOK m_hhkGetMessage = NULL;
     Gw2Hooks m_hookList;

@@ -7,16 +7,18 @@ void hkCombatLog(hl::CpuContext*);
 void hkAllocator(hl::CpuContext*);
 void hkLogger(hl::CpuContext*);
 void hkLogger2(hl::CpuContext*);
+void hkFrameText(hl::CpuContext*);
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam);
 
 
 bool Gw2GameHook::init_hooks() {
 #ifdef ARCH_64BIT
-    uintptr_t pResLogger  = hl::FindPattern("48 89 5C 24 08 57 48 83 EC 20 4D 8B 09 48 8B DA 48 8B F9 E8");
-    uintptr_t pResLogger2 = hl::FindPattern("5F C3 CC CC CC CC CC CC CC 48 89 5C 24 08 57 48 83 EC 20 4D 8B 09 48 8B DA 48 8B F9 E8");
+    uintptr_t pLogger  = hl::FindPattern("48 89 5C 24 08 57 48 83 EC 20 4D 8B 09 48 8B DA 48 8B F9 E8");
+    uintptr_t pLogger2 = hl::FindPattern("5F C3 CC CC CC CC CC CC CC 48 89 5C 24 08 57 48 83 EC 20 4D 8B 09 48 8B DA 48 8B F9 E8");
 #else
-    uintptr_t pResLogger  = hl::FindPattern("55 8B EC 8B 45 0C 53 56 57 FF 30 8B FA 8B D9 FF 75 08 57 53 E8");
-    uintptr_t pResLogger2 = hl::FindPattern("5D C2 08 00 CC CC CC CC CC CC CC CC CC CC CC 55 8B EC 8B 45 0C 53 56 57 FF 30 8B FA 8B D9 FF 75 08 57 53 E8");
+    uintptr_t pLogger = hl::FindPattern("55 8B EC 8B 45 0C 53 56 57 FF 30 8B FA 8B D9 FF 75 08 57 53 E8");
+    uintptr_t pLogger2 = hl::FindPattern("5D C2 08 00 CC CC CC CC CC CC CC CC CC CC CC 55 8B EC 8B 45 0C 53 56 57 FF 30 8B FA 8B D9 FF 75 08 57 53 E8");
+    uintptr_t pFrameTxt = hl::FindPattern("FF 50 04 5F 5E 5B 8B E5 5D C2 24 00 CC CC CC 52 51");
 #endif
 
     hl::PatternScanner scanner;
@@ -31,39 +33,37 @@ bool Gw2GameHook::init_hooks() {
     uintptr_t pDmgLog = NULL;
     uintptr_t pCombatLog = NULL;
     uintptr_t pAllocator = NULL;
-    uintptr_t pLogger = NULL;
-    uintptr_t pLogger2 = NULL;
 
 #ifdef ARCH_64BIT
     pProcessText = (results[0] - 0x49);
     pDmgLog = (results[1] - 0x2a);
     pCombatLog = (results[2] - 0x20);
     pAllocator = (results[3] - 0x4d);
-    pLogger  = (pResLogger + 0x4c);
-    pLogger2 = (pResLogger2 + 0x55);
+    pLogger = (pLogger + 0x4c);
+    pLogger2 = (pLogger2 + 0x55);
 
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 17, hkProcessText);
     m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 15, hkDmgLog);
     m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 16, hkCombatLog);
     m_hkAllocator = m_hooker.hookDetour(pAllocator, 14, hkAllocator);
-    m_hkLogger  = m_hooker.hookDetour(pLogger, 14, hkLogger);
+    m_hkLogger = m_hooker.hookDetour(pLogger, 14, hkLogger);
     m_hkLogger2 = m_hooker.hookDetour(pLogger2, 14, hkLogger2);
 #else
-
-
     pProcessText = (results[0] - 0x2d);
     pDmgLog = (results[1] - 0x10);
     pCombatLog = (results[2] - 0x14);
     pAllocator = (results[3] - 0x21);
-    pLogger  = (pResLogger + 0x19);
-    pLogger2 = (pResLogger2 + 0x28);
+    pLogger = (pLogger + 0x19);
+    pLogger2 = (pLogger2 + 0x28);
+    pFrameTxt = (pFrameTxt + 0xf);
 
     m_hkProcessText = m_hooker.hookDetour(pProcessText, 6, hkProcessText);
     m_hkDmgLog = m_hooker.hookDetour(pDmgLog, 6, hkDmgLog);
     m_hkCombatLog = m_hooker.hookDetour(pCombatLog, 7, hkCombatLog);
     m_hkAllocator = m_hooker.hookDetour(pAllocator, 5, hkAllocator);
-    m_hkLogger  = m_hooker.hookDetour(pLogger, 5, hkLogger);
+    m_hkLogger = m_hooker.hookDetour(pLogger, 5, hkLogger);
     m_hkLogger2 = m_hooker.hookDetour(pLogger2, 5, hkLogger2);
+    m_hkFrTxt = m_hooker.hookDetour(pFrameTxt, 7, hkFrameText);
 #endif
 
     if (!m_hkProcessText) {
@@ -91,6 +91,11 @@ bool Gw2GameHook::init_hooks() {
         return false;
     }
 
+    if (!m_hkFrTxt) {
+        HL_LOG_ERR("[Hook::Init] Hooking frame text proc failed\n");
+        return false;
+    }
+
     HWND hwnd = NULL;
     if ((hwnd = FindWindow("ArenaNet_Dx_Window_Class", NULL)) != NULL)
     {
@@ -114,6 +119,7 @@ void Gw2GameHook::cleanup() {
     if (m_hkAllocator) m_hooker.unhook(m_hkAllocator);
     if (m_hkLogger) m_hooker.unhook(m_hkLogger);
     if (m_hkLogger2) m_hooker.unhook(m_hkLogger2);
+    if (m_hkFrTxt) m_hooker.unhook(m_hkFrTxt);
 
     if (m_hhkGetMessage != NULL)
     {
@@ -122,7 +128,19 @@ void Gw2GameHook::cleanup() {
 }
 
 
+void hkFrameText(hl::CpuContext *ctx) {
+#ifdef ARCH_64BIT
+    uintptr_t p1 = (uintptr_t)ctx->RCX;
+    wchar_t *wtxt = (wchar_t*)ctx->RDX;
+#else
+    uintptr_t p1 = (uintptr_t)ctx->ECX;
+    wchar_t *wtxt = (wchar_t*)ctx->EDX;
+#endif
 
+    Gw2GameHook *hk = get_hook();
+    std::string test = hk->converter.to_bytes(wtxt);
+    //if(test != "A+F1" && test.size()) HL_LOG_DBG("ECX: %p - EDX: %p - %s\n", p1, wtxt, test.c_str());
+}
 
 void hkProcessText(hl::CpuContext *ctx)
 {

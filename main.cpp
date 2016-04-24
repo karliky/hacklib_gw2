@@ -198,13 +198,6 @@ void Gw2HackMain::SetRenderCallback(void(*cbRender)())
     m_cbRender = cbRender;
 }
 
-DWORD ExceptFilter(DWORD code, EXCEPTION_POINTERS *ep) {
-    EXCEPTION_RECORD *er = ep->ExceptionRecord;
-    CONTEXT *ctx = ep->ContextRecord;
-    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p\n", code, er->ExceptionAddress);
-    return EXCEPTION_EXECUTE_HANDLER;
-}
-
 void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
 {
     if (!m_drawer.GetDevice())
@@ -246,7 +239,12 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
             {
                 __try {
                     m_cbRender();
-                } __except (ExceptFilter(GetExceptionCode(), GetExceptionInformation())) {
+                } __except (([](DWORD code, EXCEPTION_POINTERS *ep)->DWORD{
+                    EXCEPTION_RECORD *er = ep->ExceptionRecord;
+                    CONTEXT *ctx = ep->ContextRecord;
+                    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p\n", code, er->ExceptionAddress);
+                    return EXCEPTION_EXECUTE_HANDLER;
+                })(GetExceptionCode(), GetExceptionInformation())) {
                     ;// HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p\n", GetExceptionCode());
                 }
             }();
@@ -423,9 +421,7 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
         pBuffData->effectType = buff.get<uint32_t>(m_pubmems.buffEfType);
 
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
-        if (srcAg) {
-            pBuffData->pSrcAgData = GameData::GetAgentData(srcAg);
-        }
+        pBuffData->pSrcAgData = srcAg ? GameData::GetAgentData(srcAg) : nullptr;
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataBuff] access violation\n");
@@ -560,7 +556,6 @@ bool Gw2HackMain::SetupAgentArray() {
     // add agents from game array to own array and update data
     uint32_t sizeAgentArray = agentArray.Count();
     if (sizeAgentArray != m_gameData.objData.agentDataList.size()) {
-        HL_LOG_DBG("resize agent array from: %i to %i\n", m_gameData.objData.agentDataList.size(), sizeAgentArray);
         m_gameData.objData.agentDataList.resize(sizeAgentArray);
     }
 
@@ -578,10 +573,13 @@ bool Gw2HackMain::SetupAgentArray() {
         }
 
         GameData::AgentData *pAgentData = m_gameData.objData.agentDataList[i].get();
+        pAgentData->wmAgent = avAgent;
 
         // update values
         RefreshDataAgent(pAgentData, pAgent);
 
+        pAgentData->pCharData = nullptr;
+        pAgentData->pPlayerData = nullptr;
         pAgentData->selectable = asctx.call<bool>(m_pubmems.asctxVtAgCanSel, pAgent);
 
         // gadget update
@@ -610,8 +608,6 @@ bool Gw2HackMain::SetupAgentArray() {
             RefreshDataAttackTarget(pAttackTgtData, pAttackTgt);
             pAttackTgtData->pAgentData = pAgentData;
         }
-
-        pAgentData->pCharData = nullptr;
 
         // set own agent
         if (m_gameData.objData.ownCharacter && m_gameData.objData.ownCharacter->pAgentData == pAgentData) {
@@ -685,45 +681,44 @@ bool Gw2HackMain::SetupCharacterArray() {
     for (uint32_t i = 0; i < sizeCharArray; i++)
     {
         hl::ForeignClass pCharacter = charArray[i];
+        if (!pCharacter) continue;
 
-        if (pCharacter) {
-            int agentId = pCharacter.call<int>(m_pubmems.charVtGetAgentId);
+        int agentId = pCharacter.call<int>(m_pubmems.charVtGetAgentId);
 
-            if (!m_gameData.objData.charDataList[i] || m_gameData.objData.charDataList[i]->pCharacter != pCharacter) {
-                m_gameData.objData.charDataList[i] = std::make_unique<GameData::CharacterData>();
-            }
+        if (!m_gameData.objData.charDataList[i] || m_gameData.objData.charDataList[i]->pCharacter != pCharacter) {
+            m_gameData.objData.charDataList[i] = std::make_unique<GameData::CharacterData>();
+        }
 
-            GameData::CharacterData *pCharData = m_gameData.objData.charDataList[i].get();
+        GameData::CharacterData *pCharData = m_gameData.objData.charDataList[i].get();
 
-            // update values
-            RefreshDataCharacter(pCharData, pCharacter);
+        // update values
+        RefreshDataCharacter(pCharData, pCharacter);
 
-            bool bAgentDataFound = false;
+        bool bAgentDataFound = false;
 
-            // link agentdata of corresponding agent
-            if (m_gameData.objData.agentDataList[agentId]) {
-                pCharData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
-                pCharData->pAgentData->pCharData = pCharData;
+        // link agentdata of corresponding agent
+        if (m_gameData.objData.agentDataList[agentId]) {
+            pCharData->pAgentData = m_gameData.objData.agentDataList[agentId].get();
+            pCharData->pAgentData->pCharData = pCharData;
 
-                if (pCharData->pAgentData->pAgent) {
-                    hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
-                    if (transform) {
-                        pCharData->pAgentData->speed = pCharData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.npc_agtransSpeed);
-                    }
+            if (pCharData->pAgentData->pAgent) {
+                hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
+                if (transform) {
+                    pCharData->pAgentData->speed = pCharData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.npc_agtransSpeed);
                 }
-
-                bAgentDataFound = true;
             }
 
-            if (!bAgentDataFound) {
-                pCharData->pAgentData = nullptr;
-            }
+            bAgentDataFound = true;
+        }
 
-            // set own character
-            if (pCharacter == charctx.get<void*>(m_pubmems.charctxControlled)) {
-                m_gameData.objData.ownCharacter = pCharData;
-                bOwnCharFound = true;
-            }
+        if (!bAgentDataFound) {
+            pCharData->pAgentData = nullptr;
+        }
+
+        // set own character
+        if (pCharacter == charctx.get<void*>(m_pubmems.charctxControlled)) {
+            m_gameData.objData.ownCharacter = pCharData;
+            bOwnCharFound = true;
         }
     }
 
@@ -842,7 +837,7 @@ void Gw2HackMain::GameHook()
 
     if (m_gameData.camData.valid)
     {
-        //m_gameData.objData.agentList.UpdateList();
+        //m_gameData.objData.agentList.Update();
         SetupAgentArray();
         SetupCharacterArray();
         SetupPlayerArray();
@@ -868,7 +863,7 @@ void Gw2HackMain::GameHook()
 }
 
 
-void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
+void __fastcall hkGameThread(uintptr_t pInst, int, int frame_time)
 {
     auto pCore = g_initObj.getMain();
 
@@ -887,7 +882,7 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int arg)
         }();
     }
 
-    orgFunc(pInst, arg);
+    orgFunc(pInst, frame_time);
 }
 HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* pDestRect, HWND hDestWindowOverride, RGNDATA* pDirtyRegion)
 {
