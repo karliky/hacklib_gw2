@@ -225,6 +225,7 @@ namespace GW2LIB
             EFFECT_POISON = 723,
             EFFECT_VULNERABILITY = 738,
             EFFECT_WEAKNESS = 742,
+            EFFECT_MES_SIGNET_DOM = 10231,
             EFFECT_BLUR = 10335,
             EFFECT_DETERMINED = 11641,
             EFFECT_DISTORTION = 10371,
@@ -244,7 +245,14 @@ namespace GW2LIB
             EFFECT_STEALTH = 13017,
             EFFECT_TORMENT = 19426,
             EFFECT_SLOW = 26766,
+            EFFECT_ALACRITY = 30328,
+            EFFECT_GLIDING = 30955,
             EFFECT_END
+        };
+
+        enum BuffStackType {
+            BUFF_STACK_TYPE_TIME,
+            BUFF_STACK_TYPE_END
         };
     }
 
@@ -345,6 +353,8 @@ namespace GW2LIB
 
         std::string GetName() const;
         Buff GetBuffs() const;
+        int GetBuffStackCount(GW2::EffectType);
+        int32_t GetBuffTimeLeft(GW2::EffectType);
 
         GameData::CharacterData *m_ptr = nullptr;
         size_t iterator = 0;
@@ -363,7 +373,8 @@ namespace GW2LIB
         Agent GetSource();
         GW2::EffectType GetEffectType();
         int32_t GetDuration();
-        uint32_t TimeLeft();
+        int64_t GetApplyTime();
+        GW2::BuffStackType GetStackType();
 
         std::vector<std::unique_ptr<GameData::BuffData>> *buffDataList = nullptr;
         GameData::BuffData *m_ptr = nullptr;
@@ -798,6 +809,7 @@ namespace GW2LIB
         */
 
         // CharClient::CCharacter
+        uintptr_t charVtGetHealth = 0x2c;
         // Agent::CAgentBase* GetAgent();
         uintptr_t charVtGetAgent = 0xb8;
         // int GetAgentId();
@@ -888,6 +900,7 @@ namespace GW2LIB
         uintptr_t buffEfType = 0x4;
         uintptr_t buffSkillDef = 0x8;
         uintptr_t buffBuffId = 0xc;
+        uintptr_t buffBuffBar = 0x10;
         uintptr_t buffSrcAg = 0x14;
         uintptr_t buffDuration = 0x20;
         uintptr_t buffActive = 0x2c;

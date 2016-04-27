@@ -158,14 +158,17 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
 
+                font.Draw(x, y + OFFSETY, fontColor, "gliding: %i", chr.GetBuffStackCount(GW2::EFFECT_GLIDING));
+                font.Draw(x, y + OFFSETY, fontColor, "might: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_MIGHT) / 1000.0f);
+                font.Draw(x, y + OFFSETY, fontColor, "alacrity: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_ALACRITY) / 1000.0f);
+                font.Draw(x, y + OFFSETY, fontColor, "swiftness: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_SWIFTNESS) / 1000.0f);
+
                 Buff buff = chr.GetBuffs();
                 while (buff.BeNext()) {
                     Agent agSrc = buff.GetSource();
-                    uint32_t duration = buff.GetDuration();
-                    uint32_t timeLeft = buff.TimeLeft();
+                    int32_t duration = buff.GetDuration();
                     bool bDur = (duration && duration != -1);
-                    float time = bDur ? timeLeft / 1000.0f : 0;
-                    if (bDur) font.Draw(x, y + OFFSETY, fontColor, "time: %0.1f - id: 0x%04x - effect: %i - source: %s", time, buff.m_ptr->id, buff.GetEffectType(), agSrc.GetName().c_str());
+                    font.Draw(x, y + OFFSETY, fontColor, "dur: %i - id: 0x%04x - type: %i - effect: %i - source: %s", duration, buff.m_ptr->id, buff.m_ptr->stackType, buff.GetEffectType(), agSrc.GetName().c_str());
                 }
             }
 

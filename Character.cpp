@@ -197,3 +197,19 @@ Buff Character::GetBuffs() const {
     }
     return buff;
 }
+
+int Character::GetBuffStackCount(GW2::EffectType ef) {
+    return m_ptr ? m_ptr->GetBuffStackCount(ef) : 0;
+}
+
+int32_t Character::GetBuffTimeLeft(GW2::EffectType type) {
+    if (!m_ptr) return 0;
+
+    int64_t end = m_ptr->buffTimeList[type];
+    if (!end) return 0;
+
+    int64_t now = GetTimestamp();
+    int32_t ret = (int32_t)(end - now);
+    //HL_LOG_DBG("ret: %i\n", ret);
+    return ret;
+}

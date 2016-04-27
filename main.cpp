@@ -367,24 +367,31 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
                     for (uint32_t i = 0; i < sizeBuffsArray; i++) {
                         GameData::BuffEntry be = buffs[i];
                         hl::ForeignClass pBuff = be.pBuff;
+                        size_t buffId = be.buffId;
+                        if (!buffId) continue;
 
                         if (pBuff) {
+                            bool is_new = false;
+                            // new buff, add to array
                             if (!pCharData->buffDataList[i] || pCharData->buffDataList[i]->pBuff != pBuff) {
                                 [pCharData, i]() -> void {
                                     pCharData->buffDataList[i] = std::make_unique<GameData::BuffData>();
                                 } ();
+                                is_new = true;
                             }
 
                             GameData::BuffData *pBuffData = pCharData->buffDataList[i].get();
-
                             RefreshDataBuff(pBuffData, pBuff);
-
                             pBuffData->pCharData = pCharData;
+
+                            if (is_new) pCharData->AddBuff(pBuffData);
                         }
 
                         // remove invalid buffs from our array
                         if (pCharData->buffDataList[i] && !pBuff) {
                             GameData::BuffData *b = pCharData->buffDataList[i].get();
+                            pCharData->RemoveBuff(b);
+
                             b->pSrcAgData = nullptr;
                             pCharData->buffDataList[i] = nullptr;
                         }
@@ -426,11 +433,21 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
         pBuffData->effectType = buff.get<GW2LIB::GW2::EffectType>(m_pubmems.buffEfType);
         pBuffData->duration = buff.get<int32_t>(m_pubmems.buffDuration);
 
-        if (m_gameData.camData.valid && !pBuffData->timestamp)
-            pBuffData->timestamp = GetTimestamp();
-
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
         pBuffData->pSrcAgData = srcAg ? GameData::GetAgentData(srcAg) : nullptr;
+
+        int64_t ts = GetTimestamp();
+        if (!pBuffData->applyTime)
+            pBuffData->applyTime = ts;
+
+
+        hl::ForeignClass pSkill = buff.get<void*>(m_pubmems.buffSkillDef);
+        if (pSkill) {
+            hl::ForeignClass pSkillInfo = pSkill.get<void*>(m_pubmems.pSkillInfo);
+            if (pSkillInfo) {
+                pBuffData->stackType = pSkillInfo.get<GW2LIB::GW2::BuffStackType>(m_pubmems.skillStackType);
+            }
+        }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {
         HL_LOG_ERR("[RefreshDataBuff] access violation\n");

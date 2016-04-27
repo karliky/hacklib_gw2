@@ -187,11 +187,15 @@ namespace GameData
         GW2LIB::GW2::CharacterGender gender = GW2LIB::GW2::CHAR_GENDER_NONE;
         GW2LIB::GW2::CharacterStats stats;
         std::vector<std::unique_ptr<BuffData>> buffDataList;
+        std::unordered_map<GW2LIB::GW2::EffectType, int64_t> buffTimeList;
         std::string name = "";
 
         BuffList buffList;
 
         void UpdateData() {}
+        int GetBuffStackCount(GW2LIB::GW2::EffectType);
+        void AddBuff(BuffData*);
+        void RemoveBuff(BuffData*);
     };
 
     class PlayerData : public ObjectData {
@@ -274,9 +278,10 @@ namespace GameData
         CharacterData *pCharData = nullptr;
         AgentData *pSrcAgData = nullptr;
         GW2LIB::GW2::EffectType effectType = GW2LIB::GW2::EFFECT_NONE;
+        GW2LIB::GW2::BuffStackType stackType = GW2LIB::GW2::BUFF_STACK_TYPE_END;
         uint32_t id = 0;
         int32_t duration = 0;
-        int64_t timestamp = 0;
+        int64_t applyTime = 0;
 
         void UpdateData() {}
     };
