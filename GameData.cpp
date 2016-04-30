@@ -67,6 +67,7 @@ void GameData::CharacterData::AddBuff(BuffData* pBuffData) {
     GW2LIB::GW2::BuffStackType st = pBuffData->stackType;
     int32_t dur = pBuffData->duration;
     int64_t time = pBuffData->applyTime;
+    int64_t end = time + dur;
 
     if (dur == -1) return;
 
@@ -74,9 +75,13 @@ void GameData::CharacterData::AddBuff(BuffData* pBuffData) {
         buffTimeList[ef] = 0;
 
     if (buffTimeList[ef]) {
-        buffTimeList[ef] += dur;
+        if (st == GW2LIB::GW2::BUFF_STACK_TYPE_PROGRESSIVE) {
+            if (buffTimeList[ef] < end) buffTimeList[ef] = end;
+        } else {
+            buffTimeList[ef] += dur;
+        }
     } else {
-        buffTimeList[ef] = time + dur;
+        buffTimeList[ef] = end;
     }
 }
 

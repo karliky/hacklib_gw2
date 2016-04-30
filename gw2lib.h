@@ -243,7 +243,9 @@ namespace GW2LIB
             EFFECT_SVANIRICEBLOCK = 9636,
             EFFECT_QUICKNESS = 1187,
             EFFECT_INVULNERABILITY = 848,
+            EFFECT_PORTAL_WEAVING = 10198,
             EFFECT_STEALTH = 13017,
+            EFFECT_PORTAL = 16553,
             EFFECT_TORMENT = 19426,
             EFFECT_SLOW = 26766,
             EFFECT_ALACRITY = 30328,
@@ -252,7 +254,8 @@ namespace GW2LIB
         };
 
         enum BuffStackType {
-            BUFF_STACK_TYPE_TIME,
+            BUFF_STACK_TYPE_CUMULATIVE,
+            BUFF_STACK_TYPE_PROGRESSIVE,
             BUFF_STACK_TYPE_END
         };
     }
