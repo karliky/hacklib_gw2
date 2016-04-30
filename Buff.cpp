@@ -35,10 +35,10 @@ bool Buff::BeNext() {
     if (!buffDataList) return false;
     const auto& buffs = *buffDataList;
 
-    iterator++;
-    while (iterator < buffs.size()) {
-        if (buffs[iterator]) {
-            m_ptr = buffs[iterator].get();
+    while (iterator != buffs.end()) {
+        if (iterator->second) {
+            m_ptr = iterator->second.get();
+            iterator++;
             return true;
         }
         iterator++;

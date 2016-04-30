@@ -12,6 +12,7 @@ http://www.gamerevision.com/showthread.php?3691-Gw2lib&p=45709
 #include <Windows.h>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <utility>
 #include <cstdint>
 
@@ -326,7 +327,7 @@ namespace GW2LIB
         bool IsPlayer() const;
         bool IsInWater() const;
         bool IsMonster() const;
-        bool IsMonsterPlayerClone() const;
+        bool IsClone() const;
         bool IsRangerPet() const;
 
         int GetLevel() const;
@@ -353,7 +354,7 @@ namespace GW2LIB
 
         std::string GetName() const;
         Buff GetBuffs() const;
-        int GetBuffStackCount(GW2::EffectType);
+        int32_t GetBuffStackCount(GW2::EffectType);
         int32_t GetBuffTimeLeft(GW2::EffectType);
 
         GameData::CharacterData *m_ptr = nullptr;
@@ -376,9 +377,9 @@ namespace GW2LIB
         int64_t GetApplyTime();
         GW2::BuffStackType GetStackType();
 
-        std::vector<std::unique_ptr<GameData::BuffData>> *buffDataList = nullptr;
+        std::unordered_map<size_t, std::unique_ptr<GameData::BuffData>> *buffDataList = nullptr;
+        std::unordered_map<size_t, std::unique_ptr<GameData::BuffData>>::iterator iterator;
         GameData::BuffData *m_ptr = nullptr;
-        size_t iterator = 0;
     };
 
     class Player {

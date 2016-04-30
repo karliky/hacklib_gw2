@@ -88,8 +88,8 @@ bool Character::IsMonster() const {
     return m_ptr && m_ptr->isMonster;
 }
 
-bool Character::IsMonsterPlayerClone() const {
-    return m_ptr && m_ptr->isMonsterPlayerClone;
+bool Character::IsClone() const {
+    return m_ptr && m_ptr->isClone;
 }
 
 bool Character::IsRangerPet() const {
@@ -194,11 +194,12 @@ Buff Character::GetBuffs() const {
     Buff buff;
     if (m_ptr) {
         buff.buffDataList = &m_ptr->buffDataList;
+        buff.iterator = buff.buffDataList->begin();
     }
     return buff;
 }
 
-int Character::GetBuffStackCount(GW2::EffectType ef) {
+int32_t Character::GetBuffStackCount(GW2::EffectType ef) {
     return m_ptr ? m_ptr->GetBuffStackCount(ef) : 0;
 }
 
@@ -210,6 +211,5 @@ int32_t Character::GetBuffTimeLeft(GW2::EffectType type) {
 
     int64_t now = GetTimestamp();
     int32_t ret = (int32_t)(end - now);
-    //HL_LOG_DBG("ret: %i\n", ret);
     return ret;
 }

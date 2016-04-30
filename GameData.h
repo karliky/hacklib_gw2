@@ -167,7 +167,7 @@ namespace GameData
         bool isPlayer = false;
         bool isInWater = false;
         bool isMonster = false;
-        bool isMonsterPlayerClone = false;
+        bool isClone = false;
         bool isRangerPet = false;
         int level = 0;
         int scaledLevel = 0;
@@ -186,7 +186,8 @@ namespace GameData
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::ATTITUDE_FRIENDLY;
         GW2LIB::GW2::CharacterGender gender = GW2LIB::GW2::CHAR_GENDER_NONE;
         GW2LIB::GW2::CharacterStats stats;
-        std::vector<std::unique_ptr<BuffData>> buffDataList;
+
+        std::unordered_map<size_t, std::unique_ptr<BuffData>> buffDataList;
         std::unordered_map<GW2LIB::GW2::EffectType, int64_t> buffTimeList;
         std::string name = "";
 

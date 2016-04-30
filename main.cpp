@@ -302,7 +302,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
         pCharData->isPlayer = character.call<bool>(m_pubmems.charVtPlayer);
         pCharData->isInWater = character.call<bool>(m_pubmems.charVtInWater);
         pCharData->isMonster = character.call<bool>(m_pubmems.charVtMonster);
-        pCharData->isMonsterPlayerClone = character.call<bool>(m_pubmems.charVtClone);
+        pCharData->isClone = character.call<bool>(m_pubmems.charVtClone);
         pCharData->isRangerPet = character.call<bool>(m_pubmems.charVtRangerPet);
 
         pCharData->attitude = character.get<GW2LIB::GW2::Attitude>(m_pubmems.charAttitude);
@@ -360,15 +360,11 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 
                 if (buffs.IsValid()) {
                     uint32_t sizeBuffsArray = buffs.Capacity();
-                    if (sizeBuffsArray != pCharData->buffDataList.size()) {
-                        pCharData->buffDataList.resize(sizeBuffsArray);
-                    }
 
                     for (uint32_t i = 0; i < sizeBuffsArray; i++) {
                         GameData::BuffEntry be = buffs[i];
                         hl::ForeignClass pBuff = be.pBuff;
                         size_t buffId = be.buffId;
-                        if (!buffId) continue;
 
                         if (pBuff) {
                             bool is_new = false;
@@ -599,7 +595,7 @@ bool Gw2HackMain::SetupAgentArray() {
         }
 
         GameData::AgentData *pAgentData = m_gameData.objData.agentDataList[i].get();
-        pAgentData->wmAgent = avAgent;
+        if (!pAgentData->wmAgent) pAgentData->wmAgent = avAgent;
 
         // update values
         RefreshDataAgent(pAgentData, pAgent);
@@ -668,6 +664,7 @@ bool Gw2HackMain::SetupAgentArray() {
         if (i >= sizeAgentArray || !avAgent || avAgent.call<void*>(m_pubmems.avagVtGetAgent) != m_gameData.objData.agentDataList[i]->pAgent) {
             // agent was not found in game. remove from our array and unlink corresponding data objects
             GameData::AgentData *a = m_gameData.objData.agentDataList[i].get();
+            a->wmAgent = nullptr;
             a->pCharData = nullptr;
             a->pPlayerData = nullptr;
             m_gameData.objData.agentDataList[i] = nullptr;
