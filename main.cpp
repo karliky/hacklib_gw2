@@ -31,6 +31,21 @@ int64_t GetTimestamp() {
     return std::chrono::system_clock::now().time_since_epoch().count() / 10000;
 }
 
+DWORD ExceptHandler(const char *msg, DWORD code, EXCEPTION_POINTERS *ep, const char *file, const char *func, int line) {
+    EXCEPTION_RECORD *er = ep->ExceptionRecord;
+    CONTEXT *ctx = ep->ContextRecord;
+    const char *fmt_dbg = "%s: 0x%08X - addr: 0x%p\n";
+    const char *fmt_rel = "%s\n";
+
+#ifdef _DEBUG
+    hl::LogError(file, func, line, fmt_dbg, msg, code, er->ExceptionAddress);
+#else
+    hl::LogError(fmt_rel, msg);
+#endif
+
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
 
 bool Gw2HackMain::init()
 {
@@ -67,12 +82,11 @@ bool Gw2HackMain::init()
         "ViewAdvanceUi"
     });
 
-    uintptr_t pAlertCtx = 0;
     if (![&](){
         __try {
 #ifdef ARCH_64BIT
             m_mems.pAgentViewCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[2] + 0xa) + 0x3);
-            pAlertCtx = *(uintptr_t*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[0] + 0xa) + 0x3);
+            m_mems.pAlertCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[0] + 0xa) + 0x3);
             m_mems.pAgentSelectionCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[1] + 0xa) + 0x3);
             m_mems.ppWorldViewContext = (void**)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[3] + 0xa) + 0x7);
             m_mems.pCompass = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[4] + 0x10) + 0x3);
@@ -84,7 +98,7 @@ bool Gw2HackMain::init()
             m_mems.pMapOpen = (int*)hl::FollowRelativeAddress(mapOpen + 0x15);
 #else
             m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
-            pAlertCtx = **(uintptr_t**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
+            m_mems.pAlertCtx = *(void**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
             m_mems.pAgentSelectionCtx = *(void**)(hl::FollowRelativeAddress(results[1] + 0xa) + 0x1);
             m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
             m_mems.pCompass = *(void**)(hl::FollowRelativeAddress(results[4] + 0xa) + 0x1);
@@ -107,7 +121,7 @@ bool Gw2HackMain::init()
     }
 
     HL_LOG_DBG("aa:      %p\n", m_mems.pAgentViewCtx);
-    HL_LOG_DBG("actx:    %p\n", pAlertCtx);
+    HL_LOG_DBG("actx:    %p\n", m_mems.pAlertCtx);
     HL_LOG_DBG("asctx:   %p\n", m_mems.pAgentSelectionCtx);
     HL_LOG_DBG("wv:      %p\n", m_mems.ppWorldViewContext);
     HL_LOG_DBG("comp:    %p\n", m_mems.pCompass);
@@ -139,7 +153,7 @@ bool Gw2HackMain::init()
         return false;
     }
 #endif
-    m_hkAlertCtx = m_hooker.hookVT(pAlertCtx, 0, (uintptr_t)hkGameThread);
+    m_hkAlertCtx = m_hooker.hookVT(*(uintptr_t*)m_mems.pAlertCtx, 0, (uintptr_t)hkGameThread);
     if (!m_hkAlertCtx) {
         HL_LOG_ERR("[Core::Init] Hooking game thread failed\n");
         return false;
@@ -243,13 +257,9 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
             {
                 __try {
                     m_cbRender();
-                } __except (([](DWORD code, EXCEPTION_POINTERS *ep)->DWORD{
-                    EXCEPTION_RECORD *er = ep->ExceptionRecord;
-                    CONTEXT *ctx = ep->ContextRecord;
-                    HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p - addr: 0x%p\n", code, er->ExceptionAddress);
-                    return EXCEPTION_EXECUTE_HANDLER;
-                })(GetExceptionCode(), GetExceptionInformation())) {
-                    ;// HL_LOG_ERR("[ESP callback] Exception in ESP code: 0x%p\n", GetExceptionCode());
+                }
+                __except (HLGW2_EXCEPTION("[ESP callback] Exception in ESP code")) {
+                    ;
                 }
             }();
 
@@ -287,8 +297,8 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
             }
         }
 
-    } __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataAgent] access violation\n");
+    } __except (HLGW2_EXCEPTION("[RefreshDataAgent] access violation")) {
+        ;
     }
 }
 void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::ForeignClass character)
@@ -417,8 +427,8 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             }
         }
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataCharacter] access violation\n");
+    __except (HLGW2_EXCEPTION("[RefreshDataCharacter] access violation")) {
+        ;
     }
 }
 
@@ -445,8 +455,8 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
             }
         }
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataBuff] access violation\n");
+    __except (HLGW2_EXCEPTION("[RefreshDataBuff] access violation")) {
+        ;
     }
 }
 
@@ -467,8 +477,8 @@ void Gw2HackMain::RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::Forei
             pPlayerData->name += name[i];
             i += 2;
         }
-    } __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataPlayer] access violation\n");
+    } __except (HLGW2_EXCEPTION("[RefreshDataPlayer] access violation")) {
+        ;
     }
 }
 
@@ -488,8 +498,8 @@ void Gw2HackMain::RefreshDataCompass(GameData::CompassData *pCompData, hl::Forei
         pCompData->flags.position  = !!(flags & GameData::COMP_POSITION);
         pCompData->flags.mouseOver = !!(flags & GameData::COMP_MOUSE_OVER);
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataCompass] access violation\n");
+    __except (HLGW2_EXCEPTION("[RefreshDataCompass] access violation")) {
+        ;
     }
 }
 
@@ -506,8 +516,8 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
             pGadgetData->maxHealth = health.get<float>(m_pubmems.healthMax);
         }
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataGadget] access violation\n");
+    __except (HLGW2_EXCEPTION("[RefreshDataGadget] access violation")) {
+        ;
     }
 }
 
@@ -522,8 +532,8 @@ void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAtkTgtDat
             pAtkTgtData->maxHealth = health.get<float>(m_pubmems.healthMax);
         }
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataAttackTarget] access violation\n");
+    __except (HLGW2_EXCEPTION("[RefreshDataAttackTarget] access violation")) {
+        ;
     }
 }
 
@@ -535,8 +545,8 @@ void Gw2HackMain::RefreshDataResourceNode(GameData::ResourceNodeData *pRNodeData
         BYTE flags = node.get<BYTE>(m_pubmems.rnodeFlags);
         pRNodeData->flags.depleted = !(flags & GameData::RNODE_FLAG_DEPLETED);
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
-        HL_LOG_ERR("[RefreshDataResourceNode] access violation\n");
+    __except (HLGW2_EXCEPTION("[RefreshDataResourceNode] access violation")) {
+        ;
     }
 }
 
@@ -899,8 +909,8 @@ void __fastcall hkGameThread(uintptr_t pInst, int, int frame_time)
         [&]{
             __try {
                 pCore->GameHook();
-            } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG_ERR("[hkGameThread] Exception in game thread\n");
+            } __except (HLGW2_EXCEPTION("[hkGameThread] Exception in game thread")) {
+                ;
             }
         }();
     }
@@ -920,8 +930,8 @@ HRESULT __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, RECT* pSourceRect, RECT* 
         [&]{
             __try {
                 pCore->RenderHook(pDevice);
-            } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG_ERR("[hkPresent] Exception in render thread\n");
+            } __except (HLGW2_EXCEPTION("[hkPresent] Exception in render thread")) {
+                ;
             }
         }();
     }
@@ -939,8 +949,8 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
         [&]{
             __try {
                 pCore->GetDrawer(false)->OnLostDevice();
-            } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG_ERR("[hkReset] Exeption in pre device reset hook\n");
+            } __except (HLGW2_EXCEPTION("[hkReset] Exeption in pre device reset hook")) {
+                ;
             }
         }();
     }
@@ -952,8 +962,8 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
         [&]{
             __try {
                 pCore->GetDrawer(false)->OnResetDevice();
-            } __except (EXCEPTION_EXECUTE_HANDLER) {
-                HL_LOG_ERR("[hkReset] Exception in post device reset hook\n");
+            } __except (HLGW2_EXCEPTION("[hkReset] Exception in post device reset hook")) {
+                ;
             }
         }();
     }

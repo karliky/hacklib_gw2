@@ -67,9 +67,9 @@ void GameData::CharacterData::AddBuff(BuffData* pBuffData) {
     GW2LIB::GW2::BuffStackType st = pBuffData->stackType;
     int32_t dur = pBuffData->duration;
     int64_t time = pBuffData->applyTime;
+    if (dur == -1) return;
     int64_t end = time + dur;
 
-    if (dur == -1) return;
 
     if (!buffTimeList.count(ef))
         buffTimeList[ef] = 0;

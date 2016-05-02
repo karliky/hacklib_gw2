@@ -45,17 +45,20 @@ namespace GW2LIB
     class ResourceNode;
     class Buff;
 
-    struct Vector2 {
+    class Vector2 {
+    public:
         Vector2() { }
         Vector2(float x, float y) : x(x), y(y) { }
         float x, y;
     };
-    struct Vector3 {
+    class Vector3 {
+    public:
         Vector3() { }
         Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
         float x, y, z;
     };
-    struct Vector4 {
+    class Vector4 {
+    public:
         Vector4() { }
         Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
         float x, y, z, w;

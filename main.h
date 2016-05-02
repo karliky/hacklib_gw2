@@ -11,9 +11,11 @@
 
 #include <mutex>
 
-
 class Gw2HackMain *GetMain();
 int64_t GetTimestamp();
+DWORD ExceptHandler(const char*, DWORD, EXCEPTION_POINTERS, const char*, const char*, int);
+
+#define HLGW2_EXCEPTION(msg) ExceptHandler(msg, GetExceptionCode(), GetExceptionInformation(), __FILE__, __FUNCTION__, __LINE__)
 
 struct GamePointers
 {
@@ -22,6 +24,7 @@ struct GamePointers
     int *pFps = nullptr;
     int *pIfHide = nullptr;
     int *pMapOpen = nullptr;
+    void *pAlertCtx = nullptr;
     void *pCtx = nullptr;
     void *pAgentViewCtx = nullptr;
     void **ppWorldViewContext = nullptr;
