@@ -11,11 +11,11 @@
 
 #include <mutex>
 
+#define HLGW2_EXCEPTION(msg) ExceptHandler(msg, GetExceptionCode(), GetExceptionInformation(), __FILE__, __FUNCTION__, __LINE__)
+
 class Gw2HackMain *GetMain();
 int64_t GetTimestamp();
 DWORD ExceptHandler(const char*, DWORD, EXCEPTION_POINTERS, const char*, const char*, int);
-
-#define HLGW2_EXCEPTION(msg) ExceptHandler(msg, GetExceptionCode(), GetExceptionInformation(), __FILE__, __FUNCTION__, __LINE__)
 
 struct GamePointers
 {

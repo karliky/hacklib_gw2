@@ -120,6 +120,7 @@ bool Gw2HackMain::init()
         return false;
     }
 
+    HL_LOG_DBG("base:    %p\n", hl::GetCurrentModule());
     HL_LOG_DBG("aa:      %p\n", m_mems.pAgentViewCtx);
     HL_LOG_DBG("actx:    %p\n", m_mems.pAlertCtx);
     HL_LOG_DBG("asctx:   %p\n", m_mems.pAgentSelectionCtx);

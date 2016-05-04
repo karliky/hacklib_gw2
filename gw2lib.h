@@ -132,7 +132,7 @@ namespace GW2LIB
             GADGET_TYPE_POINT = 2,       // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
             GADGET_TYPE_CRAFT = 4,       // crafting station
             GADGET_TYPE_DOOR = 5,        // pvp base gate, interactive door
-            GADGET_TYPE_INTERACT = 9,    // SW chest, AB exalted portal
+            GADGET_TYPE_INTERACT = 10,   // SW chest, AB exalted portal
             GADGET_TYPE_PLAYER_SPECIFIC, // LA karka hatchling, VB floating airship cargo
             GADGET_TYPE_ATK_TARGET,      // world boss, SW fort wall
             GADGET_TYPE_TELEPORT,        // map border portal
@@ -654,7 +654,7 @@ namespace GW2LIB
         uintptr_t endMax = 0xc;
         uintptr_t healthCurrent = 0xc;
         uintptr_t healthMax = 0x10;
-        uintptr_t invSupply = 0x3c4;
+        uintptr_t invSupply = 0x3cc;
         uintptr_t asctxAuto = 0x50;
         uintptr_t asctxHover = 0xf8;
         uintptr_t asctxLocked = 0x230;
@@ -957,17 +957,17 @@ namespace GW2LIB
 
         // CharClient::CInventory
         // int m_supply
-        uintptr_t invSupply = 0x21c;
+        uintptr_t invSupply = 0x224;
 
         // AgentSelection::CContext
         // Agent::CAgentBase* m_autoSelection;
         uintptr_t asctxAuto = 0x28;
         // Agent::CAgentBase* m_hoverSelection;
-        uintptr_t asctxHover = 0x84;
+        uintptr_t asctxHover = 0x88;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0x120;
+        uintptr_t asctxLocked = 0x124;
         // D3DXVECTOR3 m_screenToWorld;
-        uintptr_t asctxStoW = 0x15c;
+        uintptr_t asctxStoW = 0x160;
         uintptr_t asctxCtxMode = 0x3c; // enum
         uintptr_t asctxVtAgCanSel = 0x4;
         /*
