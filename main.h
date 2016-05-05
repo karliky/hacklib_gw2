@@ -105,7 +105,7 @@ public:
 
     std::mutex m_gameDataMutex;
     Gw2GameHook m_gw2Hook;
-    ForeignFunction<void***> m_ctxFunc;
+    ForeignFunction<void*> m_ctxFunc;
 
 private:
     void RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent);
