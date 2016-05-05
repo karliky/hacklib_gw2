@@ -17,6 +17,54 @@ class Gw2HackMain *GetMain();
 int64_t GetTimestamp();
 DWORD ExceptHandler(const char*, DWORD, EXCEPTION_POINTERS, const char*, const char*, int);
 
+
+enum CallingConvention {
+    CALL_CONV_FASTCALL,
+    CALL_CONV_CDECL,
+    CALL_CONV_STDCALL
+};
+
+template <typename T, CallingConvention cv = CALL_CONV_CDECL>
+class ForeignFunction
+{
+public:
+    ForeignFunction() {}
+    ForeignFunction(void *ptr) : m_ptr(ptr) {}
+    ForeignFunction(uintptr_t ptr) { m_ptr = (void*)ptr; }
+
+    template <typename... Ts>
+    T operator()(Ts... args)
+    {
+        T ret = (T)NULL;
+
+        switch (cv) {
+        case CALL_CONV_FASTCALL:
+            ret = ((T(__fastcall*)(Ts...))m_ptr)(args...);
+            break;
+
+        case CALL_CONV_CDECL:
+            ret = ((T(__cdecl*)(Ts...))m_ptr)(args...);
+            break;
+
+        case CALL_CONV_STDCALL:
+            ret = ((T(__stdcall*)(Ts...))m_ptr)(args...);
+            break;
+        }
+
+        return ret;
+    }
+
+    explicit operator bool() const {
+        return !!m_ptr;
+    }
+
+private:
+    void *m_ptr;
+
+};
+
+
+
 struct GamePointers
 {
     int *pMapId = nullptr;
@@ -57,6 +105,7 @@ public:
 
     std::mutex m_gameDataMutex;
     Gw2GameHook m_gw2Hook;
+    ForeignFunction<void***> m_ctxFunc;
 
 private:
     void RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignClass agent);
