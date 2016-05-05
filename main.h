@@ -28,13 +28,15 @@ template <typename T, CallingConvention cv = CALL_CONV_CDECL>
 class ForeignFunction
 {
 public:
-    ForeignFunction() {}
+    ForeignFunction() : m_ptr(nullptr) {}
     ForeignFunction(void *ptr) : m_ptr(ptr) {}
     ForeignFunction(uintptr_t ptr) { m_ptr = (void*)ptr; }
 
     template <typename... Ts>
     T operator()(Ts... args)
     {
+        if (!m_ptr) throw EXCEPTION_ACCESS_VIOLATION;
+
         T ret = (T)NULL;
 
         switch (cv) {
