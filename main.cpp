@@ -63,14 +63,14 @@ bool Gw2HackMain::init()
     uintptr_t fps = hl::FindPattern("CC 83 0D ?? ?? ?? ?? 20 89 0D ?? ?? ?? ?? C3 CC");
     uintptr_t ifHide = hl::FindPattern("CC 33 C0 39 05 ?? ?? ?? ?? 0F 9D C0 C3 CC");
     uintptr_t mapOpen = hl::FindPattern("83 3D ?? ?? ?? ?? 00 74 0A B8 10 00 00 00 E9");
-    m_ctxFunc = (hl::FindPattern("65 48 8b 04 25 58 00 00 00 ba 08 00 00 00") - 6);
+    GetContext = (hl::FindPattern("65 48 8b 04 25 58 00 00 00 ba 08 00 00 00") - 6);
 #else
     uintptr_t MapIdSig = hl::FindPattern("00 00 08 00 89 0d ?? ?? ?? ?? c3");
     uintptr_t ping = hl::FindPattern("88 13 00 00 77 17 6A 24 BA ?? ?? ?? ?? B9");
     uintptr_t fps = hl::FindPattern("CC 83 0D ?? ?? ?? ?? 20 89 0D ?? ?? ?? ?? C3 CC");
     uintptr_t ifHide = hl::FindPattern("CC 33 C0 39 05 ?? ?? ?? ?? 0F 9D C0 C3 CC");
     uintptr_t mapOpen = hl::FindPattern("83 3D ?? ?? ?? ?? 00 74 0A B8 10 00 00 00 E9");
-    m_ctxFunc = (hl::FindPattern("64 A1 2C 00 00 00 8B 04 88 8B 80 04 00 00 00 C3") - 6);
+    GetContext = (hl::FindPattern("64 A1 2C 00 00 00 8B 04 88 8B 80 04 00 00 00 C3") - 6);
 #endif
 
 
@@ -862,7 +862,7 @@ bool Gw2HackMain::SetupPlayerArray() {
 
 void Gw2HackMain::GameHook()
 {
-    m_mems.pCtx = m_ctxFunc();
+    m_mems.pCtx = GetContext();
 
     SetupCamData();
 
