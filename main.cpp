@@ -71,8 +71,13 @@ bool Gw2HackMain::init()
     uintptr_t ifHide = hl::FindPattern("CC 33 C0 39 05 ?? ?? ?? ?? 0F 9D C0 C3 CC");
     uintptr_t mapOpen = hl::FindPattern("83 3D ?? ?? ?? ?? 00 74 0A B8 10 00 00 00 E9");
     GetContext = (hl::FindPattern("64 A1 2C 00 00 00 8B 04 88 8B 80 04 00 00 00 C3") - 6);
+    //uintptr_t test = (hl::FindPattern("8B 47 04 5F 5E 5B 8B E5 5D C2 04 00 6A 00 51 E8 ?? ?? ?? ?? 83 C4 08 C3") + 12);
 #endif
-
+    /*
+    ForeignFunction<void*, CALL_CONV_FASTCALL> f1 = test;
+    void *ptr = f1(0xC27D);
+    HL_LOG_DBG("ptr: %p\n", ptr);
+    */
 
     hl::PatternScanner scanner;
 

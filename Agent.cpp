@@ -177,3 +177,15 @@ std::string Agent::GetName() const {
 
     return "";
 }
+
+void Agent::SetActiveSelection() {
+    if (!m_ptr) return;
+
+    auto mems = GetMain()->GetGamePointers();
+    if (!mems) return;
+
+    hl::ForeignClass asctx = mems->pAgentSelectionCtx;
+    if (!asctx) return;
+
+    //asctx.call<void>(gw2Offsets.asctxVtSetAct, m_ptr->pAgent);
+}

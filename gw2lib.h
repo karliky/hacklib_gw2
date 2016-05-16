@@ -55,6 +55,8 @@ namespace GW2LIB
     public:
         Vector3() { }
         Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
+        bool operator== (const Vector3 &vec){ return vec.x == x && vec.y == y && vec.z == z; }
+        bool operator!= (const Vector3 &vec){ return vec.x != x || vec.y != y || vec.z != z; }
         float x, y, z;
     };
     class Vector4 {
@@ -308,6 +310,7 @@ namespace GW2LIB
         float GetMaxSpeed() const;
         bool IsSelectable() const;
         std::string GetName() const;
+        void SetActiveSelection();
 
         GameData::AgentData *m_ptr = nullptr;
         size_t iterator = 0;
@@ -970,6 +973,7 @@ namespace GW2LIB
         uintptr_t asctxStoW = 0x160;
         uintptr_t asctxCtxMode = 0x3c; // enum
         uintptr_t asctxVtAgCanSel = 0x4;
+        uintptr_t asctxVtSetAct = 0x98;
         /*
         The offsets can be found in a function containing lots of asserts for them. Strings in order:
         "!m_autoSelection"
@@ -1034,6 +1038,8 @@ namespace GW2LIB
 
         // squad stuff
         uintptr_t contextSquad = 0x130;
+
+        uintptr_t contextWorldTime = 0x148;
 
 #endif
     } gw2Offsets;
