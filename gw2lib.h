@@ -141,7 +141,7 @@ namespace GW2LIB
             GADGET_TYPE_WAYPOINT,        // waypoint
             GADGET_TYPE_RESOURCE_NODE,   // gathering node, AB mask, strongbox, chest
             GADGET_TYPE_PROP,            // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
-            GADGET_TYPE_PLAYER_CREATED = 18, // turret, wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
+            GADGET_TYPE_PLAYER_CREATED = 19, // turret, wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
             GADGET_TYPE_VISTA,           // vista
             GADGET_TYPE_BUILD_SITE,      // wvw build site
             GADGET_TYPE_NONE
@@ -308,6 +308,7 @@ namespace GW2LIB
         uint64_t GetSequence() const;
         float GetSpeed() const;
         float GetMaxSpeed() const;
+        float GetRealSpeed() const;
         bool IsSelectable() const;
         std::string GetName() const;
         void SetActiveSelection();
@@ -596,12 +597,14 @@ namespace GW2LIB
         uintptr_t agtransX = 0x30;
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
-        uintptr_t agtransVtGetRot = 0x100;
+        uintptr_t gd_agtransVtGetRot = 0x120;
+        uintptr_t agtransVtGetRot = 0x110;
         uintptr_t agtransToken = 0xf0;
         uintptr_t agtransSeq = 0xf8;
         uintptr_t npc_agtransSpeed = 0x148;
-        uintptr_t agtransSpeed = 0x200;
-        uintptr_t agtransMaxSpeed = 0x204;
+        uintptr_t agtransRealSpeed = 0x20c;
+        uintptr_t agtransSpeed = 0x210;
+        uintptr_t agtransMaxSpeed = 0x214;
 
         uintptr_t charctxCharArray = 0x58;
         uintptr_t charctxPlayerArray = 0x78;
@@ -730,7 +733,7 @@ namespace GW2LIB
 
         The char context offset can be found by looking at the objects before and after the offset
         where it was before and compare to the CharClient::CContext description.
-        "!IsPlayer() || GetPlayer()" + 0x14
+        "!IsPlayer() || GetPlayer()" + 14
         */
 
         // AgentView::CContext
@@ -790,13 +793,16 @@ namespace GW2LIB
         uintptr_t agtransY = 0x24;
         // float z;
         uintptr_t agtransZ = 0x28;
-        uintptr_t agtransVtGetRot = 0x80;
+
+        uintptr_t gd_agtransVtGetRot = 0x90;
+        uintptr_t agtransVtGetRot = 0x88;
 
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
         uintptr_t npc_agtransSpeed = 0x100;
-        uintptr_t agtransSpeed = 0x1b0;
-        uintptr_t agtransMaxSpeed = 0x1b4;
+        uintptr_t agtransRealSpeed = 0x1bc;
+        uintptr_t agtransSpeed = 0x1c0;
+        uintptr_t agtransMaxSpeed = 0x1c4;
         //uintptr_t transVtGetSeq = 0x88; // void GetSeq(_out_ UINT64 &buf);
         /*
         Holds metric information about an agent.

@@ -296,13 +296,14 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         if (transform)
         {
             GW2LIB::Vector4 rot;
-            transform.call<void>(m_pubmems.agtransVtGetRot, &rot);
-            pAgentData->rot = pAgentData->category == GW2LIB::GW2::AGENT_CATEGORY_KEYFRAMED ? 
-                atan2(rot.z, rot.w) * -2.0f : atan2(rot.y, rot.x);
-
             if (pAgentData->category == GW2LIB::GW2::AGENT_CATEGORY_KEYFRAMED) {
+                transform.call<void>(m_pubmems.gd_agtransVtGetRot, &rot);
+                pAgentData->rot = atan2(rot.z, rot.w) * -2.0f;
                 pAgentData->token = transform.get<uint64_t>(m_pubmems.agtransToken);
                 pAgentData->seq = transform.get<uint64_t>(m_pubmems.agtransSeq);
+            } else {
+                transform.call<void>(m_pubmems.agtransVtGetRot, &rot);
+                pAgentData->rot = atan2(rot.y, rot.x);
             }
         }
 
@@ -746,7 +747,14 @@ bool Gw2HackMain::SetupCharacterArray() {
             if (pCharData->pAgentData->pAgent) {
                 hl::ForeignClass transform = pCharData->pAgentData->pAgent.get<void*>(m_pubmems.agentTransform);
                 if (transform) {
-                    pCharData->pAgentData->speed = pCharData->pAgentData->maxSpeed = transform.get<float>(m_pubmems.npc_agtransSpeed);
+                    if (pCharData->isPlayer) {
+                        pCharData->pAgentData->realSpeed = transform.get<float>(m_pubmems.agtransRealSpeed);
+                    } else {
+                        pCharData->pAgentData->speed =
+                        pCharData->pAgentData->maxSpeed =
+                        pCharData->pAgentData->realSpeed =
+                        transform.get<float>(m_pubmems.npc_agtransSpeed);
+                    }
                 }
             }
 
