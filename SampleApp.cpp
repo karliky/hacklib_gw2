@@ -188,11 +188,15 @@ void sample_chat_cb(wchar_t *wtxt) {
     chat = converter.to_bytes(wtxt);
 }
 
+void sample_combat_log_cb(CombatLogType type, int hit, Agent ag) {
+    //HL_LOG_DBG("type: %2i - ag: %4i - hit: %i\n", type, ag.GetAgentId(), hit);
+}
+
 void sample_log_cb(char *txt) {
     //HL_LOG_DBG("log: %s\n", txt);
 }
 
-void sample_dmg_log(Agent src, Agent tgt, int hit) {
+void sample_dmg_log_cb(Agent src, Agent tgt, int hit) {
     //HL_LOG_DBG("src: %p - tgt: %p - hit: %i\n", src.m_ptr->pAgent, tgt.m_ptr->pAgent, hit);
 }
 
@@ -206,8 +210,9 @@ void GW2LIB::gw2lib_main()
     }
 
     SetGameHook(HOOK_CHAT, sample_chat_cb);
+    SetGameHook(HOOK_COMBAT_LOG, sample_combat_log_cb);
     SetGameHook(HOOK_LOGGER, sample_log_cb);
-    SetGameHook(HOOK_DAMAGE_LOG, sample_dmg_log);
+    SetGameHook(HOOK_DAMAGE_LOG, sample_dmg_log_cb);
 
     while (GetAsyncKeyState(VK_HOME) >= 0)
         std::this_thread::sleep_for(std::chrono::milliseconds(25));
