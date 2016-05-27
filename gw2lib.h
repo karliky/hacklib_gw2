@@ -339,6 +339,7 @@ namespace GW2LIB
         bool IsMonster() const;
         bool IsClone() const;
         bool IsRangerPet() const;
+        bool IsInCombat() const;
 
         int GetLevel() const;
         int GetScaledLevel() const;
@@ -631,6 +632,7 @@ namespace GW2LIB
         uintptr_t charGliderPercent = 0x130;
         uintptr_t charProfession = 0x378;
         uintptr_t charName = 0x188;
+        uintptr_t charFlags = 0x128;
 
         uintptr_t cmbtntBuffBar = 0x88;
         uintptr_t buffbarBuffArr = 0x10;
@@ -866,6 +868,7 @@ namespace GW2LIB
         uintptr_t charGliderPercent = 0xb8;
         uintptr_t charProfession = 0x22c;
         uintptr_t charName = 0x100;
+        uintptr_t charFlags = 0xb0;
         /*
         Represents a character in the game. Generally stuff that can move around like
         players, npcs or monsters.

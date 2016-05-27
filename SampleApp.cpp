@@ -153,6 +153,7 @@ void cbESP()
 
             if (chr.IsValid()) {
                 font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
+                font.Draw(x, y + OFFSETY, fontColor, "in combat: %i", chr.IsInCombat());
                 if (ag.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, "%s", ag.GetName().c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", chr.m_ptr->pCharacter, strProf[chr.GetProfession()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
@@ -164,13 +165,13 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "alacrity: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_ALACRITY) / 1000.0f);
                 font.Draw(x, y + OFFSETY, fontColor, "swiftness: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_SWIFTNESS) / 1000.0f);
 
-                Buff buff = chr.GetBuffs();
+                /*Buff buff = chr.GetBuffs();
                 while (buff.BeNext()) {
                     Agent agSrc = buff.GetSource();
                     int32_t duration = buff.GetDuration();
                     bool bDur = (duration && duration != -1);
                     font.Draw(x, y + OFFSETY, fontColor, "dur: %i - id: 0x%04x - type: %i - effect: %i - source: %s", duration, buff.m_ptr->id, buff.m_ptr->stackType, buff.GetEffectType(), agSrc.GetName().c_str());
-                }
+                }*/
             }
 
             if (player.IsValid()) {

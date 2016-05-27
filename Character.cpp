@@ -96,6 +96,10 @@ bool Character::IsRangerPet() const {
     return m_ptr && m_ptr->isRangerPet;
 }
 
+bool Character::IsInCombat() const {
+    return m_ptr && m_ptr->isInCombat;
+}
+
 
 int Character::GetLevel() const {
     return m_ptr ? m_ptr->level : 0;

@@ -34,8 +34,9 @@ namespace GameData
         RNODE_FLAG_DEPLETED = 0x2
     };
 
-
-
+    enum CharacterFlags {
+        CHAR_FLAG_IN_COMBAT = 0x20
+    };
 
     namespace ANet
     {
@@ -170,6 +171,7 @@ namespace GameData
         bool isMonster = false;
         bool isClone = false;
         bool isRangerPet = false;
+        bool isInCombat = false;
         int level = 0;
         int scaledLevel = 0;
         int wvwsupply = 0;

@@ -73,11 +73,11 @@ bool Gw2HackMain::init()
     GetContext = (hl::FindPattern("64 A1 2C 00 00 00 8B 04 88 8B 80 04 00 00 00 C3") - 6);
     //uintptr_t test = (hl::FindPattern("8B 47 04 5F 5E 5B 8B E5 5D C2 04 00 6A 00 51 E8 ?? ?? ?? ?? 83 C4 08 C3") + 12);
 #endif
-    /*
+    /*HL_LOG_DBG("test: %p\n", test);
     ForeignFunction<void*, CALL_CONV_FASTCALL> f1 = test;
     void *ptr = f1(0xC27D);
-    HL_LOG_DBG("ptr: %p\n", ptr);
-    */
+    HL_LOG_DBG("ptr: %p\n", ptr);*/
+
 
     hl::PatternScanner scanner;
 
@@ -327,6 +327,9 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
 
         pCharData->attitude = character.get<GW2LIB::GW2::Attitude>(m_pubmems.charAttitude);
         pCharData->gliderPercent = character.get<float>(m_pubmems.charGliderPercent);
+
+        uint32_t flags = character.get<uint32_t>(m_pubmems.charFlags);
+        pCharData->isInCombat = !!(flags & GameData::CHAR_FLAG_IN_COMBAT);
 
         hl::ForeignClass health = character.get<void*>(m_pubmems.charHealth);
         if (health) {
