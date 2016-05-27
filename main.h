@@ -7,7 +7,7 @@
 #include "hacklib/Main.h"
 #include "hacklib/ConsoleEx.h"
 #include "hacklib/Hooker.h"
-#include "hacklib/Drawer.h"
+#include "hacklib/DrawerD3D.h"
 
 #include <mutex>
 
@@ -93,7 +93,7 @@ public:
     const GamePointers *GetGamePointers() const { return &m_mems; }
     const GW2LIB::Mems *GetGameOffsets() const { return &m_pubmems; }
 
-    hl::Drawer *GetDrawer(bool bUsedToRender);
+    hl::DrawerD3D *GetDrawer(bool bUsedToRender);
     const GameData::GameData *GetGameData() const;
 
     void SetRenderCallback(void (*cbRender)());
@@ -126,7 +126,7 @@ private:
 
     hl::ConsoleEx m_con;
     hl::Hooker m_hooker;
-    hl::Drawer m_drawer;
+    hl::DrawerD3D m_drawer;
 
     GameData::GameData m_gameData;
 
