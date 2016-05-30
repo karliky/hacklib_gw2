@@ -449,7 +449,8 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
         pBuffData->duration = buff.get<int32_t>(m_pubmems.buffDuration);
 
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
-        pBuffData->pSrcAgData = srcAg ? GameData::GetAgentData(srcAg) : nullptr;
+        auto srcAgId = srcAg.call<int>(m_pubmems.agentVtGetId);
+        pBuffData->pSrcAgData = GameData::GetAgentDataById(srcAgId);
 
         int64_t ts = GetTimestamp();
         if (!pBuffData->applyTime)
