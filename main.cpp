@@ -1,3 +1,5 @@
+#include "main.h"
+
 #include "hacklib/Main.h"
 #include "hacklib/PatternScanner.h"
 #include "hacklib/D3DDeviceFetcher.h"
@@ -6,8 +8,6 @@
 #include "hacklib/ForeignClass.h"
 #include "hacklib/Logging.h"
 #include "glm/gtc/matrix_transform.hpp"
-
-#include "main.h"
 
 #include <mutex>
 #include <thread>
