@@ -11,7 +11,7 @@ GameData::AgentData *GameData::GetAgentData(hl::ForeignClass pAgent)
     return nullptr;
 }
 
-GameData::AgentData *GameData::GetAgentDataById(int agentId)
+GameData::AgentData *GameData::GetAgentDataById(size_t agentId)
 {
     auto& list = GetMain()->GetGameData()->objData.agentDataList;
     if (agentId < list.size()) {
