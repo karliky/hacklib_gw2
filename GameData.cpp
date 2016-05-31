@@ -8,7 +8,16 @@ GameData::AgentData *GameData::GetAgentData(hl::ForeignClass pAgent)
             return ag.get();
         }
     }
-    return NULL;
+    return nullptr;
+}
+
+GameData::AgentData *GameData::GetAgentDataById(int agentId)
+{
+    auto& list = GetMain()->GetGameData()->objData.agentDataList;
+    if (agentId < list.size()) {
+        return list[agentId].get();
+    }
+    return nullptr;
 }
 
 GameData::CharacterData *GameData::GetCharData(hl::ForeignClass pChar)
@@ -18,7 +27,7 @@ GameData::CharacterData *GameData::GetCharData(hl::ForeignClass pChar)
             return ch.get();
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 GameData::PlayerData *GameData::GetPlayerData(hl::ForeignClass pPlayer)
@@ -28,7 +37,7 @@ GameData::PlayerData *GameData::GetPlayerData(hl::ForeignClass pPlayer)
             return player.get();
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 

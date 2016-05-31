@@ -19,7 +19,7 @@ bool InitEsp()
         { -1, -1, 0 }
     };
 
-    vbRect = pDrawer->AllocVertexBuffer(rectVerts);
+    vbRect = pDrawer->allocVertexBuffer(rectVerts);
     if (!vbRect)
         return false;
 
@@ -32,7 +32,7 @@ bool InitEsp()
         verts[i].z = 0;
     }
 
-    vbCircle = pDrawer->AllocVertexBuffer(verts);
+    vbCircle = pDrawer->allocVertexBuffer(verts);
     if (vbCircle)
         return true;
 
@@ -51,7 +51,7 @@ void GW2LIB::DrawLine(float x, float y, float x2, float y2, DWORD color)
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer) {
-        pDrawer->DrawLine(x, y, x2, y2, color);
+        pDrawer->drawLine(x, y, x2, y2, color);
     }
 }
 
@@ -59,7 +59,7 @@ void GW2LIB::DrawLineProjected(Vector3 pos1, Vector3 pos2, DWORD color)
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer) {
-        pDrawer->DrawLineProjected(D3DXVECTOR3(pos1.x,pos1.y,pos1.z), D3DXVECTOR3(pos2.x,pos2.y,pos2.z), color);
+        pDrawer->drawLineProjected(D3DXVECTOR3(pos1.x,pos1.y,pos1.z), D3DXVECTOR3(pos2.x,pos2.y,pos2.z), color);
     }
 }
 
@@ -67,7 +67,7 @@ void GW2LIB::DrawRect(float x, float y, float w, float h, DWORD color)
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer) {
-        pDrawer->DrawRect(x, y, w, h, color);
+        pDrawer->drawRect(x, y, w, h, color);
     }
 }
 
@@ -75,7 +75,7 @@ void GW2LIB::DrawRectFilled(float x, float y, float w, float h, DWORD color)
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer) {
-        pDrawer->DrawRectFilled(x, y, w, h, color);
+        pDrawer->drawRectFilled(x, y, w, h, color);
     }
 }
 
@@ -83,7 +83,7 @@ void GW2LIB::DrawCircle(float mx, float my, float r, DWORD color)
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer) {
-        pDrawer->DrawCircle(mx, my, r, color);
+        pDrawer->drawCircle(mx, my, r, color);
     }
 }
 
@@ -91,7 +91,7 @@ void GW2LIB::DrawCircleFilled(float mx, float my, float r,  DWORD color)
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer) {
-        pDrawer->DrawCircleFilled(mx, my, r, color);
+        pDrawer->drawCircleFilled(mx, my, r, color);
     }
 }
 
@@ -102,7 +102,7 @@ void GW2LIB::DrawCircleProjected(Vector3 pos, float r, DWORD color)
         D3DXMATRIX scale, translate;
         D3DXMatrixScaling(&scale, r, r, r);
         D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
-        pDrawer->DrawPrimitive(vbCircle, nullptr, D3DPT_LINESTRIP, scale*translate, color);
+        pDrawer->drawPrimitive(vbCircle, nullptr, D3DPT_LINESTRIP, scale*translate, color);
     }
 }
 
@@ -113,7 +113,7 @@ void GW2LIB::DrawCircleFilledProjected(Vector3 pos, float r, DWORD color)
         D3DXMATRIX scale, translate;
         D3DXMatrixScaling(&scale, r, r, r);
         D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
-        pDrawer->DrawPrimitive(vbCircle, nullptr, D3DPT_TRIANGLEFAN, scale*translate, color);
+        pDrawer->drawPrimitive(vbCircle, nullptr, D3DPT_TRIANGLEFAN, scale*translate, color);
     }
 }
 
@@ -125,7 +125,7 @@ void GW2LIB::DrawRectProjected(Vector3 pos, float x, float y, float rot, DWORD c
         D3DXMatrixScaling(&scale, x, y, 0);
         D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
         D3DXMatrixRotationZ(&rotationZ, rot);
-        pDrawer->DrawPrimitive(vbRect, nullptr, D3DPT_LINESTRIP, scale*rotationZ*translate, color);
+        pDrawer->drawPrimitive(vbRect, nullptr, D3DPT_LINESTRIP, scale*rotationZ*translate, color);
     }
 }
 
@@ -137,7 +137,7 @@ void GW2LIB::DrawRectFilledProjected(Vector3 pos, float x, float y, float rot, D
         D3DXMatrixScaling(&scale, x, y, 0);
         D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
         D3DXMatrixRotationZ(&rotationZ, rot);
-        pDrawer->DrawPrimitive(vbRect, nullptr, D3DPT_TRIANGLEFAN, scale*rotationZ*translate, color);
+        pDrawer->drawPrimitive(vbRect, nullptr, D3DPT_TRIANGLEFAN, scale*rotationZ*translate, color);
     }
 }
 
@@ -146,9 +146,9 @@ bool GW2LIB::WorldToScreen(Vector3 in, float *outX, float *outY)
 {
     const auto pDrawer = GetMain()->GetDrawer(false);
     if (pDrawer) {
-        D3DXVECTOR3 out;
-        pDrawer->Project(D3DXVECTOR3(in.x,in.y,in.z), out);
-        if (pDrawer->IsInfrontCam(out)) {
+        hl::Vec3 out(0);
+        pDrawer->project(hl::Vec3(in.x,in.y,in.z), out);
+        if (pDrawer->isInfrontCam(out)) {
             *outX = out.x;
             *outY = out.y;
             return true;
@@ -162,7 +162,7 @@ float GW2LIB::GetWindowWidth()
 {
     const auto pDrawer = GetMain()->GetDrawer(false);
     if (pDrawer) {
-        return pDrawer->GetWidth();
+        return pDrawer->getWidth();
     }
     return 0;
 }
@@ -171,7 +171,7 @@ float GW2LIB::GetWindowHeight()
 {
     const auto pDrawer = GetMain()->GetDrawer(false);
     if (pDrawer) {
-        return pDrawer->GetHeight();
+        return pDrawer->getHeight();
     }
     return 0;
 }
@@ -186,7 +186,7 @@ bool GW2LIB::Texture::Init(std::string file)
 {
     auto pDrawer = GetMain()->GetDrawer(false);
     if (pDrawer) {
-        m_ptr = reinterpret_cast<const void*>(pDrawer->AllocTexture(file.c_str()));
+        m_ptr = reinterpret_cast<const void*>(pDrawer->allocTexture(file.c_str()));
         if (m_ptr)
             return true;
     }
@@ -197,7 +197,7 @@ bool GW2LIB::Texture::Init(const void *buffer, size_t size)
 {
     auto pDrawer = GetMain()->GetDrawer(false);
     if (pDrawer) {
-        m_ptr = reinterpret_cast<const void*>(pDrawer->AllocTexture(buffer, size));
+        m_ptr = reinterpret_cast<const void*>(pDrawer->allocTexture(buffer, size));
         if (m_ptr)
             return true;
     }
@@ -208,7 +208,7 @@ void GW2LIB::Texture::Draw(float x, float y, float w, float h) const
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer && m_ptr)
-        pDrawer->DrawTexture(reinterpret_cast<const hl::Texture*>(m_ptr), x, y, w, h);
+        pDrawer->drawTexture(reinterpret_cast<const hl::Texture*>(m_ptr), x, y, w, h);
 }
 
 
@@ -221,7 +221,7 @@ bool GW2LIB::Font::Init(int size, std::string name, bool bold)
 {
     auto pDrawer = GetMain()->GetDrawer(false);
     if (pDrawer) {
-        m_ptr = reinterpret_cast<const void*>(pDrawer->AllocFont(name, size, bold));
+        m_ptr = reinterpret_cast<const void*>(pDrawer->allocFont(name, size, bold));
         if (m_ptr)
             return true;
     }
@@ -232,7 +232,7 @@ void GW2LIB::Font::Draw(float x, float y, DWORD color, std::string format, va_li
 {
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer && m_ptr)
-        pDrawer->DrawFont(reinterpret_cast<const hl::Font*>(m_ptr), x, y, color, format, vl);
+        pDrawer->drawFont(reinterpret_cast<const hl::Font*>(m_ptr), x, y, color, format, vl);
 }
 
 void GW2LIB::Font::Draw(float x, float y, DWORD color, std::string format, ...) const
@@ -247,7 +247,7 @@ GW2LIB::Vector2 GW2LIB::Font::TextInfo(std::string str) const {
     D3DXVECTOR2 vec = { 0, 0 };
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer && m_ptr)
-        vec = pDrawer->TextInfo(reinterpret_cast<const hl::Font*>(m_ptr), str);
+        vec = pDrawer->textInfo(reinterpret_cast<const hl::Font*>(m_ptr), str);
 
     return { vec.x, vec.y };
 }
@@ -285,7 +285,7 @@ bool GW2LIB::PrimitiveDiffuse::Init(std::vector<std::pair<Vector3,DWORD>> vertic
             verts[i].z = vertices[i].first.z;
             verts[i].color = vertices[i].second;
         }
-        m_ptr->vertBuffer = pDrawer->AllocVertexBuffer(verts);
+        m_ptr->vertBuffer = pDrawer->allocVertexBuffer(verts);
         if (!m_ptr->vertBuffer) {
             delete m_ptr;
             m_ptr = nullptr;
@@ -294,7 +294,7 @@ bool GW2LIB::PrimitiveDiffuse::Init(std::vector<std::pair<Vector3,DWORD>> vertic
 
         m_ptr->indBuffer = nullptr;
         if (indices.size()) {
-            m_ptr->indBuffer = pDrawer->AllocIndexBuffer(indices);
+            m_ptr->indBuffer = pDrawer->allocIndexBuffer(indices);
             if (!m_ptr->indBuffer) {
                 delete m_ptr;
                 m_ptr = nullptr;
@@ -344,7 +344,7 @@ void GW2LIB::PrimitiveDiffuse::Draw() const
     const auto pDrawer = GetMain()->GetDrawer(true);
     if (pDrawer && m_ptr) {
         for (size_t i = 0; i < m_ptr->transforms.size(); i++) {
-            pDrawer->DrawPrimitive(m_ptr->vertBuffer, m_ptr->indBuffer, m_ptr->type, m_ptr->transforms[i]);
+            pDrawer->drawPrimitive(m_ptr->vertBuffer, m_ptr->indBuffer, m_ptr->type, m_ptr->transforms[i]);
         }
     }
 }

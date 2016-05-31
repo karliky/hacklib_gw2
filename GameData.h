@@ -4,8 +4,8 @@
 #include "gw2lib.h"
 
 #include "hacklib/ForeignClass.h"
+#include "hacklib/IDrawer.h"
 
-#include "d3dx9.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -143,7 +143,7 @@ namespace GameData
         GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AGENT_CATEGORY_CHAR;
         GW2LIB::GW2::AgentType type = GW2LIB::GW2::AGENT_TYPE_CHAR;
         int agentId = 0;
-        D3DXVECTOR3 pos = D3DXVECTOR3(0, 0, 0);
+        hl::Vec3 pos = hl::Vec3(0.0f);
         float rot = 0;
         uint64_t token = 0;
         uint64_t seq = 0;
@@ -319,12 +319,12 @@ namespace GameData
         struct _camData
         {
             bool valid = false;
-            D3DXVECTOR3 camPos = D3DXVECTOR3(0, 0, 0);
-            D3DXVECTOR3 viewVec = D3DXVECTOR3(0, 0, 0);
+            hl::Vec3 camPos = hl::Vec3(0.0f);
+            hl::Vec3 viewVec = hl::Vec3(0.0f);
             float fovy = 0;
         } camData;
 
-        D3DXVECTOR3 mouseInWorld = D3DXVECTOR3(0, 0, 0);
+        hl::Vec3 mouseInWorld = hl::Vec3(0.0f);
         int mapId = 0;
         int ping = 0;
         int fps = 0;
@@ -335,6 +335,7 @@ namespace GameData
     };
 
     AgentData *GetAgentData(hl::ForeignClass pAgent);
+    AgentData *GetAgentDataById(int agentId);
     CharacterData *GetCharData(hl::ForeignClass pChar);
     PlayerData *GetPlayerData(hl::ForeignClass pPlayer);
 };

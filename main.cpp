@@ -1,13 +1,13 @@
+#include "main.h"
+
 #include "hacklib/Main.h"
 #include "hacklib/PatternScanner.h"
 #include "hacklib/D3DDeviceFetcher.h"
 #include "hacklib/Hooker.h"
 #include "hacklib/ImplementMember.h"
-#include "hacklib/Drawer.h"
 #include "hacklib/ForeignClass.h"
 #include "hacklib/Logging.h"
-
-#include "main.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include <mutex>
 #include <thread>
@@ -181,7 +181,7 @@ bool Gw2HackMain::init()
 
     HL_LOG_DBG("Init ESP data\n");
 
-    m_drawer.SetDevice(pDevice);
+    m_drawer.setContext(pDevice);
 
     extern bool InitEsp();
     bool result = InitEsp();
@@ -206,9 +206,9 @@ void Gw2HackMain::shutdown()
 }
 
 
-hl::Drawer *Gw2HackMain::GetDrawer(bool bUsedToRender)
+hl::DrawerD3D *Gw2HackMain::GetDrawer(bool bUsedToRender)
 {
-    if (m_drawer.GetDevice() && (!bUsedToRender || m_bPublicDrawer))
+    if (m_drawer.getContext() && (!bUsedToRender || m_bPublicDrawer))
         return &m_drawer;
     return nullptr;
 }
@@ -225,16 +225,15 @@ void Gw2HackMain::SetRenderCallback(void(*cbRender)())
 
 void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
 {
-    if (!m_drawer.GetDevice())
-        m_drawer.SetDevice(pDevice);
+    if (!m_drawer.getContext())
+        m_drawer.setContext(pDevice);
 
     if (m_gameData.camData.valid) {
-        D3DXMATRIX viewMat, projMat;
         D3DVIEWPORT9 viewport;
         pDevice->GetViewport(&viewport);
-        D3DXMatrixLookAtLH(&viewMat, &m_gameData.camData.camPos, &(m_gameData.camData.camPos+m_gameData.camData.viewVec), &D3DXVECTOR3(0, 0, -1));
-        D3DXMatrixPerspectiveFovLH(&projMat, m_gameData.camData.fovy, static_cast<float>(viewport.Width)/viewport.Height, 0.01f, 100000.0f);
-        m_drawer.Update(viewMat, projMat);
+        auto viewMat = glm::lookAtLH(m_gameData.camData.camPos, m_gameData.camData.camPos+m_gameData.camData.viewVec, hl::Vec3(0, 0, -1));
+        auto projMat = glm::perspectiveFovLH(m_gameData.camData.fovy, static_cast<float>(viewport.Width), static_cast<float>(viewport.Height), 0.01f, 100000.0f);
+        m_drawer.update(viewMat, projMat);
 
         std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>>::iterator it;
         std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>> oldState;
@@ -451,7 +450,13 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
         pBuffData->duration = buff.get<int32_t>(m_pubmems.buffDuration);
 
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
-        pBuffData->pSrcAgData = srcAg ? GameData::GetAgentData(srcAg) : nullptr;
+        if (srcAg) {
+            auto srcAgId = srcAg.call<int>(m_pubmems.agentVtGetId);
+            pBuffData->pSrcAgData = GameData::GetAgentDataById(srcAgId);
+        } else {
+            pBuffData->pSrcAgData = nullptr;
+        }
+
 
         int64_t ts = GetTimestamp();
         if (!pBuffData->applyTime)
@@ -569,9 +574,9 @@ bool Gw2HackMain::SetupCamData() {
         hl::ForeignClass wvctx = *m_mems.ppWorldViewContext;
         if (wvctx && wvctx.get<int>(m_pubmems.wvctxStatus) == 1)
         {
-            D3DXVECTOR3 lookAt, upVec;
+            hl::Vec3 lookAt, upVec;
             wvctx.call<void>(m_pubmems.wvctxVtGetMetrics, 1, &m_gameData.camData.camPos, &lookAt, &upVec, &m_gameData.camData.fovy);
-            D3DXVec3Normalize(&m_gameData.camData.viewVec, &(lookAt - m_gameData.camData.camPos));
+            m_gameData.camData.viewVec = glm::normalize(lookAt - m_gameData.camData.camPos);
             m_gameData.camData.valid = true;
         }
     }
@@ -968,7 +973,7 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
     {
         [&]{
             __try {
-                pCore->GetDrawer(false)->OnLostDevice();
+                pCore->GetDrawer(false)->onLostDevice();
             } __except (HLGW2_EXCEPTION("[hkReset] Exeption in pre device reset hook")) {
                 ;
             }
@@ -981,7 +986,7 @@ HRESULT __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPre
     {
         [&]{
             __try {
-                pCore->GetDrawer(false)->OnResetDevice();
+                pCore->GetDrawer(false)->onResetDevice();
             } __except (HLGW2_EXCEPTION("[hkReset] Exception in post device reset hook")) {
                 ;
             }
