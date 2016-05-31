@@ -584,7 +584,7 @@ namespace GW2LIB
 
     void SetMems(const struct Mems& mems);
 
-    static struct Mems
+    struct Mems
     {
 #ifdef ARCH_64BIT
         uintptr_t contextChar = 0x90;
@@ -1051,7 +1051,7 @@ namespace GW2LIB
         uintptr_t contextWorldTime = 0x148;
 
 #endif
-    } gw2Offsets;
+    };
 }
 
 #endif // GW2LIB_H

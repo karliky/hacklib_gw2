@@ -46,7 +46,7 @@ DWORD ExceptHandler(const char *msg, DWORD code, EXCEPTION_POINTERS *ep, const c
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
-
+ForeignFunction<char*, CALL_CONV_FASTCALL> f1;
 bool Gw2HackMain::init()
 {
     m_con.create("Gw2lib Console");
@@ -74,9 +74,7 @@ bool Gw2HackMain::init()
     //uintptr_t test = (hl::FindPattern("8B 47 04 5F 5E 5B 8B E5 5D C2 04 00 6A 00 51 E8 ?? ?? ?? ?? 83 C4 08 C3") + 12);
 #endif
     /*HL_LOG_DBG("test: %p\n", test);
-    ForeignFunction<void*, CALL_CONV_FASTCALL> f1 = test;
-    void *ptr = f1(0xC27D);
-    HL_LOG_DBG("ptr: %p\n", ptr);*/
+    f1 = test;*/
 
 
     hl::PatternScanner scanner;
@@ -876,8 +874,16 @@ bool Gw2HackMain::SetupPlayerArray() {
     return true;
 }
 
+int teste1 = 0;
 void Gw2HackMain::GameHook()
 {
+    /*char *buff = f1(0xC27D);
+    uint32_t test = *(uint32_t*)buff;
+    if (!(++teste1 % 60)) {
+        teste1 = 0;
+        HL_LOG_DBG("buff: %p - test: 0x%08X\n", buff, test);
+    }*/
+
     m_mems.pCtx = GetContext();
 
     SetupCamData();

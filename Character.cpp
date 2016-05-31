@@ -185,9 +185,10 @@ std::string Character::GetName() const {
 
 bool Character::SetSpeed(float speed) {
     if (m_ptr && m_ptr->pAgentData && m_ptr->pAgentData->pAgent) {
-        hl::ForeignClass transform = m_ptr->pAgentData->pAgent.get<void*>(gw2Offsets.agentTransform);
+        const GW2LIB::Mems *offsets = GetMain()->GetGameOffsets();
+        hl::ForeignClass transform = m_ptr->pAgentData->pAgent.get<void*>(offsets->agentTransform);
         if (transform && IsPlayer()) {
-            transform.set<float>(gw2Offsets.agtransMaxSpeed, speed);
+            transform.set<float>(offsets->agtransMaxSpeed, speed);
         }
         return true;
     }
