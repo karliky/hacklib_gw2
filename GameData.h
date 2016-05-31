@@ -335,7 +335,7 @@ namespace GameData
     };
 
     AgentData *GetAgentData(hl::ForeignClass pAgent);
-    AgentData *GetAgentDataById(size_t agentId);
+    AgentData *GetAgentDataById(uint32_t agentId);
     CharacterData *GetCharData(hl::ForeignClass pChar);
     PlayerData *GetPlayerData(hl::ForeignClass pPlayer);
 };
