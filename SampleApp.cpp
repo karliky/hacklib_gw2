@@ -159,7 +159,7 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
                 font.Draw(x, y + OFFSETY, fontColor, "wvw supply: %i", chr.GetWvwSupply());
 
-                font.Draw(x, y + OFFSETY, fontColor, "gliding: %i", chr.GetBuffStackCount(GW2::EFFECT_GLIDING));
+                font.Draw(x, y + OFFSETY, fontColor, "gliding: %i - %0.2f", chr.GetBuffStackCount(GW2::EFFECT_GLIDING), chr.GetGliderPercent());
                 font.Draw(x, y + OFFSETY, fontColor, "might: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_MIGHT) / 1000.0f);
                 font.Draw(x, y + OFFSETY, fontColor, "portal: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_PORTAL) / 1000.0f);
                 font.Draw(x, y + OFFSETY, fontColor, "alacrity: %0.1f", chr.GetBuffTimeLeft(GW2::EFFECT_ALACRITY) / 1000.0f);

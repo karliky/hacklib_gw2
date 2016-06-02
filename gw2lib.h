@@ -630,7 +630,7 @@ namespace GW2LIB
         uintptr_t charInventory = 0x2e0;
         uintptr_t charVtGetCmbtnt = 0xf8;
         uintptr_t charGliderPercent = 0x130;
-        uintptr_t charProfession = 0x378;
+        uintptr_t charProfession = 0x3c8;
         uintptr_t charName = 0x188;
         uintptr_t charFlags = 0x128;
 
@@ -689,10 +689,10 @@ namespace GW2LIB
         uintptr_t ctxgdVtGetAtkTgt = 0x20;
 
         uintptr_t atkTgt = 0x58;
-        uintptr_t gdHealth = 0x1e8;
+        uintptr_t gdHealth = 0x1f8;
         uintptr_t gdWvwTeamId = 0x450;
-        uintptr_t gdVtGetType = 0xa8;
-        uintptr_t gdVtGetRNode = 0xf0;
+        uintptr_t gdVtGetType = 0xb8;
+        uintptr_t gdVtGetRNode = 0x100;
 
         uintptr_t rnodeType = 0xc;
         uintptr_t rnodeFlags = 0x10;
@@ -864,9 +864,9 @@ namespace GW2LIB
         uintptr_t charInventory = 0x1c8;
 
         uintptr_t charVtGetCmbtnt = 0x7c;
-        uintptr_t charSkillbar = 0x234;
+        uintptr_t charSkillbar = 0x268;
         uintptr_t charGliderPercent = 0xb8;
-        uintptr_t charProfession = 0x22c;
+        uintptr_t charProfession = 0x260;
         uintptr_t charName = 0x100;
         uintptr_t charFlags = 0xb0;
         /*
@@ -1031,10 +1031,10 @@ namespace GW2LIB
         uintptr_t ctxgdVtGetAtkTgt = 0x10;
 
         uintptr_t atkTgt = 0x30;
-        uintptr_t gdHealth = 0x18c;
+        uintptr_t gdHealth = 0x19c;
         uintptr_t gdWvwTeamId = 0x3d8;
-        uintptr_t gdVtGetType = 0x54;
-        uintptr_t gdVtGetRNode = 0x78;
+        uintptr_t gdVtGetType = 0x5c;
+        uintptr_t gdVtGetRNode = 0x80;
 
         // resource node stuff
         uintptr_t rnodeType = 0x8;
