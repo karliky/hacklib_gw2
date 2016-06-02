@@ -142,7 +142,7 @@ namespace GameData
         std::unique_ptr<AttackTargetData> attackTgtData = nullptr;
         GW2LIB::GW2::AgentCategory category = GW2LIB::GW2::AGENT_CATEGORY_CHAR;
         GW2LIB::GW2::AgentType type = GW2LIB::GW2::AGENT_TYPE_CHAR;
-        int agentId = 0;
+        uint32_t agentId = 0;
         hl::Vec3 pos = hl::Vec3(0.0f);
         float rot = 0;
         uint64_t token = 0;

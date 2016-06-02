@@ -300,7 +300,7 @@ namespace GW2LIB
 
         GW2::AgentCategory GetCategory() const;
         GW2::AgentType GetType() const;
-        int GetAgentId() const;
+        uint32_t GetAgentId() const;
 
         Vector3 GetPos() const;
         float GetRot() const;

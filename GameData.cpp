@@ -3,11 +3,12 @@
 
 GameData::AgentData *GameData::GetAgentData(hl::ForeignClass pAgent)
 {
-    for (const auto& ag : GetMain()->GetGameData()->objData.agentDataList) {
-        if (ag && pAgent == ag->pAgent) {
-            return ag.get();
-        }
+    if (pAgent) {
+        auto offsets = GetMain()->GetGameOffsets();
+        uint32_t agentId = pAgent.call<uint32_t>(offsets->agentVtGetId);
+        return GetAgentDataById(agentId);
     }
+
     return nullptr;
 }
 

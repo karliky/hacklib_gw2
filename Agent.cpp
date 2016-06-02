@@ -11,17 +11,7 @@ Agent::Agent()
 
 Agent::Agent(uintptr_t* pAgent)
 {
-    const auto& agents = GetMain()->GetGameData()->objData.agentDataList;
-
-    size_t idx = agents.size();
-    while (idx--) {
-        if (agents[idx] && agents[idx].get()->pAgent && agents[idx].get()->pAgent == pAgent) {
-            m_ptr = agents[idx].get();
-            return;
-        }
-    }
-
-    m_ptr = nullptr;
+    m_ptr = GameData::GetAgentData(pAgent);
 }
 
 
@@ -126,7 +116,7 @@ GW2::AgentType Agent::GetType() const {
     return m_ptr ? m_ptr->type : GW2::AGENT_TYPE_CHAR;
 }
 
-int Agent::GetAgentId() const {
+uint32_t Agent::GetAgentId() const {
     return m_ptr ? m_ptr->agentId : 0;
 }
 

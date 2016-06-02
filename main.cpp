@@ -286,7 +286,7 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
 
         pAgentData->category = agent.call<GW2LIB::GW2::AgentCategory>(m_pubmems.agentVtGetCategory);
         pAgentData->type = agent.call<GW2LIB::GW2::AgentType>(m_pubmems.agentVtGetType);
-        pAgentData->agentId = agent.call<int>(m_pubmems.agentVtGetId);
+        pAgentData->agentId = agent.call<uint32_t>(m_pubmems.agentVtGetId);
 
         agent.call<void>(m_pubmems.agentVtGetPos, &pAgentData->pos);
         hl::ForeignClass transform = agent.get<void*>(m_pubmems.agentTransform);
@@ -451,7 +451,7 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
 
         hl::ForeignClass srcAg = buff.get<void*>(m_pubmems.buffSrcAg);
         if (srcAg) {
-            auto srcAgId = srcAg.call<int>(m_pubmems.agentVtGetId);
+            auto srcAgId = srcAg.call<uint32_t>(m_pubmems.agentVtGetId);
             pBuffData->pSrcAgData = GameData::GetAgentDataById(srcAgId);
         } else {
             pBuffData->pSrcAgData = nullptr;
