@@ -235,25 +235,26 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
         auto projMat = glm::perspectiveFovLH(m_gameData.camData.fovy, static_cast<float>(viewport.Width), static_cast<float>(viewport.Height), 0.01f, 100000.0f);
         m_drawer.update(viewMat, projMat);
 
-        std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>>::iterator it;
-        std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>> oldState;
-        std::vector<std::pair<D3DRENDERSTATETYPE, DWORD>> state = {
+        RenderState state[] = {
             { D3DRS_ALPHABLENDENABLE, TRUE },
             { D3DRS_SRCBLEND, D3DBLEND_SRCALPHA },
             { D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA },
             { D3DRS_LIGHTING, FALSE }
         };
 
+        const size_t rsCount = sizeof(state) / sizeof(RenderState);
+        RenderState oldState[rsCount];
+
         // save old render state first
-        for (it = state.begin(); it < state.end(); it++) {
+        for (size_t i = 0; i < rsCount; i++) {
             DWORD oldVal;
-            pDevice->GetRenderState(it->first, &oldVal);
-            oldState.push_back({ it->first, oldVal });
+            pDevice->GetRenderState(state[i].state, &oldVal);
+            oldState[i] = { state[i].state, oldVal };
         }
 
         // set our custom state
-        for (it = state.begin(); it < state.end(); it++) {
-            pDevice->SetRenderState(it->first, it->second);
+        for (size_t i = 0; i < rsCount; i++) {
+            pDevice->SetRenderState(state[i].state, state[i].value);
         }
 
         if (m_cbRender) {
@@ -273,8 +274,8 @@ void Gw2HackMain::RenderHook(LPDIRECT3DDEVICE9 pDevice)
         }
 
         // restore old render state
-        for (it = oldState.begin(); it < oldState.end(); it++) {
-            pDevice->SetRenderState(it->first, it->second);
+        for (size_t i = 0; i < rsCount; i++) {
+            pDevice->SetRenderState(oldState[i].state, oldState[i].value);
         }
     }
 }
