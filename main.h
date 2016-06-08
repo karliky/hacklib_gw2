@@ -66,6 +66,10 @@ private:
 };
 
 
+struct RenderState {
+    D3DRENDERSTATETYPE state;
+    DWORD value;
+};
 
 struct GamePointers
 {
