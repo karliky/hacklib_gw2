@@ -131,8 +131,7 @@ namespace GameData
 
 
 
-    class AgentData : public ObjectData
-    {
+    class AgentData : public ObjectData {
     public:
         hl::ForeignClass pAgent = nullptr;
         hl::ForeignClass wmAgent = nullptr;
@@ -155,8 +154,7 @@ namespace GameData
         void UpdateData() {}
     };
 
-    class CharacterData : public ObjectData
-    {
+    class CharacterData : public ObjectData {
     public:
         hl::ForeignClass pCharacter = nullptr;
         hl::ForeignClass pPlayer = nullptr;
@@ -215,8 +213,7 @@ namespace GameData
         void UpdateData() {}
     };
 
-    class GadgetData : public ObjectData
-    {
+    class GadgetData : public ObjectData {
     public:
         hl::ForeignClass pGadget = nullptr;
         AgentData *pAgentData = nullptr;
@@ -230,8 +227,7 @@ namespace GameData
         void UpdateData() {}
     };
 
-    class AttackTargetData : public ObjectData
-    {
+    class AttackTargetData : public ObjectData {
     public:
         hl::ForeignClass pAttackTgt = nullptr;
         AgentData *pAgentData = nullptr;
@@ -242,8 +238,7 @@ namespace GameData
         void UpdateData() {}
     };
 
-    class ResourceNodeData : public ObjectData
-    {
+    class ResourceNodeData : public ObjectData {
     public:
         hl::ForeignClass pResourceNode = nullptr;
         AgentData *pAgentData = nullptr;
