@@ -205,10 +205,12 @@ namespace GameData
         hl::ForeignClass pPlayer = nullptr;
         hl::ForeignClass pChar = nullptr;
         hl::ForeignClass pWallet = nullptr;
+        hl::ForeignClass pTrainMgr = nullptr;
         AgentData *pAgentData = nullptr;
         CharacterData *pCharData = nullptr;
 
         std::string name = "";
+        int masteryLvl = 0;
 
         void UpdateData() {}
     };

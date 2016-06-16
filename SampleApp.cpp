@@ -180,6 +180,7 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "level: %i (actual: %i)", chr.GetScaledLevel(), chr.GetLevel());
                 font.Draw(x, y + OFFSETY, fontColor, "playerPtr: %p", player.m_ptr->pPlayer);
                 font.Draw(x, y + OFFSETY, fontColor, "coins: %i", player.GetCurrency(GW2::CURRENCY_COIN));
+                font.Draw(x, y + OFFSETY, fontColor, "mastery: %i", player.GetMasteryLevel());
             }
         }
     }

@@ -409,6 +409,7 @@ namespace GW2LIB
         Character GetCharacter() const;
 
         int GetCurrency(GW2::CurrencyType type);
+        int GetMasteryLevel() const;
         std::string GetName() const;
 
         GameData::PlayerData *m_ptr = nullptr;
@@ -649,9 +650,12 @@ namespace GW2LIB
 
         uintptr_t playerName = 0x68;
         uintptr_t playerVtGetWallet = 0x188;
+        uintptr_t playerVtGetTrainMgr = 0x2C0;
         uintptr_t playerChar = 0x20;
 
         uintptr_t currVtGetCurrency = 0x0;
+
+        uintptr_t trmgrVtGetMLvl = 0x10;
 
         uintptr_t statsGender = 0x35;
         uintptr_t statsStats = 0xac;
@@ -901,6 +905,7 @@ namespace GW2LIB
         // char* m_name
         uintptr_t playerName = 0x48;
         uintptr_t playerVtGetWallet = 0xc4;
+        uintptr_t playerVtGetTrainMgr = 0x160; // "m_trainingMgr"
         uintptr_t playerChar = 0x18;
         /*
         Represents a player.
@@ -937,6 +942,8 @@ namespace GW2LIB
         uintptr_t skillMaxRange = 0x7c;
 
         uintptr_t currVtGetCurrency = 0x0;
+
+        uintptr_t trmgrVtGetMLvl = 0x8;
 
         // CharClient::CCoreStats
         // gender
