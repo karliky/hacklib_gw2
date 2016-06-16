@@ -290,6 +290,7 @@ void Gw2HackMain::RefreshDataAgent(GameData::AgentData *pAgentData, hl::ForeignC
         pAgentData->agentId = agent.call<uint32_t>(m_pubmems.agentVtGetId);
 
         agent.call<void>(m_pubmems.agentVtGetPos, &pAgentData->pos);
+
         hl::ForeignClass transform = agent.get<void*>(m_pubmems.agentTransform);
         if (transform)
         {

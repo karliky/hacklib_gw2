@@ -588,18 +588,18 @@ namespace GW2LIB
     {
 #ifdef ARCH_64BIT
         uintptr_t contextChar = 0x90;
-        uintptr_t avctxAgentArray = 0x68;
+        uintptr_t avctxAgentArray = 0x70;
         uintptr_t avagVtGetAgent = 0x60;
         uintptr_t agentVtGetCategory = 0x20;
         uintptr_t agentVtGetId = 0xc0;
         uintptr_t agentVtGetType = 0x140;
-        uintptr_t agentVtGetPos = 0x168;
+        uintptr_t agentVtGetPos = 0x120;
         uintptr_t agentTransform = 0x28;
         uintptr_t agtransX = 0x30;
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
-        uintptr_t gd_agtransVtGetRot = 0x120;
-        uintptr_t agtransVtGetRot = 0x110;
+        uintptr_t gd_agtransVtGetRot = 0x128;
+        uintptr_t agtransVtGetRot = 0x118;
         uintptr_t agtransToken = 0xf0;
         uintptr_t agtransSeq = 0xf8;
         uintptr_t npc_agtransSpeed = 0x148;
@@ -615,13 +615,13 @@ namespace GW2LIB
         uintptr_t charVtGetAgentId = 0x178;
         uintptr_t charVtGetPlayer = 0x228;
         uintptr_t charVtAlive = 0x2b0;
-        uintptr_t charVtControlled = 0x2b8;
-        uintptr_t charVtDowned = 0x2d0;
-        uintptr_t charVtInWater = 0x330;
-        uintptr_t charVtMonster = 0x348;
-        uintptr_t charVtClone = 0x368;
-        uintptr_t charVtPlayer = 0x3a8;
-        uintptr_t charVtRangerPet = 0x3a0;
+        uintptr_t charVtControlled = 0x2c8;
+        uintptr_t charVtDowned = 0x2e0;
+        uintptr_t charVtInWater = 0x350;
+        uintptr_t charVtMonster = 0x368;
+        uintptr_t charVtClone = 0x388;
+        uintptr_t charVtPlayer = 0x3c8;
+        uintptr_t charVtRangerPet = 0x3c0;
         uintptr_t charAttitude = 0xa0;
         uintptr_t charBreakbar = 0xa8;
         uintptr_t charCoreStats = 0x288;
@@ -630,7 +630,7 @@ namespace GW2LIB
         uintptr_t charInventory = 0x2e0;
         uintptr_t charVtGetCmbtnt = 0xf8;
         uintptr_t charGliderPercent = 0x130;
-        uintptr_t charProfession = 0x3c8;
+        uintptr_t charProfession = 0x3d0;
         uintptr_t charName = 0x188;
         uintptr_t charFlags = 0x128;
 
@@ -740,7 +740,7 @@ namespace GW2LIB
 
         // AgentView::CContext
         // ANet::Array<Agent::CAvAgent*> m_agentArray;
-        uintptr_t avctxAgentArray = 0x34;
+        uintptr_t avctxAgentArray = 0x38;
         /*
         This is the context that deals with agents, the base of all entities in the game. It is optimized
         out of the main context, but there are static references to it.
@@ -770,7 +770,7 @@ namespace GW2LIB
         // AgentType GetType();
         uintptr_t agentVtGetType = 0xa0;
         // void GetPos(D3DXVECTOR3* pPos);
-        uintptr_t agentVtGetPos = 0xb4;
+        uintptr_t agentVtGetPos = 0x8c;
         // Agent::CAgentTransform* m_transform;
         uintptr_t agentTransform = 0x1c;
 
@@ -782,7 +782,7 @@ namespace GW2LIB
         "targetAgent && targetAgent->GetAgentId()"
         "m_outOfRangeActivationTargetAgent->GetType() == AGENT_TYPE_GADGET_ATTACK_TARGET"
         GetPos I don't remember, but should be easy to trial and error.
-        "55 8B EC 8B 49 1C FF 75 08 8B 11 FF 52 4C 8B 45 08 5D C2 04 00" = 32-bit agentVtGetPos func def
+        "55 8B EC 8B 49 1C FF 75 08 8B 11 FF 52 3C 8B 45 08 5D C2 04 00" = 32-bit agentVtGetPos func def
 
         The agentTransform member is very easy to recognize, because many numbers in it
         move when your character moves (when looking at own agent data). See CAgentTransform.
@@ -796,8 +796,8 @@ namespace GW2LIB
         // float z;
         uintptr_t agtransZ = 0x28;
 
-        uintptr_t gd_agtransVtGetRot = 0x90;
-        uintptr_t agtransVtGetRot = 0x88;
+        uintptr_t gd_agtransVtGetRot = 0x94;
+        uintptr_t agtransVtGetRot = 0x8c;
 
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
@@ -837,19 +837,19 @@ namespace GW2LIB
         // bool IsAlive();
         uintptr_t charVtAlive = 0x158;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x15c;
+        uintptr_t charVtControlled = 0x164;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x168;
+        uintptr_t charVtDowned = 0x170;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x198;
+        uintptr_t charVtInWater = 0x1a8;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x1a4;
+        uintptr_t charVtMonster = 0x1b4;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1b4;
+        uintptr_t charVtClone = 0x1c4;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1d4;
+        uintptr_t charVtPlayer = 0x1e4;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1d0;
+        uintptr_t charVtRangerPet = 0x1e0;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x60;
         // CharClient::CBreakBar* m_breakBar;
@@ -866,7 +866,7 @@ namespace GW2LIB
         uintptr_t charVtGetCmbtnt = 0x7c;
         uintptr_t charSkillbar = 0x268;
         uintptr_t charGliderPercent = 0xb8;
-        uintptr_t charProfession = 0x260;
+        uintptr_t charProfession = 0x26c;
         uintptr_t charName = 0x100;
         uintptr_t charFlags = 0xb0;
         /*
