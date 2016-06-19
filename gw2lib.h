@@ -229,7 +229,7 @@ namespace GW2LIB
             EFFECT_SWIFTNESS = 719,
             EFFECT_FURY = 725,
             EFFECT_VIGOR = 726,
-			EFFECT_SIGNET_OF_RESTORATION = 739,
+            EFFECT_SIGNET_OF_RESTORATION = 739,
             EFFECT_MIGHT = 740,
             EFFECT_AEGIS = 743,
             EFFECT_RETALIATION = 873,
