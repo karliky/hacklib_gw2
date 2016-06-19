@@ -488,6 +488,12 @@ void Gw2HackMain::RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::Forei
             pPlayerData->pWallet = wallet;
         }
 
+        hl::ForeignClass trainMgr = player.call<void*>(m_pubmems.playerVtGetTrainMgr);
+        if (trainMgr) {
+            pPlayerData->pTrainMgr = trainMgr;
+            pPlayerData->masteryLvl = trainMgr.call<int>(m_pubmems.trmgrVtGetMLvl);
+        }
+
         char *name = player.get<char*>(m_pubmems.playerName);
         int i = 0;
         pPlayerData->name = "";

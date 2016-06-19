@@ -83,6 +83,9 @@ int Player::GetCurrency(GW2::CurrencyType type) {
     return 0;
 }
 
+int Player::GetMasteryLevel() const {
+    return m_ptr ? m_ptr->masteryLvl : 0;
+}
 
 std::string Player::GetName() const {
     return m_ptr ? m_ptr->name : "";
