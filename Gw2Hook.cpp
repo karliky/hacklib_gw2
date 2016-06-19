@@ -8,6 +8,7 @@ void hkAllocator(hl::CpuContext*);
 void hkLogger(hl::CpuContext*);
 void hkLogger2(hl::CpuContext*);
 void hkFrameText(hl::CpuContext*);
+void hkMsgConn(hl::CpuContext*);
 LRESULT CALLBACK hkGetMessage(int code, WPARAM wParam, LPARAM lParam);
 
 
@@ -26,13 +27,15 @@ bool Gw2GameHook::init_hooks() {
         "codedProcessedText",
         "targetAgent",
         "logType < UI_COMBAT_LOG_TYPES",
-        "bytes < MAX_ALLOC"
+        "bytes < MAX_ALLOC",
+        "mc->recvMsgPacked->defArray[0].defSize"
     });
 
     uintptr_t pProcessText = NULL;
     uintptr_t pDmgLog = NULL;
     uintptr_t pCombatLog = NULL;
     uintptr_t pAllocator = NULL;
+    uintptr_t pMsgConn = NULL;
 
 #ifdef ARCH_64BIT
     pProcessText = (results[0] - 0x49);
@@ -53,6 +56,7 @@ bool Gw2GameHook::init_hooks() {
     pDmgLog = (results[1] - 0x10);
     pCombatLog = (results[2] - 0x14);
     pAllocator = (results[3] - 0x21);
+    pMsgConn = (results[4] - 0x17);
     pLogger = (pLogger + 0x19);
     pLogger2 = (pLogger2 + 0x28);
     pFrameTxt = (pFrameTxt + 0xf);
@@ -64,6 +68,7 @@ bool Gw2GameHook::init_hooks() {
     m_hkLogger = m_hooker.hookDetour(pLogger, 5, hkLogger);
     m_hkLogger2 = m_hooker.hookDetour(pLogger2, 5, hkLogger2);
     m_hkFrTxt = m_hooker.hookDetour(pFrameTxt, 7, hkFrameText);
+    m_hkMsgConn = m_hooker.hookDetour(pMsgConn, 6, hkMsgConn);
 #endif
 
     if (!m_hkProcessText) {
@@ -125,6 +130,29 @@ void Gw2GameHook::cleanup() {
     {
         UnhookWindowsHookEx(m_hhkGetMessage);
     }
+}
+
+
+void hkMsgConn(hl::CpuContext *ctx) {
+#ifdef ARCH_64BIT
+
+#else
+    // ctx->ESI = mc struct
+    uintptr_t msg  = *(uintptr_t*)(ctx->ESI + 0x28);
+
+    // recvMsgPacked
+    uintptr_t arg1 = *(uintptr_t*)(msg + 0x0);
+    uintptr_t def  = *(uintptr_t*)(msg + 0x4); // ptr to msg def
+    uintptr_t arg3 = *(uintptr_t*)(msg + 0x8);
+    uintptr_t func = *(uintptr_t*)(msg + 0xC); // msg handler
+
+    // msg def
+    uintptr_t unk1 = *(uintptr_t*)(def + 0x0);
+    uintptr_t type = *(uintptr_t*)(def + 0x8);
+    uintptr_t size = *(uintptr_t*)(def + 0x10);
+
+    //HL_LOG_DBG("msg: %p, arg1: %p, arg2: %p, func: %p, unk2: %p, size: %p\n", msg, arg1, def, func, type, size);
+#endif
 }
 
 

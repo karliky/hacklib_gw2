@@ -17,7 +17,8 @@ namespace GW2LIB {
         HOOK_DAMAGE_LOG,
         HOOK_COMBAT_LOG,
         HOOK_ALLOCATOR,
-        HOOK_LOGGER
+        HOOK_LOGGER,
+        HOOK_MSG_CONN
     };
 
     enum CombatLogType {
@@ -70,6 +71,7 @@ public:
     const hl::IHook *m_hkLogger = nullptr;
     const hl::IHook *m_hkLogger2 = nullptr;
     const hl::IHook *m_hkFrTxt = nullptr;
+    const hl::IHook *m_hkMsgConn = nullptr;
 
     HHOOK m_hhkGetMessage = NULL;
     Gw2Hooks m_hookList;
