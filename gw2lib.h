@@ -331,6 +331,29 @@ namespace GW2LIB
             EFFECT_ROCK_BARRIER_SHARD3 = 752,
             EFFECT_ROCK_BARRIER_SHARD4 = 753,
             EFFECT_ROCK_BARRIER_SHARD5 = 754,
+            EFFECT_VAMPIRIC_AURA = 30285,
+            EFFECT_SIGNET_OF_THE_LOCUST = 10614,
+            EFFECT_SIGNET_OF_SPITE = 10621,
+            EFFECT_SIGNET_OF_VAMPIRISM = 21761,
+            EFFECT_PLAGUE_SIGNET = 10630,
+            EFFECT_SIGNET_OF_UNDEATH = 10610,
+            EFFECT_REAPER_SHROUD = 10668,
+            EFFECT_DEATH_SHROUD = 790,
+            EFFECT_LICH_FORM = 10631,
+            EFFECT_BONE_MINION = 10539,
+            EFFECT_BONE_FIEND = 10569,
+            EFFECT_SHADOW_FIEND = 10591,
+            EFFECT_BLOOD_FIEND = 10575,
+            EFFECT_SPECTRAL_WALL = 34726,
+            EFFECT_FLESH_GOLEM = 10648,
+            EFFECT_PLAGUE_FORM = 10578,
+            EFFECT_WELL_OF_POWER = 10615, // ticking condition conversion
+            EFFECT_FLESH_WURM = 10599,
+            EFFECT_INFUSING_TERROR = 30129, // reaper shroud 3
+            EFFECT_DOWNED = 770,
+            EFFECT_SPECTRAL_WALK = 15083,
+            EFFECT_SPECTRAL_WALK_GAIN_LF = 10686, // gain life force when walking in the darkness
+            EFFECT_SPECTRAL_ARMOR = 10582,
             EFFECT_ASURA_POWER_SUIT = 12326,
             EFFECT_EXPERIENCE_BOOSTER = 31078,
             EFFECT_LAUREATE_COIN_BOOSTER = 16990,
@@ -341,6 +364,7 @@ namespace GW2LIB
             EFFECT_SIEGE_DEPLOYMENT_BLOCKED = 14712,
             EFFECT_CORRUPTION_SIGIL = 9374,
             EFFECT_GLIDING = 30955,
+            EFFECT_LEADER_OF_THE_PACT_3 = 33611,
             EFFECT_END
         };
 
