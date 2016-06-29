@@ -91,9 +91,9 @@ bool Gw2HackMain::init()
     if (![&](){
         __try {
 #ifdef ARCH_64BIT
-            m_mems.pAgentViewCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[2] + 0xa) + 0x3);
             m_mems.pAlertCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[0] + 0xa) + 0x3);
             m_mems.pAgentSelectionCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[1] + 0xa) + 0x3);
+            m_mems.pAgentViewCtx = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[2] + 0xa) + 0x3);
             m_mems.ppWorldViewContext = (void**)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[3] + 0xa) + 0x7);
             m_mems.pCompass = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[4] + 0x10) + 0x3);
             m_mems.pUiOpts = (void*)hl::FollowRelativeAddress(hl::FollowRelativeAddress(results[5] + 0xa) + 0x3);
@@ -103,9 +103,9 @@ bool Gw2HackMain::init()
             m_mems.pIfHide = (int*)hl::FollowRelativeAddress(ifHide + 0x5);
             m_mems.pMapOpen = (int*)hl::FollowRelativeAddress(mapOpen + 0x15);
 #else
-            m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
             m_mems.pAlertCtx = *(void**)(hl::FollowRelativeAddress(results[0] + 0xa) + 0x1);
             m_mems.pAgentSelectionCtx = *(void**)(hl::FollowRelativeAddress(results[1] + 0xa) + 0x1);
+            m_mems.pAgentViewCtx = *(void**)(hl::FollowRelativeAddress(results[2] + 0xa) + 0x1);
             m_mems.ppWorldViewContext = *(void***)(hl::FollowRelativeAddress(results[3] + 0xa) + 0x1);
             m_mems.pCompass = *(void**)(hl::FollowRelativeAddress(results[4] + 0xa) + 0x1);
             m_mems.pUiOpts = *(void**)(hl::FollowRelativeAddress(results[5] + 0xa) + 0x1);
@@ -545,12 +545,12 @@ void Gw2HackMain::RefreshDataGadget(GameData::GadgetData *pGadgetData, hl::Forei
     }
 }
 
-void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAtkTgtData, hl::ForeignClass gd) {
+void Gw2HackMain::RefreshDataAttackTarget(GameData::AttackTargetData *pAtkTgtData, hl::ForeignClass atk) {
     __try {
-        hl::ForeignClass tgt = gd.get<void*>(m_pubmems.atkTgt);
-        pAtkTgtData->pAttackTgt = tgt;
+        hl::ForeignClass gd = atk.get<void*>(m_pubmems.atkTgtGd); // bridge back to gadget
+        pAtkTgtData->pAttackTgt = atk;
 
-        hl::ForeignClass health = tgt.get<void*>(m_pubmems.gdHealth);
+        hl::ForeignClass health = gd.get<void*>(m_pubmems.gdHealth);
         if (health) {
             pAtkTgtData->currentHealth = health.get<float>(m_pubmems.healthCurrent);
             pAtkTgtData->maxHealth = health.get<float>(m_pubmems.healthMax);

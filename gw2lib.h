@@ -143,7 +143,7 @@ namespace GW2LIB
             GADGET_TYPE_PROP,            // supply depot, anvil, jump pad, prop, LA marker/plaque, asura gate, mystic forge, bouncy shroom, book cart, mes cs rift
             GADGET_TYPE_PLAYER_CREATED = 19, // turret, wvw siege, guild banner, AB armor spawn? (saw at AB pylons, gold circle platforms)
             GADGET_TYPE_VISTA,           // vista
-            GADGET_TYPE_BUILD_SITE,      // wvw build site
+            GADGET_TYPE_BUILD_SITE,      // wvw siege build site
             GADGET_TYPE_NONE
         };
 
@@ -220,6 +220,12 @@ namespace GW2LIB
             CURRENCY_PVP_TICKETS,
             CURRENCY_PROOF_HEROICS,
             CURRENCY_END
+        };
+
+        enum BuffStackType {
+            BUFF_STACK_TYPE_CUMULATIVE,
+            BUFF_STACK_TYPE_PROGRESSIVE,
+            BUFF_STACK_TYPE_END
         };
 
         enum EffectType {
@@ -389,12 +395,6 @@ namespace GW2LIB
             EFFECT_GLIDING = 30955,
             EFFECT_LEADER_OF_THE_PACT_3 = 33611,
             EFFECT_END
-        };
-
-        enum BuffStackType {
-            BUFF_STACK_TYPE_CUMULATIVE,
-            BUFF_STACK_TYPE_PROGRESSIVE,
-            BUFF_STACK_TYPE_END
         };
     }
 
@@ -733,7 +733,7 @@ namespace GW2LIB
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
         uintptr_t gd_agtransVtGetRot = 0x128;
-        uintptr_t agtransVtGetRot = 0x118;
+        uintptr_t agtransVtGetRot = 0x120;
         uintptr_t agtransToken = 0xf0;
         uintptr_t agtransSeq = 0xf8;
         uintptr_t npc_agtransSpeed = 0x148;
@@ -747,15 +747,15 @@ namespace GW2LIB
 
         uintptr_t charVtGetAgent = 0x170;
         uintptr_t charVtGetAgentId = 0x178;
-        uintptr_t charVtGetPlayer = 0x228;
-        uintptr_t charVtAlive = 0x2b0;
-        uintptr_t charVtControlled = 0x2c8;
-        uintptr_t charVtDowned = 0x2e0;
-        uintptr_t charVtInWater = 0x350;
-        uintptr_t charVtMonster = 0x368;
-        uintptr_t charVtClone = 0x388;
-        uintptr_t charVtPlayer = 0x3c8;
-        uintptr_t charVtRangerPet = 0x3c0;
+        uintptr_t charVtGetPlayer = 0x230;
+        uintptr_t charVtAlive = 0x2b8;
+        uintptr_t charVtControlled = 0x2d0;
+        uintptr_t charVtDowned = 0x2e8;
+        uintptr_t charVtInWater = 0x358;
+        uintptr_t charVtMonster = 0x370;
+        uintptr_t charVtClone = 0x390;
+        uintptr_t charVtPlayer = 0x3d0;
+        uintptr_t charVtRangerPet = 0x3c8;
         uintptr_t charAttitude = 0xa0;
         uintptr_t charBreakbar = 0xa8;
         uintptr_t charCoreStats = 0x288;
@@ -788,7 +788,7 @@ namespace GW2LIB
 
         uintptr_t currVtGetCurrency = 0x0;
 
-        uintptr_t trmgrVtGetMLvl = 0x10;
+        uintptr_t trmgrVtGetMLvl = 0x18;
 
         uintptr_t statsGender = 0x35;
         uintptr_t statsStats = 0xac;
@@ -825,7 +825,7 @@ namespace GW2LIB
         uintptr_t ctxgdVtGetGadget = 0x10;
         uintptr_t ctxgdVtGetAtkTgt = 0x20;
 
-        uintptr_t atkTgt = 0x58;
+        uintptr_t atkTgtGd = 0x58;
         uintptr_t gdHealth = 0x1f8;
         uintptr_t gdWvwTeamId = 0x450;
         uintptr_t gdVtGetType = 0xb8;
@@ -934,7 +934,7 @@ namespace GW2LIB
         uintptr_t agtransZ = 0x28;
 
         uintptr_t gd_agtransVtGetRot = 0x94;
-        uintptr_t agtransVtGetRot = 0x8c;
+        uintptr_t agtransVtGetRot = 0x90;
 
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
@@ -970,23 +970,23 @@ namespace GW2LIB
         // int GetAgentId();
         uintptr_t charVtGetAgentId = 0xbc;
         // CharClient::CPlayer* GetPlayer();
-        uintptr_t charVtGetPlayer = 0x114;
+        uintptr_t charVtGetPlayer = 0x118;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x158;
+        uintptr_t charVtAlive = 0x15c;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x164;
+        uintptr_t charVtControlled = 0x168;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x170;
+        uintptr_t charVtDowned = 0x174;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x1a8;
+        uintptr_t charVtInWater = 0x1ac;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x1b4;
+        uintptr_t charVtMonster = 0x1b8;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1c4;
+        uintptr_t charVtClone = 0x1c8;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1e4;
+        uintptr_t charVtPlayer = 0x1e8;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1e0;
+        uintptr_t charVtRangerPet = 0x1e4;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x60;
         // CharClient::CBreakBar* m_breakBar;
@@ -1076,7 +1076,7 @@ namespace GW2LIB
 
         uintptr_t currVtGetCurrency = 0x0;
 
-        uintptr_t trmgrVtGetMLvl = 0x8;
+        uintptr_t trmgrVtGetMLvl = 0xc;
 
         // CharClient::CCoreStats
         // gender
@@ -1170,7 +1170,7 @@ namespace GW2LIB
         uintptr_t ctxgdVtGetGadget = 0x8;
         uintptr_t ctxgdVtGetAtkTgt = 0x10;
 
-        uintptr_t atkTgt = 0x30;
+        uintptr_t atkTgtGd = 0x30;
         uintptr_t gdHealth = 0x19c;
         uintptr_t gdWvwTeamId = 0x3d8;
         uintptr_t gdVtGetType = 0x5c;
