@@ -35,7 +35,8 @@ namespace GameData
     };
 
     enum CharacterFlags {
-        CHAR_FLAG_IN_COMBAT = 0x20
+        CHAR_FLAG_IN_COMBAT = 0x20,
+        CHAR_FLAG_WEAP_DRAWN = 0x40
     };
 
     namespace ANet

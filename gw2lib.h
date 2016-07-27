@@ -733,7 +733,8 @@ namespace GW2LIB
         uintptr_t agtransY = 0x34;
         uintptr_t agtransZ = 0x38;
         uintptr_t gd_agtransVtGetRot = 0x128;
-        uintptr_t agtransVtGetRot = 0x120;
+        uintptr_t agtransVtGetMoveRot = 0x120;
+        uintptr_t agtransVtGetRot = 0x128;
         uintptr_t agtransToken = 0xf0;
         uintptr_t agtransSeq = 0xf8;
         uintptr_t npc_agtransSpeed = 0x148;
@@ -741,21 +742,21 @@ namespace GW2LIB
         uintptr_t agtransSpeed = 0x210;
         uintptr_t agtransMaxSpeed = 0x214;
 
-        uintptr_t charctxCharArray = 0x58;
-        uintptr_t charctxPlayerArray = 0x78;
-        uintptr_t charctxControlled = 0x90;
+        uintptr_t charctxCharArray = 0x60;
+        uintptr_t charctxPlayerArray = 0x80;
+        uintptr_t charctxControlled = 0x98;
 
         uintptr_t charVtGetAgent = 0x170;
         uintptr_t charVtGetAgentId = 0x178;
         uintptr_t charVtGetPlayer = 0x230;
-        uintptr_t charVtAlive = 0x2b8;
-        uintptr_t charVtControlled = 0x2d0;
-        uintptr_t charVtDowned = 0x2e8;
-        uintptr_t charVtInWater = 0x358;
-        uintptr_t charVtMonster = 0x370;
-        uintptr_t charVtClone = 0x390;
-        uintptr_t charVtPlayer = 0x3d0;
-        uintptr_t charVtRangerPet = 0x3c8;
+        uintptr_t charVtAlive = 0x2b0;
+        uintptr_t charVtControlled = 0x2c8;
+        uintptr_t charVtDowned = 0x2e0;
+        uintptr_t charVtInWater = 0x350;
+        uintptr_t charVtMonster = 0x368;
+        uintptr_t charVtClone = 0x388;
+        uintptr_t charVtPlayer = 0x3c8;
+        uintptr_t charVtRangerPet = 0x3c0;
         uintptr_t charAttitude = 0xa0;
         uintptr_t charBreakbar = 0xa8;
         uintptr_t charCoreStats = 0x288;
@@ -821,7 +822,7 @@ namespace GW2LIB
 
         uintptr_t uiIntSize = 0x54;
 
-        uintptr_t contextGadget = 0x128;
+        uintptr_t contextGadget = 0x130;
         uintptr_t ctxgdVtGetGadget = 0x10;
         uintptr_t ctxgdVtGetAtkTgt = 0x20;
 
@@ -934,7 +935,8 @@ namespace GW2LIB
         uintptr_t agtransZ = 0x28;
 
         uintptr_t gd_agtransVtGetRot = 0x94;
-        uintptr_t agtransVtGetRot = 0x90;
+        uintptr_t agtransVtGetMoveRot = 0x90;
+        uintptr_t agtransVtGetRot = 0x94;
 
         uintptr_t agtransToken = 0xa8;
         uintptr_t agtransSeq = 0xb0;
@@ -952,11 +954,11 @@ namespace GW2LIB
 
         // CharClient::CContext
         // ANet::Array<CharClient::CCharacter*> m_charArray;
-        uintptr_t charctxCharArray = 0x30;
+        uintptr_t charctxCharArray = 0x34;
         // ANet::Array<CharClient::CPlayer*> m_playerArray;
-        uintptr_t charctxPlayerArray = 0x44;
+        uintptr_t charctxPlayerArray = 0x48;
         // CharClient::CCharacter* m_controlledCharacter;
-        uintptr_t charctxControlled = 0x54;
+        uintptr_t charctxControlled = 0x58;
         /*
         Context that contains data about CCharacters.
 
@@ -972,38 +974,38 @@ namespace GW2LIB
         // CharClient::CPlayer* GetPlayer();
         uintptr_t charVtGetPlayer = 0x118;
         // bool IsAlive();
-        uintptr_t charVtAlive = 0x15c;
+        uintptr_t charVtAlive = 0x158;
         // bool IsControlled();
-        uintptr_t charVtControlled = 0x168;
+        uintptr_t charVtControlled = 0x164;
         // bool IsDowned();
-        uintptr_t charVtDowned = 0x174;
+        uintptr_t charVtDowned = 0x170;
         // bool IsInWater();
-        uintptr_t charVtInWater = 0x1ac;
+        uintptr_t charVtInWater = 0x1a8;
         // bool IsMonster();
-        uintptr_t charVtMonster = 0x1b8;
+        uintptr_t charVtMonster = 0x1b4;
         // bool IsMonsterPlayerClone();
-        uintptr_t charVtClone = 0x1c8;
+        uintptr_t charVtClone = 0x1c4;
         // bool IsPlayer();
-        uintptr_t charVtPlayer = 0x1e8;
+        uintptr_t charVtPlayer = 0x1e4;
         // bool IsRangerPet();
-        uintptr_t charVtRangerPet = 0x1e4;
+        uintptr_t charVtRangerPet = 0x1e0;
         // Attitude m_attitudeTowardControlled;
         uintptr_t charAttitude = 0x60;
         // CharClient::CBreakBar* m_breakBar;
         uintptr_t charBreakbar = 0x64; // 0x130?
         // CharClient::CCoreStats* m_coreStats;
-        uintptr_t charCoreStats = 0x19c;
+        uintptr_t charCoreStats = 0x1a0;
         // CharClient::CEndurance* m_endurance;
-        uintptr_t charEndurance = 0x1c0;
+        uintptr_t charEndurance = 0x1c4;
         // CharClient::CHealth* m_health;
-        uintptr_t charHealth = 0x1c4;
+        uintptr_t charHealth = 0x1c8;
         // CharClient::CInventory* m_inventory;
-        uintptr_t charInventory = 0x1c8;
+        uintptr_t charInventory = 0x1cc;
 
         uintptr_t charVtGetCmbtnt = 0x7c;
         uintptr_t charSkillbar = 0x268;
         uintptr_t charGliderPercent = 0xb8;
-        uintptr_t charProfession = 0x26c;
+        uintptr_t charProfession = 0x270;
         uintptr_t charName = 0x100;
         uintptr_t charFlags = 0xb0;
         /*
@@ -1115,11 +1117,11 @@ namespace GW2LIB
         // Agent::CAgentBase* m_autoSelection;
         uintptr_t asctxAuto = 0x28;
         // Agent::CAgentBase* m_hoverSelection;
-        uintptr_t asctxHover = 0x88;
+        uintptr_t asctxHover = 0x84;
         // Agent::CAgentBase* m_lockedSelection;
-        uintptr_t asctxLocked = 0x124;
+        uintptr_t asctxLocked = 0x120;
         // D3DXVECTOR3 m_screenToWorld;
-        uintptr_t asctxStoW = 0x160;
+        uintptr_t asctxStoW = 0x15c;
         uintptr_t asctxCtxMode = 0x3c; // enum
         uintptr_t asctxVtAgCanSel = 0x4;
         uintptr_t asctxVtSetAct = 0x98;
@@ -1166,7 +1168,7 @@ namespace GW2LIB
         uintptr_t uiIntSize = 0x2c;
 
         // gadget stuff
-        uintptr_t contextGadget = 0x94;
+        uintptr_t contextGadget = 0x98;
         uintptr_t ctxgdVtGetGadget = 0x8;
         uintptr_t ctxgdVtGetAtkTgt = 0x10;
 
