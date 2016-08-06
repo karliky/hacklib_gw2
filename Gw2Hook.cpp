@@ -208,6 +208,7 @@ void hkCombatLog(hl::CpuContext *ctx)
     int hit = *(int*)(ctx->RSP + 0x4c);
     uintptr_t *pSrc = *(uintptr_t**)(ctx->RBX + 0x40);
     uintptr_t *pTgt = *(uintptr_t**)(ctx->RBX + 0x58);
+    GW2LIB::GW2::EffectType ef = *(GW2LIB::GW2::EffectType*)(*(uintptr_t*)(ctx->RBX + 0x48) + 0x28);
 #else
     GW2LIB::CombatLogType type = *(GW2LIB::CombatLogType*)(ctx->EBP + 0xC);
     int hit = *(int*)(ctx->EBP + 0x18);
