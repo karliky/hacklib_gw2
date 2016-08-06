@@ -213,6 +213,7 @@ void hkCombatLog(hl::CpuContext *ctx)
     int hit = *(int*)(ctx->EBP + 0x18);
     uintptr_t *pSrc = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x28);
     uintptr_t *pTgt = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x34);
+    GW2LIB::GW2::EffectType ef = *(GW2LIB::GW2::EffectType*)(*(uintptr_t*)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x2c) + 0x20);
 #endif
 
     uintptr_t *ag = pTgt;
@@ -227,7 +228,7 @@ void hkCombatLog(hl::CpuContext *ctx)
 
     GW2LIB::Agent agent(ag);
     Gw2Hooks* list = get_hook_list();
-    if (list->CombatLogHook) list->CombatLogHook(type, hit, agent);
+    if (list->CombatLogHook) list->CombatLogHook(type, hit, agent, ef);
 }
 
 void hkAllocator(hl::CpuContext *ctx) {

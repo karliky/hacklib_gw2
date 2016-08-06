@@ -45,6 +45,10 @@ namespace GW2LIB {
     class Gadget;
     class AttackTarget;
     class ResourceNode;
+
+    namespace GW2 {
+        enum EffectType;
+    }
 };
 
 
@@ -54,7 +58,7 @@ struct Gw2Hooks {
     bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
     bool(*MouseWheelHook)(int delta, int modkeys) = nullptr;
     void(*DmgLogHook)(GW2LIB::Agent, GW2LIB::Agent, int) = nullptr;
-    void(*CombatLogHook)(GW2LIB::CombatLogType, int, GW2LIB::Agent) = nullptr;
+    void(*CombatLogHook)(GW2LIB::CombatLogType, int, GW2LIB::Agent, GW2LIB::GW2::EffectType) = nullptr;
     void(*AllocatorHook)(int, size_t, int, int, char*) = nullptr;
     void(*LoggerHook)(char*) = nullptr;
 };
