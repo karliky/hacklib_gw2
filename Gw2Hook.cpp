@@ -217,19 +217,11 @@ void hkCombatLog(hl::CpuContext *ctx)
     GW2LIB::GW2::EffectType ef = *(GW2LIB::GW2::EffectType*)(*(uintptr_t*)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x2c) + 0x20);
 #endif
 
-    uintptr_t *ag = pTgt;
-    switch (type) {
-    case GW2LIB::CL_CONDI_DMG_IN:
-    case GW2LIB::CL_CRIT_DMG_IN:
-    case GW2LIB::CL_GLANCE_DMG_IN:
-    case GW2LIB::CL_HEAL_IN:
-    case GW2LIB::CL_PHYS_DMG_IN:
-        ag = pSrc;
-    }
+    GW2LIB::Agent agTgt(pTgt);
+    GW2LIB::Agent agSrc(pSrc);
 
-    GW2LIB::Agent agent(ag);
     Gw2Hooks* list = get_hook_list();
-    if (list->CombatLogHook) list->CombatLogHook(type, hit, agent, ef);
+    if (list->CombatLogHook) list->CombatLogHook(agSrc, agTgt, hit, type, ef);
 }
 
 void hkAllocator(hl::CpuContext *ctx) {

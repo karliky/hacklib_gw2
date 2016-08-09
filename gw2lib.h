@@ -1003,7 +1003,7 @@ namespace GW2LIB
         uintptr_t charInventory = 0x1cc;
 
         uintptr_t charVtGetCmbtnt = 0x7c;
-        uintptr_t charSkillbar = 0x268;
+        uintptr_t charSkillbar = 0x278;
         uintptr_t charGliderPercent = 0xb8;
         uintptr_t charProfession = 0x270;
         uintptr_t charName = 0x100;
@@ -1065,7 +1065,7 @@ namespace GW2LIB
         uintptr_t buffActive = 0x2c;
 
         // CharClient::CSkillBar* m_skillBar;
-        uintptr_t skillbarSkillsArray = 0xcc;
+        uintptr_t skillbarSkillsArray = 0xfc;
         uintptr_t skillbarPressedSkill = 0x40;
         uintptr_t skillbarHoveredSkill = 0x5c;
 

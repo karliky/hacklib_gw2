@@ -190,8 +190,9 @@ void sample_chat_cb(wchar_t *wtxt) {
     chat = converter.to_bytes(wtxt);
 }
 
-void sample_combat_log_cb(CombatLogType type, int hit, Agent ag, GW2::EffectType ef) {
-    //HL_LOG_DBG("type: %2i - ag: %4i - ef: %5i - hit: %i\n", type, ag.GetAgentId(), ef, hit);
+void sample_combat_log_cb(Agent agSrc, Agent agTgt, int hit, CombatLogType type, GW2::EffectType ef) {
+    //HL_LOG_DBG("src: %4i, tgt: %4i, type: %2i, ef: %5i, hit: %i\n",
+    //    agSrc.GetAgentId(), agTgt.GetAgentId(), type, ef, hit);
 }
 
 void sample_log_cb(char *txt) {
