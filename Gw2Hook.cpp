@@ -189,14 +189,20 @@ void hkDmgLog(hl::CpuContext *ctx)
     int hit = (int)ctx->R9;
     uintptr_t *pSrc = (uintptr_t*)(ctx->R8);
     uintptr_t *pTgt = (uintptr_t*)(ctx->RDX);
+    hl::ForeignClass skillDef = **(uintptr_t***)(ctx->RSP + 0x28);
 #else
     int hit = *(int*)(ctx->EBP + 0x10);
     uintptr_t *pSrc = *(uintptr_t**)(ctx->EBP + 0xC);
     uintptr_t *pTgt = *(uintptr_t**)(ctx->EBP + 0x8);
+    hl::ForeignClass skillDef = *(uintptr_t**)(ctx->EBP + 0x14);
 #endif
 
+    const GW2LIB::Mems *offsets = GetMain()->GetGameOffsets();
+
+    GW2LIB::GW2::EffectType ef = skillDef.get<GW2LIB::GW2::EffectType>(offsets->skillDefEffect);
     GW2LIB::Agent agSrc(pSrc);
     GW2LIB::Agent agTgt(pTgt);
+
     Gw2Hooks* list = get_hook_list();
     if (list->DmgLogHook) list->DmgLogHook(agSrc, agTgt, hit);
 }
@@ -208,15 +214,18 @@ void hkCombatLog(hl::CpuContext *ctx)
     int hit = *(int*)(ctx->RSP + 0x4c);
     uintptr_t *pSrc = *(uintptr_t**)(ctx->RBX + 0x40);
     uintptr_t *pTgt = *(uintptr_t**)(ctx->RBX + 0x58);
-    GW2LIB::GW2::EffectType ef = *(GW2LIB::GW2::EffectType*)(*(uintptr_t*)(ctx->RBX + 0x48) + 0x28);
+    hl::ForeignClass skillDef = *(uintptr_t**)(ctx->RBX + 0x48);
 #else
     GW2LIB::CombatLogType type = *(GW2LIB::CombatLogType*)(ctx->EBP + 0xC);
     int hit = *(int*)(ctx->EBP + 0x18);
     uintptr_t *pSrc = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x28);
     uintptr_t *pTgt = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x34);
-    GW2LIB::GW2::EffectType ef = *(GW2LIB::GW2::EffectType*)(*(uintptr_t*)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x2c) + 0x20);
+    hl::ForeignClass skillDef = *(uintptr_t**)(*(uintptr_t*)(ctx->EBP + 0x14) + 0x2c);
 #endif
 
+    const GW2LIB::Mems *offsets = GetMain()->GetGameOffsets();
+
+    GW2LIB::GW2::EffectType ef = skillDef.get<GW2LIB::GW2::EffectType>(offsets->skillDefEffect);
     GW2LIB::Agent agTgt(pTgt);
     GW2LIB::Agent agSrc(pSrc);
 

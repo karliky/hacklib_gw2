@@ -467,7 +467,7 @@ void Gw2HackMain::RefreshDataBuff(GameData::BuffData *pBuffData, hl::ForeignClas
 
         hl::ForeignClass pSkill = buff.get<void*>(m_pubmems.buffSkillDef);
         if (pSkill) {
-            hl::ForeignClass pSkillInfo = pSkill.get<void*>(m_pubmems.pSkillInfo);
+            hl::ForeignClass pSkillInfo = pSkill.get<void*>(m_pubmems.skillDefInfo);
             if (pSkillInfo) {
                 pBuffData->stackType = pSkillInfo.get<GW2LIB::GW2::BuffStackType>(m_pubmems.skillStackType);
             }

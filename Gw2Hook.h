@@ -57,8 +57,8 @@ struct Gw2Hooks {
     bool(*MouseMoveHook)(int x, int y, int modkeys) = nullptr;
     bool(*MouseButtonHook)(bool down, int button, int x, int y, int modkeys) = nullptr;
     bool(*MouseWheelHook)(int delta, int modkeys) = nullptr;
-    void(*DmgLogHook)(GW2LIB::Agent, GW2LIB::Agent, int) = nullptr;
-    void(*CombatLogHook)(GW2LIB::Agent, GW2LIB::Agent, int, GW2LIB::CombatLogType, GW2LIB::GW2::EffectType) = nullptr;
+    void(*DmgLogHook)(GW2LIB::Agent src, GW2LIB::Agent tgt, int hit) = nullptr;
+    void(*CombatLogHook)(GW2LIB::Agent src , GW2LIB::Agent tgt, int hit, GW2LIB::CombatLogType, GW2LIB::GW2::EffectType) = nullptr;
     void(*AllocatorHook)(int, size_t, int, int, char*) = nullptr;
     void(*LoggerHook)(char*) = nullptr;
 };

@@ -779,7 +779,9 @@ namespace GW2LIB
         uintptr_t buffDuration = 0x40;
         uintptr_t buffActive = 0x4c;
 
-        uintptr_t pSkillInfo = 0x60;
+        uintptr_t skillDefEffect = 0x28;
+        uintptr_t skillDefInfo = 0x60;
+
         uintptr_t skillStackType = 0xc;
 
         uintptr_t playerName = 0x68;
@@ -1070,7 +1072,9 @@ namespace GW2LIB
         uintptr_t skillbarHoveredSkill = 0x5c;
 
         // CharClient::CSkill* m_skillDef
-        uintptr_t pSkillInfo = 0x48;
+        uintptr_t skillDefEffect = 0x20;
+        uintptr_t skillDefInfo = 0x48;
+
         uintptr_t skillStackType = 0xc;
         uintptr_t skillRadius = 0x44;
         uintptr_t skillRechargeMs = 0x68;
