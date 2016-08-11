@@ -187,6 +187,7 @@ namespace GameData
         GW2LIB::GW2::ProfessionStance stance = GW2LIB::GW2::STANCE_NONE;
         GW2LIB::GW2::Attitude attitude = GW2LIB::GW2::ATTITUDE_FRIENDLY;
         GW2LIB::GW2::CharacterGender gender = GW2LIB::GW2::CHAR_GENDER_NONE;
+        GW2LIB::GW2::Race race = GW2LIB::GW2::RACE_NONE;
         GW2LIB::GW2::CharacterStats stats;
 
         std::unordered_map<size_t, std::unique_ptr<BuffData>> buffDataList;
@@ -207,11 +208,13 @@ namespace GameData
         hl::ForeignClass pChar = nullptr;
         hl::ForeignClass pWallet = nullptr;
         hl::ForeignClass pTrainMgr = nullptr;
+        hl::ForeignClass pAchMgr = nullptr;
         AgentData *pAgentData = nullptr;
         CharacterData *pCharData = nullptr;
 
         std::string name = "";
         int masteryLvl = 0;
+        int ap = 0;
 
         void UpdateData() {}
     };

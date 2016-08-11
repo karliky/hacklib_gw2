@@ -348,6 +348,7 @@ void Gw2HackMain::RefreshDataCharacter(GameData::CharacterData *pCharData, hl::F
             pCharData->level = corestats.get<int>(m_pubmems.statsLevel);
             pCharData->scaledLevel = corestats.get<int>(m_pubmems.statsScaledLevel);
             pCharData->gender = (GW2LIB::GW2::CharacterGender)corestats.get<BYTE>(m_pubmems.statsGender);
+            pCharData->race = (GW2LIB::GW2::Race)corestats.get<BYTE>(m_pubmems.statsRace);
             pCharData->stats = corestats.get<GW2LIB::GW2::CharacterStats>(m_pubmems.statsStats);
         }
 
@@ -492,6 +493,12 @@ void Gw2HackMain::RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::Forei
         if (trainMgr) {
             pPlayerData->pTrainMgr = trainMgr;
             pPlayerData->masteryLvl = trainMgr.call<int>(m_pubmems.trmgrVtGetMLvl);
+        }
+
+        hl::ForeignClass achMgr = player.call<void*>(m_pubmems.playerVtGetAchMgr);
+        if (achMgr) {
+            pPlayerData->pAchMgr = achMgr;
+            pPlayerData->ap = achMgr.call<int>(m_pubmems.achMgrVtGetAP);
         }
 
         char *name = player.get<char*>(m_pubmems.playerName);

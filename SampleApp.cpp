@@ -19,6 +19,7 @@ std::string chat;
 std::string strProf[] = { "Error", "Guardian", "Warrior", "Engineer", "Ranger", "Thief", "Elementalist", "Mesmer", "Necromancer", "Revenant", "None" };
 std::string strStance[] = { "None", "Fire", "Water", "Air", "Earth", "Shroud", "Adrenaline 1", "Adrenaline 2", "Adrenaline 3", "Druid", "Astral", "Dragon", "Assassin", "Dwarf", "Demon", "TEST11", "Centaur", "TEST13", "TEST14", "TEST15", "TEST16", "TEST17" };
 std::string charSex[] = { "Male", "Female", "None", "Error" };
+std::string charRace[] = { "Asura", "Charr", "Human", "Norn", "Sylvari", "None", "Race 6" };
 
 float dist(GW2LIB::Vector3 p1, GW2LIB::Vector3 p2)
 {
@@ -153,6 +154,7 @@ void cbESP()
 
             if (chr.IsValid()) {
                 font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
+                font.Draw(x, y + OFFSETY, fontColor, "race: %s", charRace[chr.GetRace()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "in combat: %i", chr.IsInCombat());
                 if (ag.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, "%s", ag.GetName().c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", chr.m_ptr->pCharacter, strProf[chr.GetProfession()].c_str());
@@ -181,6 +183,7 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "playerPtr: %p", player.m_ptr->pPlayer);
                 font.Draw(x, y + OFFSETY, fontColor, "coins: %i", player.GetCurrency(GW2::CURRENCY_COIN));
                 font.Draw(x, y + OFFSETY, fontColor, "mastery: %p - %i", player.m_ptr->pTrainMgr, player.GetMasteryLevel());
+                font.Draw(x, y + OFFSETY, fontColor, "ach: %p - %i", player.m_ptr->pAchMgr, player.GetAP());
             }
         }
     }

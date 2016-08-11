@@ -87,6 +87,10 @@ int Player::GetMasteryLevel() const {
     return m_ptr ? m_ptr->masteryLvl : 0;
 }
 
+int Player::GetAP() const {
+    return m_ptr ? m_ptr->ap : 0;
+}
+
 std::string Player::GetName() const {
     return m_ptr ? m_ptr->name : "";
 }

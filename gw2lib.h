@@ -95,6 +95,15 @@ namespace GW2LIB
             PROFESSION_END
         };
 
+        enum Race {
+            RACE_ASURA,
+            RACE_CHARR,
+            RACE_HUMAN,
+            RACE_NORN,
+            RACE_SYLVARI,
+            RACE_NONE
+        };
+
         enum Attitude {
             ATTITUDE_FRIENDLY,
             ATTITUDE_HOSTILE,
@@ -477,6 +486,7 @@ namespace GW2LIB
         int GetLevel() const;
         int GetScaledLevel() const;
         GW2::CharacterGender GetGender() const;
+        GW2::Race GetRace() const;
         GW2::CharacterStats GetStats() const;
         int GetWvwSupply() const;
 
@@ -543,6 +553,7 @@ namespace GW2LIB
 
         int GetCurrency(GW2::CurrencyType type);
         int GetMasteryLevel() const;
+        int GetAP() const;
         std::string GetName() const;
 
         GameData::PlayerData *m_ptr = nullptr;
@@ -787,12 +798,16 @@ namespace GW2LIB
         uintptr_t playerName = 0x68;
         uintptr_t playerVtGetWallet = 0x188;
         uintptr_t playerVtGetTrainMgr = 0x2C0;
+        uintptr_t playerVtGetAchMgr = 0x120;
         uintptr_t playerChar = 0x20;
 
         uintptr_t currVtGetCurrency = 0x0;
 
         uintptr_t trmgrVtGetMLvl = 0x18;
 
+        uintptr_t achMgrVtGetAP = 0x18;
+
+        uintptr_t statsRace = 0x33;
         uintptr_t statsGender = 0x35;
         uintptr_t statsStats = 0xac;
         uintptr_t statsLevel = 0x1ec;
@@ -1043,6 +1058,7 @@ namespace GW2LIB
         uintptr_t playerName = 0x48;
         uintptr_t playerVtGetWallet = 0xc4;
         uintptr_t playerVtGetTrainMgr = 0x160; // "m_trainingMgr"
+        uintptr_t playerVtGetAchMgr = 0x90; // "achievementMgr"
         uintptr_t playerChar = 0x18;
         /*
         Represents a player.
@@ -1084,7 +1100,11 @@ namespace GW2LIB
 
         uintptr_t trmgrVtGetMLvl = 0xc;
 
+        uintptr_t achMgrVtGetAP = 0xc;
+
         // CharClient::CCoreStats
+        // race
+        uintptr_t statsRace = 0x27;
         // gender
         uintptr_t statsGender = 0x29;
         // CharacterStats stats;

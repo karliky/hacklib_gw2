@@ -113,6 +113,10 @@ GW2::CharacterGender Character::GetGender() const {
     return m_ptr ? m_ptr->gender : GW2::CHAR_GENDER_NONE;
 }
 
+GW2::Race Character::GetRace() const {
+    return m_ptr ? m_ptr->race : GW2::RACE_NONE;
+}
+
 GW2::CharacterStats Character::GetStats() const {
     GW2::CharacterStats dummy;
     return m_ptr ? m_ptr->stats : dummy;
