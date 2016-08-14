@@ -153,9 +153,8 @@ void cbESP()
             }
 
             if (chr.IsValid()) {
-                font.Draw(x, y + OFFSETY, fontColor, "gender: %s", charSex[chr.GetGender()].c_str());
-                font.Draw(x, y + OFFSETY, fontColor, "race: %s", charRace[chr.GetRace()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "in combat: %i", chr.IsInCombat());
+                font.Draw(x, y + OFFSETY, fontColor, "%s %s", charRace[chr.GetRace()].c_str(), charSex[chr.GetGender()].c_str());
                 if (ag.GetName().size()) font.Draw(x, y + OFFSETY, fontColor, "%s", ag.GetName().c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "charPtr: %p - %s", chr.m_ptr->pCharacter, strProf[chr.GetProfession()].c_str());
                 font.Draw(x, y + OFFSETY, fontColor, "buff bar: %p", chr.m_ptr->pBuffBar);
@@ -184,6 +183,11 @@ void cbESP()
                 font.Draw(x, y + OFFSETY, fontColor, "coins: %i", player.GetCurrency(GW2::CURRENCY_COIN));
                 font.Draw(x, y + OFFSETY, fontColor, "mastery: %p - %i", player.m_ptr->pTrainMgr, player.GetMasteryLevel());
                 font.Draw(x, y + OFFSETY, fontColor, "ach: %p - %i", player.m_ptr->pAchMgr, player.GetAP());
+
+                std::stringstream ss;
+                for (int s = 0; s < GW2::SPEC_SLOT_END; s++)
+                    ss << player.GetSpecType((GW2::SpecSlot)s) << ", ";
+                font.Draw(x, y + OFFSETY, fontColor, "spec: %p - %s", player.m_ptr->pSpecMgr, ss.str().c_str());
             }
         }
     }

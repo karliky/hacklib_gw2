@@ -91,6 +91,10 @@ int Player::GetAP() const {
     return m_ptr ? m_ptr->ap : 0;
 }
 
+GW2::Specialization GW2LIB::Player::GetSpecType(GW2::SpecSlot slot) {
+    return m_ptr && slot < GW2LIB::GW2::SPEC_SLOT_END ? m_ptr->specs[slot] : GW2LIB::GW2::SPEC_NONE;
+}
+
 std::string Player::GetName() const {
     return m_ptr ? m_ptr->name : "";
 }

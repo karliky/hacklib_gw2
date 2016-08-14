@@ -184,6 +184,23 @@ namespace GW2LIB
             STANCE_REV_CENTAUR
         };
 
+        enum SpecSlot {
+            SPEC_SLOT_1,
+            SPEC_SLOT_2,
+            SPEC_SLOT_3,
+            SPEC_SLOT_END
+        };
+
+        enum Specialization {
+            SPEC_NONE,
+            SPEC_MES_CHAOS = 7,
+            SPEC_MES_ILLUSIONS,
+            SPEC_MES_DEULING,
+            SPEC_MES_DOMINAION,
+            SPEC_MES_INSPIRATION,
+            SPEC_MES_CHRONOMANCER
+        };
+
         enum AgentSequence {
             AGENT_SEQ_NONE,
             AGENT_SEQ_DOOR_OPEN = 0x7160F,
@@ -554,6 +571,7 @@ namespace GW2LIB
         int GetCurrency(GW2::CurrencyType type);
         int GetMasteryLevel() const;
         int GetAP() const;
+        GW2::Specialization GetSpecType(GW2::SpecSlot slot);
         std::string GetName() const;
 
         GameData::PlayerData *m_ptr = nullptr;
@@ -799,13 +817,14 @@ namespace GW2LIB
         uintptr_t playerVtGetWallet = 0x188;
         uintptr_t playerVtGetTrainMgr = 0x2C0;
         uintptr_t playerVtGetAchMgr = 0x120;
+        uintptr_t playerVtGetSpecMgr = 0x290;
         uintptr_t playerChar = 0x20;
 
         uintptr_t currVtGetCurrency = 0x0;
-
         uintptr_t trmgrVtGetMLvl = 0x18;
-
         uintptr_t achMgrVtGetAP = 0x18;
+        uintptr_t specMgrSpecsArr = 0x40;
+        uintptr_t specType = 0x14;
 
         uintptr_t statsRace = 0x33;
         uintptr_t statsGender = 0x35;
@@ -1059,6 +1078,8 @@ namespace GW2LIB
         uintptr_t playerVtGetWallet = 0xc4;
         uintptr_t playerVtGetTrainMgr = 0x160; // "m_trainingMgr"
         uintptr_t playerVtGetAchMgr = 0x90; // "achievementMgr"
+        uintptr_t playerVtGetSpecMgr = 0x148; // "specializationMgr"
+
         uintptr_t playerChar = 0x18;
         /*
         Represents a player.
@@ -1097,10 +1118,10 @@ namespace GW2LIB
         uintptr_t skillMaxRange = 0x7c;
 
         uintptr_t currVtGetCurrency = 0x0;
-
         uintptr_t trmgrVtGetMLvl = 0xc;
-
         uintptr_t achMgrVtGetAP = 0xc;
+        uintptr_t specMgrSpecsArr = 0x20;
+        uintptr_t specType = 0x14;
 
         // CharClient::CCoreStats
         // race

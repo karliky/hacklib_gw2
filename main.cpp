@@ -501,6 +501,18 @@ void Gw2HackMain::RefreshDataPlayer(GameData::PlayerData *pPlayerData, hl::Forei
             pPlayerData->ap = achMgr.call<int>(m_pubmems.achMgrVtGetAP);
         }
 
+        hl::ForeignClass specMgr = player.call<void*>(m_pubmems.playerVtGetSpecMgr);
+        if (specMgr) {
+            pPlayerData->pSpecMgr = specMgr;
+
+            for (size_t i = 0; i < GW2LIB::GW2::SPEC_SLOT_END; i++) {
+                hl::ForeignClass spec = specMgr.get<void*>(m_pubmems.specMgrSpecsArr + (i*sizeof(void*)));
+                if (spec) {
+                    pPlayerData->specs[i] = spec.get<GW2LIB::GW2::Specialization>(m_pubmems.specType);
+                }
+            }
+        }
+
         char *name = player.get<char*>(m_pubmems.playerName);
         int i = 0;
         pPlayerData->name = "";

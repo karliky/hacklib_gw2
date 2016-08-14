@@ -209,8 +209,11 @@ namespace GameData
         hl::ForeignClass pWallet = nullptr;
         hl::ForeignClass pTrainMgr = nullptr;
         hl::ForeignClass pAchMgr = nullptr;
+        hl::ForeignClass pSpecMgr = nullptr;
         AgentData *pAgentData = nullptr;
         CharacterData *pCharData = nullptr;
+
+        GW2LIB::GW2::Specialization specs[GW2LIB::GW2::SPEC_SLOT_END] = { GW2LIB::GW2::SPEC_NONE };
 
         std::string name = "";
         int masteryLvl = 0;
