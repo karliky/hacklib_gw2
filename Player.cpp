@@ -95,6 +95,28 @@ GW2::Specialization GW2LIB::Player::GetSpecType(GW2::SpecSlot slot) {
     return m_ptr && slot < GW2LIB::GW2::SPEC_SLOT_END ? m_ptr->specs[slot] : GW2LIB::GW2::SPEC_NONE;
 }
 
+bool GW2LIB::Player::HasEliteSpec() {
+    using namespace GW2LIB::GW2;
+
+    if (!m_ptr) return false;
+    bool ret = false;
+
+    switch (m_ptr->specs[SPEC_SLOT_3]) {
+    case SPEC_GUARD_DRAGONHUNTER:
+    case SPEC_MES_CHRONOMANCER:
+    case SPEC_ELE_TEMPEST:
+    case SPEC_ENGI_SCRAPPER:
+    case SPEC_THIEF_DAREDEVIL:
+    case SPEC_NECRO_REAPER:
+    case SPEC_RANGER_DRUID:
+    case SPEC_WAR_BERSERKER:
+    case SPEC_REV_HERALD:
+        ret = true;
+    }
+
+    return ret;
+}
+
 std::string Player::GetName() const {
     return m_ptr ? m_ptr->name : "";
 }

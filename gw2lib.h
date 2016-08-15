@@ -193,12 +193,21 @@ namespace GW2LIB
 
         enum Specialization {
             SPEC_NONE,
+            SPEC_GUARD_DRAGONHUNTER = 6,
             SPEC_MES_CHAOS = 7,
             SPEC_MES_ILLUSIONS,
             SPEC_MES_DEULING,
             SPEC_MES_DOMINAION,
             SPEC_MES_INSPIRATION,
-            SPEC_MES_CHRONOMANCER
+            SPEC_MES_CHRONOMANCER,
+            SPEC_ELE_TEMPEST,
+            SPEC_ENGI_SCRAPPER = 21,
+            SPEC_THIEF_DAREDEVIL = 26,
+            SPEC_NECRO_REAPER = 36,
+            SPEC_RANGER_DRUID = 42,
+            SPEC_WAR_BERSERKER = 45,
+            SPEC_REV_HERALD = 49,
+
         };
 
         enum AgentSequence {
@@ -572,6 +581,7 @@ namespace GW2LIB
         int GetMasteryLevel() const;
         int GetAP() const;
         GW2::Specialization GetSpecType(GW2::SpecSlot slot);
+        bool HasEliteSpec();
         std::string GetName() const;
 
         GameData::PlayerData *m_ptr = nullptr;
@@ -1121,6 +1131,7 @@ namespace GW2LIB
         uintptr_t trmgrVtGetMLvl = 0xc;
         uintptr_t achMgrVtGetAP = 0xc;
         uintptr_t specMgrSpecsArr = 0x20;
+        uintptr_t specMgrTraitsArr = 0x40;
         uintptr_t specType = 0x14;
 
         // CharClient::CCoreStats
