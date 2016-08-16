@@ -83,6 +83,10 @@ GW2LIB::GW2::UiIntefaceSize GW2LIB::GetUiInterfaceSize() {
     return GetMain()->GetGameData()->uiIntSize;
 }
 
+bool GW2LIB::GetUiOptionFlag(GW2LIB::GW2::UiOption opt) {
+    return !!(GetMain()->GetGameData()->uiFlags1 & opt);
+}
+
 GW2LIB::Compass GW2LIB::GetCompass() {
     Compass comp;
     comp.m_ptr = GetMain()->GetGameData()->objData.compData.get();

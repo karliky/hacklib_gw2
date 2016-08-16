@@ -335,6 +335,8 @@ namespace GameData
         int ifHide = 0;
         int mapOpen = 0;
         int asCtxMode = 0;
+        uint32_t uiFlags1 = 0;
+        uint32_t uiFlags2 = 0;
         GW2LIB::GW2::UiIntefaceSize uiIntSize = GW2LIB::GW2::UI_IF_NORMAL;
     };
 

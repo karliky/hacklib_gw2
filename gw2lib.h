@@ -138,6 +138,10 @@ namespace GW2LIB
             UI_IF_LARGER
         };
 
+        enum UiOption {
+            UI_OPT_TGT_PCT = 1 << 29
+        };
+
         enum GadgetType {
             GADGET_TYPE_DESTRUCTABLE = 1,// training dummy, wvw lobby siege practice target crate
             GADGET_TYPE_POINT = 2,       // pvp control point, event spawn? (saw at VB Pale Reaver primary rally point)
@@ -194,7 +198,7 @@ namespace GW2LIB
         enum Specialization {
             SPEC_NONE,
             SPEC_GUARD_DRAGONHUNTER = 6,
-            SPEC_MES_CHAOS = 7,
+            SPEC_MES_CHAOS,
             SPEC_MES_ILLUSIONS,
             SPEC_MES_DEULING,
             SPEC_MES_DOMINAION,
@@ -671,6 +675,7 @@ namespace GW2LIB
     float GetFieldOfViewY();
     Compass GetCompass();
     GW2::UiIntefaceSize GetUiInterfaceSize();
+    bool GetUiOptionFlag(GW2::UiOption opt);
     int GetPing();
     int GetFPS();
     bool IsInterfaceHidden();
@@ -867,6 +872,8 @@ namespace GW2LIB
         uintptr_t compMaxHeight = 0x1c;
 
         uintptr_t uiIntSize = 0x54;
+        uintptr_t uiFlags1 = 0x1b0;
+        uintptr_t uiFlags2 = 0x1b4;
 
         uintptr_t contextGadget = 0x130;
         uintptr_t ctxgdVtGetGadget = 0x10;
@@ -1222,6 +1229,8 @@ namespace GW2LIB
 
         // ui options
         uintptr_t uiIntSize = 0x2c;
+        uintptr_t uiFlags1 = 0x158;
+        uintptr_t uiFlags2 = 0x15c;
 
         // gadget stuff
         uintptr_t contextGadget = 0x98;

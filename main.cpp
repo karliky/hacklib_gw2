@@ -945,6 +945,8 @@ void Gw2HackMain::GameHook()
 
     hl::ForeignClass uiOpts = m_mems.pUiOpts;
     m_gameData.uiIntSize = uiOpts.get<GW2LIB::GW2::UiIntefaceSize>(m_pubmems.uiIntSize);
+    m_gameData.uiFlags1 = uiOpts.get<uint32_t>(m_pubmems.uiFlags1);
+    m_gameData.uiFlags2 = uiOpts.get<uint32_t>(m_pubmems.uiFlags2);
 }
 
 
